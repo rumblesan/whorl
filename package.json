@@ -1,0 +1,17 @@
+{
+  "name": "websound",
+  "version": "0.1.0",
+  "description": "A web based audio live coding environment",
+  "main": "src/main.js",
+  "author": "Guy John",
+  "license": "BSD-3",
+  "scripts": {
+    "prebuild": "rm -rf ./dist/*",
+    "build": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css; browserify . > ./dist/app.js",
+    "clean": "rm -rf ./dist/*",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "browserify": "^9.0.6"
+  }
+}
