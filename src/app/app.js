@@ -17,26 +17,25 @@ var createApp = function (programarea) {
         throw [message, details];
     };
 
-    var testcode = '(define bba "sdf")';
-
-    var out = [];
-    try {
-        out = parser.parse(testcode);
-    } catch(err) {
-        console.log(err[0], err[1]);
-    }
-
-    console.log(out, 'done');
-
-
     App.codemirror = CodeMirror(programarea, {
-        value: '(hello world)',
         keyMap: 'vim'
+    });
+
+    CodeMirror.Vim.defineAction('execute', function (cm, args, vim) {
+        var code = cm.doc.getSelection();
+        try {
+            var ast = parser.parse(code);
+            console.log(ast);
+        } catch (err) {
+            console.log(err[0], err[1]);
+        }
+    });
+    CodeMirror.Vim.mapCommand('<C-g>', 'action', 'keyexecute', null, {
+        action: 'execute'
     });
 
     App.run = function () {
 
-        console.log('asdf');
 
     };
 

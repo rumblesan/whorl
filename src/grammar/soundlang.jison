@@ -47,34 +47,15 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 "#f"                  return "t_false"
 /* misc */
 <<EOF>>               return "t_eof"
-[ \t\n]+              /* skip whitespace */
+\s+                   /* skip whitespace */
 .                     return "INVALID"
 
 
 /lex
 
-%token                t_oparen
-%token                t_cparen
-
-%token                t_begin
-%token                t_define
-%token                t_lambda
-%token                t_quote
-%token                t_set
-%token                t_if
-%token                t_dot
-
-%token                t_number
-%token                t_id
-
-%token                t_string
-
-%token                t_true
-%token                t_false
-
-%token                t_eof
-
 %start Program
+
+%ebnf
 
 %% /* language grammar */
 
@@ -100,8 +81,6 @@ VariableDefinition
         { $$ = ["DEFINE", $3, $4]; }
     | t_oparen t_define t_oparen Variable Variable* t_cparen Body t_cparen
         { $$ = ["DEFINE", $4, $5, $7]; }
-    | t_oparen t_define t_oparen Variable Variable* t_dot Variable t_cparen Body t_cparen
-        { $$ = ["DEFINE", $4, $5, $7, $9]; }
     ;
 
 Variable
@@ -142,8 +121,6 @@ Formals
     : Variable
     | t_oparen Variable* t_cparen
         { $$ = $2; }
-    | t_oparen Variable+ t_dot Variable t_cparen
-        { $$ = [$2, $4]; }
     ;
 
 Application
@@ -201,12 +178,12 @@ Symbol
 List
     : t_oparen Datum* t_cparen
         { $$ = ["LIST", $2]; }
-    | t_oparen Datum+ t_dot Datum t_cparen
-        { $$ = ["LIST", $2, $4]; }
     ;
 
 Vector
     : "#" t_oparen Datum* t_cparen
         { $$ = ["VECTOR", $3]; }
     ;
+
+%%
 
