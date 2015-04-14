@@ -17,10 +17,6 @@ var createApp = function (programarea) {
         throw [message, details];
     };
 
-    App.codemirror = CodeMirror(programarea, {
-        keyMap: 'vim'
-    });
-
     CodeMirror.Vim.defineAction('execute', function (cm, args, vim) {
         var code = cm.doc.getSelection();
         try {
@@ -34,10 +30,13 @@ var createApp = function (programarea) {
         action: 'execute'
     });
 
-    App.run = function () {
+    CodeMirror.Vim.map(',', 'va(');
 
+    App.codemirror = CodeMirror(programarea, {
+        keyMap: 'vim'
+    });
 
-    };
+    App.run = function () { };
 
     return App;
 }
