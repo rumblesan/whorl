@@ -2,6 +2,7 @@
 
 var CodeMirror = require('../codemirror/lib/codemirror');
 require('../codemirror/keymap/vim');
+require('../codemirror/mode/scheme/scheme');
 
 var createEditor = function (editorEl, codeHandlerFunc) {
 
@@ -16,7 +17,8 @@ var createEditor = function (editorEl, codeHandlerFunc) {
     CodeMirror.Vim.map(',', 'va(');
 
     var editor = CodeMirror(editorEl, {
-        keyMap: 'vim'
+        keyMap: 'vim',
+        mode: 'scheme'
     });
 
     return editor;
