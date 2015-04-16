@@ -9,16 +9,25 @@ var createCore = function (parser) {
     var Core = {};
 
     var globalScope = ScopeHandler.createScope();
-    StdLib.addFunctions(ScopeHandler, globalScope);
-    console.log(globalScope);
+    StdLib.addFunctions(Core, ScopeHandler, globalScope);
 
     Core.handleCode = function (code) {
-        try {
             var ast = parser.parse(code);
             Interpreter.interpret(globalScope, ast);
+        try {
         } catch (err) {
             console.log(err);
         }
+    };
+
+    Core.scheduleCallback = function (time, lambda) {
+        setTimeout(function () {
+            try {
+                Interpreter.handleApplication(globalScope, lambda, []);
+            } catch (err) {
+                console.log(err);
+            }
+        }, time);
     };
 
     return Core;

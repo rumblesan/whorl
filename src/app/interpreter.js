@@ -60,7 +60,7 @@ var createInterpreter = function (ScopeHandler) {
                 output = Interpreter.handleSet(scope, astExpr);
                 break;
             case "APPLICATION":
-                output = Interpreter.handleApplication(scope, astExpr);
+                output = Interpreter.handleApplicationExpression(scope, astExpr);
                 break;
             case "BOOLEAN":
                 if (astExpr[1] === "TRUE") {
@@ -88,7 +88,7 @@ var createInterpreter = function (ScopeHandler) {
                 output = Interpreter.handleVector(scope, astExpr);
                 break;
             default:
-                throw "exprType not valid";
+                throw "exprType not valid: " + exprType;
         }
         return output;
     };
@@ -117,8 +117,11 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     Interpreter.handleBody = function (scope, exprTree) {
-        // body gets evaluated when the function does
-        return exprTree;
+        var defines = exprTree[1];
+        var exprs = exprTree[2];
+        Interpreter.evaluateBlock(scope, defines);
+        var result = Interpreter.evaluateBlock(scope, exprs);
+        return result;
     };
 
     Interpreter.handleVariable = function (scope, exprTree) {
@@ -133,7 +136,7 @@ var createInterpreter = function (ScopeHandler) {
     Interpreter.handleLambda = function (scope, exprTree) {
         var functionArgs = exprTree[1];
         var functionExpr = exprTree[2];
-        var functionValue = ["ASTFUNCTION", functionArgs, functionExpr];
+        var functionValue = ["CLOSURE", functionArgs, functionExpr, scope];
         return functionValue;
     };
 
@@ -163,57 +166,69 @@ var createInterpreter = function (ScopeHandler) {
         //TODO
     };
 
-    Interpreter.handleApplication = function (scope, exprTree) {
-        var func = Interpreter.evaluateExpression(scope, exprTree[1]);
-        var funcType = func[0];
-        var funcArgs = exprTree[2];
-        var result;
-        switch (funcType) {
+    Interpreter.handleApplicationExpression = function (scope, exprTree) {
+        var functionData = Interpreter.evaluateExpression(scope, exprTree[1]);
+        var functionArgs = exprTree[2];
+
+        var evaluatedArgs = [];
+        var i;
+        for (i = 0; i < functionArgs.length; i += 1) {
+            evaluatedArgs.push(
+                Interpreter.evaluateExpression(scope, functionArgs[i])
+            );
+        }
+
+        return Interpreter.handleApplication(scope, functionData, evaluatedArgs);
+    };
+
+    Interpreter.handleApplication = function (scope, functionData, evaluatedArgs) {
+        var functionType = functionData[0];
+
+        switch (functionType) {
             case "ASTFUNCTION":
-                result = Interpreter.handleAstFunction(scope, func, funcArgs);
+                result = Interpreter.handleAstFunction(
+                    scope, functionData, evaluatedArgs
+                );
                 break;
             case "FOREIGNFUNCTION":
-                result = Interpreter.handleForeignFunction(scope, func, funcArgs);
+                result = Interpreter.handleForeignFunction(
+                    scope, functionData, evaluatedArgs
+                );
+                break;
+            case "CLOSURE":
+                var closureScope = functionData[3];
+                result = Interpreter.handleAstFunction(
+                    closureScope, functionData, evaluatedArgs
+                );
                 break;
             default:
-                throw "function type not valid";
+                throw "function type not valid: " + functionType;
         }
         return result;
     };
 
-    Interpreter.handleAstFunction = function(scope, func, functionArgs) {
-        var functionArgNames = func[1];
-        var functionBody     = func[2];
+    Interpreter.handleAstFunction = function(scope, functionData, functionArgs) {
+        var functionArgNames = functionData[1];
+        var functionBody     = functionData[2];
 
         if (functionArgs.length < functionArgNames.length) {
             throw "Not enough arguments for function";
         }
 
         var childScope = ScopeHandler.createChildScope(scope);
-
-        var i, argValue;
+        var i;
         for (i = 0; i < functionArgNames.length; i += 1) {
-            argValue = Interpreter.evaluateExpression(scope, functionArgs[i]);
-            ScopeHandler.set(childScope, functionArgNames[i], argValue);
+            ScopeHandler.set(childScope, functionArgNames[i], functionArgs[i]);
         }
 
-        var result = Interpreter.evaluateBlock(childScope, functionBody);
-
+        return Interpreter.evaluateExpression(childScope, functionBody);
     };
 
-    Interpreter.handleForeignFunction = function(scope, func, functionArgs) {
-        var foreignFunction = func[1];
-
-        var i, argValue, interpretedArgs = [];
-        for (i = 0; i < functionArgs.length; i += 1) {
-            argValue = Interpreter.evaluateExpression(scope, functionArgs[i]);
-            interpretedArgs.push(argValue);
-        }
-
+    Interpreter.handleForeignFunction = function(scope, functionData, functionArgs) {
+        var foreignFunction = functionData[1];
         var childScope = ScopeHandler.createChildScope(scope);
-        var result = foreignFunction.apply(childScope, interpretedArgs);
-
-        return result;
+        // function args have already been evaluated
+        return foreignFunction.apply(childScope, functionArgs);
     };
 
     Interpreter.handleList = function (scope, exprTree) {
