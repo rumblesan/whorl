@@ -1,6 +1,9 @@
-/* global */
+/* global require */
 
-var addFunctions = function (ScopeHandler, scope) {
+var Audio = require('./audio');
+var Timing = require('./timing');
+
+var addFunctions = function (Core, ScopeHandler, scope) {
 
     var plus = function (a, b) {
         return a + b;
@@ -27,6 +30,8 @@ var addFunctions = function (ScopeHandler, scope) {
     };
     ScopeHandler.addFF(scope, 'display', display);
 
+    Audio.addFunctions(Core, ScopeHandler, scope);
+    Timing.addFunctions(Core, ScopeHandler, scope);
 };
 
 module.exports = {
