@@ -1,13 +1,13 @@
 /*global require */
 
-var createCore = function (Interpreter) {
+var createCore = function (parser, interpreter) {
 
     var Core = {};
 
     Core.handleCode = function (code) {
         try {
-            var ast = Interpreter.parse(code);
-            Interpreter.interpret(ast);
+            var ast = parser.parse(code);
+            interpreter.interpret(ast);
         } catch (err) {
             console.log(err);
         }

@@ -7,10 +7,10 @@
   "license": "BSD-3",
   "scripts": {
     "prebuild": "rm -rf ./dist/*",
-    "prebuild": "jison src/grammar/soundlang.jison -o src/parser.js -m commonjs",
+    "prebuild": "jison src/grammar/soundlang.jison -o src/jison-parser.js -m commonjs",
     "build": "browserify . > ./dist/app.js",
     "postbuild": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css;",
-    "clean": "rm -rf ./dist/* src/parser.js",
+    "clean": "rm -rf ./dist/* src/jison-parser.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
