@@ -80,7 +80,7 @@ VariableDefinition
     : t_oparen t_define Variable Expression t_cparen
         { $$ = ["DEFINE", $3, $4]; }
     | t_oparen t_define t_oparen Variable Variable* t_cparen Body t_cparen
-        { $$ = ["DEFINE", $4, $5, $7]; }
+        { $$ = ["DEFINEFUNCTION", $4, $5, $7]; }
     ;
 
 Variable
@@ -104,7 +104,7 @@ Expression
     | t_oparen t_if Expression Expression t_cparen
         { $$ = ["IF", $3, $4]; }
     | t_oparen t_if Expression Expression Expression t_cparen
-        { $$ = ["IF", $3, $4, $5]; }
+        { $$ = ["IFELSE", $3, $4, $5]; }
     | t_oparen t_set Variable Expression t_cparen
         { $$ = ["SET", $3, $4]; }
     | Application
@@ -125,7 +125,7 @@ Formals
 
 Application
     : t_oparen Expression Expression* t_cparen
-        { $$ = [$2, $3]; }
+        { $$ = ["APPLICATION", $2, $3]; }
     ;
 
 /* Identifiers */
@@ -148,9 +148,9 @@ Datum
 
 Boolean
     : t_true
-        { $$ = "TRUE"; }
+        { $$ = ["BOOLEAN", "TRUE"]; }
     | t_false
-        { $$ = "FALSE"; }
+        { $$ = ["BOOLEAN", "FALSE"]; }
     ;
 
 Number
@@ -160,10 +160,15 @@ Number
 
 Character
     : "#\\" letter
+        { $$ = ["CHARACTER", yytext]; }
     | "#\\" symchar
+        { $$ = ["CHARACTER", yytext]; }
     | "#\\" digit
+        { $$ = ["CHARACTER", yytext]; }
     | "#\\newline"
+        { $$ = ["CHARACTER", yytext]; }
     | "#\\space"
+        { $$ = ["CHARACTER", yytext]; }
     ;
 
 String
@@ -173,6 +178,7 @@ String
 
 Symbol
     : Identifier
+        { $$ = ["SYMBOL", $1]; }
     ;
 
 List
