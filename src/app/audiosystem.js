@@ -23,12 +23,11 @@ var createSystem = function (context) {
     internal.createOsc = function (oscRep) {
         var oscillator = context.createOscillator();
         oscillator.type = oscRep.wave;
+        oscillator.start();
         var play = function (freq) {
             oscillator.frequency.value = freq;
-            oscillator.start();
         };
         var stop = function () {
-            oscillator.stop();
         };
         return {
             node: oscillator,
@@ -51,7 +50,7 @@ var createSystem = function (context) {
         var stop = function () {
             amp.gain.linearRampToValueAtTime(0, context.currentTime + envRep.decay);
             setTimeout(function () {
-                oscillator.stop();
+                source.stop();
             }, envRep.decay * 1000);
         };
         return {
