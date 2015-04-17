@@ -3,64 +3,65 @@
 var createInterpreter = function (ScopeHandler) {
 
     var Interpreter = {};
+    var internal = {};
 
     // scope is a dictionary, stored in and passed in by the Core
     Interpreter.evaluate = function (scope, ast) {
-        Interpreter.evaluateBlock(scope, ast);
+        internal.evaluateBlock(scope, ast);
     };
 
     Interpreter.apply = function(scope, closure, args) {
-        Interpreter.handleApplication(scope, closure, args);
+        internal.handleApplication(scope, closure, args);
     };
 
-    Interpreter.evaluateBlock = function (scope, ast) {
+    internal.evaluateBlock = function (scope, ast) {
         var i, r, expr, results = [];
         for (i = 0; i < ast.length; i += 1) {
             expr = ast[i];
-            r = Interpreter.evaluateExpression(scope, expr);
+            r = internal.evaluateExpression(scope, expr);
             results.push(r);
         }
         return results;
     };
 
-    Interpreter.evaluateExpression = function (scope, astExpr) {
+    internal.evaluateExpression = function (scope, astExpr) {
 
         var exprType = astExpr[0];
         var output;
 
         switch(exprType) {
             case "BEGIN":
-                output = Interpreter.handleBegin(scope, astExpr);
+                output = internal.handleBegin(scope, astExpr);
                 break;
             case "DEFINE":
-                output = Interpreter.handleDefine(scope, astExpr);
+                output = internal.handleDefine(scope, astExpr);
                 break;
             case "DEFINEFUNCTION":
-                output = Interpreter.handleDefineFunction(scope, astExpr);
+                output = internal.handleDefineFunction(scope, astExpr);
                 break;
             case "BODY":
-                output = Interpreter.handleBody(scope, astExpr);
+                output = internal.handleBody(scope, astExpr);
                 break;
             case "VARIABLE":
-                output = Interpreter.handleVariable(scope, astExpr);
+                output = internal.handleVariable(scope, astExpr);
                 break;
             case "QUOTE":
-                output = Interpreter.handleQuote(scope, astExpr);
+                output = internal.handleQuote(scope, astExpr);
                 break;
             case "LAMBDA":
-                output = Interpreter.handleLambda(scope, astExpr);
+                output = internal.handleLambda(scope, astExpr);
                 break;
             case "IF":
-                output = Interpreter.handleIf(scope, astExpr);
+                output = internal.handleIf(scope, astExpr);
                 break;
             case "IFELSE":
-                output = Interpreter.handleIfElse(scope, astExpr);
+                output = internal.handleIfElse(scope, astExpr);
                 break;
             case "SET":
-                output = Interpreter.handleSet(scope, astExpr);
+                output = internal.handleSet(scope, astExpr);
                 break;
             case "APPLICATION":
-                output = Interpreter.handleApplicationExpression(scope, astExpr);
+                output = internal.handleApplicationExpression(scope, astExpr);
                 break;
             case "BOOLEAN":
                 if (astExpr[1] === "TRUE") {
@@ -82,10 +83,10 @@ var createInterpreter = function (ScopeHandler) {
                 output = astExpr[1];
                 break;
             case "LIST":
-                output = Interpreter.handleList(scope, astExpr);
+                output = internal.handleList(scope, astExpr);
                 break;
             case "VECTOR":
-                output = Interpreter.handleVector(scope, astExpr);
+                output = internal.handleVector(scope, astExpr);
                 break;
             default:
                 throw "exprType not valid: " + exprType;
@@ -93,20 +94,20 @@ var createInterpreter = function (ScopeHandler) {
         return output;
     };
 
-    Interpreter.handleBegin = function (scope, exprTree) {
+    internal.handleBegin = function (scope, exprTree) {
         var defines = exprTree[1];
-        return Interpreter.evaluateBlock(scope, defines);
+        return internal.evaluateBlock(scope, defines);
     };
 
-    Interpreter.handleDefine = function (scope, exprTree) {
+    internal.handleDefine = function (scope, exprTree) {
         var varName = exprTree[1];
-        var varValue = Interpreter.evaluateExpression(scope, exprTree[2]);
+        var varValue = internal.evaluateExpression(scope, exprTree[2]);
 
         ScopeHandler.set(scope, varName, varValue);
         return varValue;
     };
 
-    Interpreter.handleDefineFunction = function (scope, exprTree) {
+    internal.handleDefineFunction = function (scope, exprTree) {
         var functionName = exprTree[1];
         var functionArgNames = exprTree[2];
         var functionBody = exprTree[3];
@@ -116,88 +117,88 @@ var createInterpreter = function (ScopeHandler) {
         return functionValue;
     };
 
-    Interpreter.handleBody = function (scope, exprTree) {
+    internal.handleBody = function (scope, exprTree) {
         var defines = exprTree[1];
         var exprs = exprTree[2];
-        Interpreter.evaluateBlock(scope, defines);
-        var result = Interpreter.evaluateBlock(scope, exprs);
+        internal.evaluateBlock(scope, defines);
+        var result = internal.evaluateBlock(scope, exprs);
         return result;
     };
 
-    Interpreter.handleVariable = function (scope, exprTree) {
+    internal.handleVariable = function (scope, exprTree) {
         var varName = exprTree[1];
         return ScopeHandler.get(scope, varName);
     };
 
-    Interpreter.handleQuote = function (scope, exprTree) {
+    internal.handleQuote = function (scope, exprTree) {
         // TODO
     };
 
-    Interpreter.handleLambda = function (scope, exprTree) {
+    internal.handleLambda = function (scope, exprTree) {
         var functionArgNames = exprTree[1];
         var functionExpr = exprTree[2];
         var functionValue = ["CLOSURE", functionArgNames, functionExpr, scope];
         return functionValue;
     };
 
-    Interpreter.handleIf = function (scope, exprTree) {
-        var predicate = Interpreter.evaluateExpression(exprTree[1]);
+    internal.handleIf = function (scope, exprTree) {
+        var predicate = internal.evaluateExpression(exprTree[1]);
         var value;
         if (predicate === true || predicate !== 0) {
-            value = Interpreter.evaluateBlock(exprTree[2]);
+            value = internal.evaluateBlock(exprTree[2]);
         } else {
             value = false;
         }
         return value;
     };
 
-    Interpreter.handleIfElse = function (scope, exprTree) {
-        var predicate = Interpreter.evaluateExpression(exprTree[1]);
+    internal.handleIfElse = function (scope, exprTree) {
+        var predicate = internal.evaluateExpression(exprTree[1]);
         var value;
         if (predicate === true || predicate !== 0) {
-            value = Interpreter.evaluateBlock(exprTree[2]);
+            value = internal.evaluateBlock(exprTree[2]);
         } else {
-            value = Interpreter.evaluateBlock(exprTree[3]);
+            value = internal.evaluateBlock(exprTree[3]);
         }
         return value;
     };
 
-    Interpreter.handleSet = function (scope, exprTree) {
+    internal.handleSet = function (scope, exprTree) {
         //TODO
     };
 
-    Interpreter.handleApplicationExpression = function (scope, exprTree) {
-        var functionData = Interpreter.evaluateExpression(scope, exprTree[1]);
+    internal.handleApplicationExpression = function (scope, exprTree) {
+        var functionData = internal.evaluateExpression(scope, exprTree[1]);
         var functionArgs = exprTree[2];
 
         var evaluatedArgs = [];
         var i;
         for (i = 0; i < functionArgs.length; i += 1) {
             evaluatedArgs.push(
-                Interpreter.evaluateExpression(scope, functionArgs[i])
+                internal.evaluateExpression(scope, functionArgs[i])
             );
         }
 
-        return Interpreter.handleApplication(scope, functionData, evaluatedArgs);
+        return internal.handleApplication(scope, functionData, evaluatedArgs);
     };
 
-    Interpreter.handleApplication = function (scope, functionData, evaluatedArgs) {
+    internal.handleApplication = function (scope, functionData, evaluatedArgs) {
         var functionType = functionData[0];
         var result;
         switch (functionType) {
             case "FUNCTION":
-                result = Interpreter.handleAstFunction(
+                result = internal.handleFunction(
                     scope, functionData, evaluatedArgs
                 );
                 break;
             case "BUILTIN":
-                result = Interpreter.handleForeignFunction(
+                result = internal.handleForeignFunction(
                     scope, functionData, evaluatedArgs
                 );
                 break;
             case "CLOSURE":
                 var closureScope = functionData[3];
-                result = Interpreter.handleAstFunction(
+                result = internal.handleFunction(
                     closureScope, functionData, evaluatedArgs
                 );
                 break;
@@ -207,7 +208,7 @@ var createInterpreter = function (ScopeHandler) {
         return result;
     };
 
-    Interpreter.handleAstFunction = function(scope, functionData, functionArgs) {
+    internal.handleFunction = function(scope, functionData, functionArgs) {
         var functionArgNames = functionData[1];
         var functionBody     = functionData[2];
 
@@ -221,29 +222,29 @@ var createInterpreter = function (ScopeHandler) {
             ScopeHandler.set(childScope, functionArgNames[i], functionArgs[i]);
         }
 
-        return Interpreter.evaluateExpression(childScope, functionBody);
+        return internal.evaluateExpression(childScope, functionBody);
     };
 
-    Interpreter.handleForeignFunction = function(scope, functionData, functionArgs) {
+    internal.handleForeignFunction = function(scope, functionData, functionArgs) {
         var foreignFunction = functionData[1];
         var childScope = ScopeHandler.createChildScope(scope);
         // function args have already been evaluated
         return foreignFunction.apply(childScope, functionArgs);
     };
 
-    Interpreter.handleList = function (scope, exprTree) {
+    internal.handleList = function (scope, exprTree) {
         var i, r, exprList = exprTree[1], results = [];
         for (i = 0; i < exprTree.length; i += 1) {
-            r = Interpreter.evaluateExpression(scope, exprList[i]);
+            r = internal.evaluateExpression(scope, exprList[i]);
             results.push(r);
         }
         return results;
     };
 
-    Interpreter.handleVector = function (scope, exprTree) {
+    internal.handleVector = function (scope, exprTree) {
         var i, r, expr, exprVector = exprTree[1], results = [];
         for (i = 0; i < exprVector.length; i += 1) {
-            r = Interpreter.evaluateExpression(scope, exprVector[i]);
+            r = internal.evaluateExpression(scope, exprVector[i]);
             results.push(r);
         }
         return results;
