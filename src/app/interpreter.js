@@ -91,7 +91,7 @@ var createInterpreter = function (ScopeHandler) {
                 output = internal.handleVector(scope, astExpr);
                 break;
             default:
-                Error.create("exprType not valid: " + exprType);
+                throw Error.create("exprType not valid: " + exprType);
         }
         return output;
     };
@@ -123,8 +123,7 @@ var createInterpreter = function (ScopeHandler) {
         var defines = exprTree[1];
         var exprs = exprTree[2];
         internal.evaluateBlock(scope, defines);
-        var result = internal.evaluateBlock(scope, exprs);
-        return result;
+        return internal.evaluateBlock(scope, exprs);
     };
 
     internal.handleVariable = function (scope, exprTree) {
@@ -205,7 +204,7 @@ var createInterpreter = function (ScopeHandler) {
                 );
                 break;
             default:
-                Error.create("function type not valid: " + functionType);
+                throw Error.create("function type not valid: " + functionType);
         }
         return result;
     };
@@ -215,7 +214,7 @@ var createInterpreter = function (ScopeHandler) {
         var functionBody     = functionData[2];
 
         if (functionArgs.length < functionArgNames.length) {
-            Error.create("Not enough arguments for function");
+            throw Error.create("Not enough arguments for function");
         }
 
         var childScope = ScopeHandler.createChildScope(scope);
@@ -229,6 +228,11 @@ var createInterpreter = function (ScopeHandler) {
 
     internal.handleForeignFunction = function(scope, functionData, functionArgs) {
         var foreignFunction = functionData[1];
+
+        if (functionArgs.length < foreignFunction.length) {
+            throw Error.create("Not enough arguments for function");
+        }
+
         var childScope = ScopeHandler.createChildScope(scope);
         // function args have already been evaluated
         return foreignFunction.apply(childScope, functionArgs);

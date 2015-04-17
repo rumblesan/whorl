@@ -17,6 +17,17 @@ var createTerminal = function (terminalBodyEl) {
         return str.replace(/[&<> ]/g, replaceTag);
     };
 
+    var safeToString = function (x) {
+        switch (typeof x) {
+            case 'object':
+                return 'object';
+            case 'function':
+                return 'function';
+            default:
+                return x + '';
+        }
+    }
+
     var msgPrompt = "<msg>" + symbolReplace(">> ") + "</msg>";
     var errPrompt = "<err>" + symbolReplace(">> ") + "</err>";
 
@@ -37,16 +48,16 @@ var createTerminal = function (terminalBodyEl) {
         }
     };
 
-    Terminal.message = function (string) {
+    Terminal.message = function (msg) {
         terminalBodyEl.children("p:first").append(
-            msgPrompt + symbolReplace(string) + "<br>\n"
+            msgPrompt + symbolReplace(safeToString(msg)) + "<br>\n"
         );
         Terminal.scrollToBottom();
     };
 
     Terminal.error = function (err) {
         terminalBodyEl.children("p:first").append(
-            errPrompt + symbolReplace(err) + "<br>\n"
+            errPrompt + symbolReplace(safeToString(err)) + "<br>\n"
         );
         Terminal.scrollToBottom();
     };
