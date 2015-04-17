@@ -1,16 +1,15 @@
 /*jslint browser: true */
 /*global require */
 
-var domready = require('./lib/ready');
+var $ = require('./lib/jquery-2.1.3');
+
 var App = require('./app/app');
-
 var Editor = require('./app/editor');
-
 var Parser = require('./app/parser');
 
 var Core = require('./app/core');
 
-domready(function () {
+$(function () {
 
     var parser = Parser.create();
 
