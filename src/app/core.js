@@ -12,11 +12,15 @@ var createCore = function (parser) {
     StdLib.addFunctions(Core, ScopeHandler, globalScope);
 
     Core.handleCode = function (code) {
-            var ast = parser.parse(code);
-            Interpreter.evaluate(globalScope, ast);
+        var ast;
         try {
+            ast = parser.parse(code);
+            Interpreter.evaluate(globalScope, ast);
         } catch (err) {
             console.log(err);
+            if (ast) {
+                console.log(ast);
+            }
         }
     };
 
