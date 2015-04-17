@@ -4,7 +4,7 @@ var StdLib = require('./stdLib');
 var ScopeHandler = require('./scopeHandler').create();
 var Interpreter = require('./interpreter').create(ScopeHandler);
 
-var createCore = function (parser) {
+var createCore = function (parser, terminal) {
 
     var Core = {};
 
@@ -32,6 +32,10 @@ var createCore = function (parser) {
                 console.log(err);
             }
         }, time);
+    };
+
+    Core.display = function (data) {
+        terminal.addLine(data);
     };
 
     return Core;

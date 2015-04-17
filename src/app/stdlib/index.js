@@ -15,7 +15,7 @@ var addFunctions = function (Core, ScopeHandler, scope) {
     Audio.addFunctions(Core, ScopeHandler, scope);
 
     var display = function (v) {
-        console.log(v);
+        Core.display(v);
     };
     ScopeHandler.addFF(scope, 'display', display);
 };
