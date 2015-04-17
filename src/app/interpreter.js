@@ -5,12 +5,12 @@ var createInterpreter = function (ScopeHandler) {
     var Interpreter = {};
 
     // scope is a dictionary, stored in and passed in by the Core
-    Interpreter.interpret = function (scope, ast) {
-        Interpreter.evaluate(scope, ast);
-    };
-
     Interpreter.evaluate = function (scope, ast) {
         Interpreter.evaluateBlock(scope, ast);
+    };
+
+    Interpreter.apply = function(scope, closure, args) {
+        Interpreter.handleApplication(scope, closure, args);
     };
 
     Interpreter.evaluateBlock = function (scope, ast) {
@@ -110,7 +110,7 @@ var createInterpreter = function (ScopeHandler) {
         var functionName = exprTree[1];
         var functionArgNames = exprTree[2];
         var functionBody = exprTree[3];
-        var functionValue = ["ASTFUNCTION", functionArgNames, functionBody];
+        var functionValue = ["FUNCTION", functionArgNames, functionBody];
 
         ScopeHandler.set(scope, functionName, functionValue);
         return functionValue;
@@ -134,9 +134,9 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     Interpreter.handleLambda = function (scope, exprTree) {
-        var functionArgs = exprTree[1];
+        var functionArgNames = exprTree[1];
         var functionExpr = exprTree[2];
-        var functionValue = ["CLOSURE", functionArgs, functionExpr, scope];
+        var functionValue = ["CLOSURE", functionArgNames, functionExpr, scope];
         return functionValue;
     };
 
@@ -183,14 +183,14 @@ var createInterpreter = function (ScopeHandler) {
 
     Interpreter.handleApplication = function (scope, functionData, evaluatedArgs) {
         var functionType = functionData[0];
-
+        var result;
         switch (functionType) {
-            case "ASTFUNCTION":
+            case "FUNCTION":
                 result = Interpreter.handleAstFunction(
                     scope, functionData, evaluatedArgs
                 );
                 break;
-            case "FOREIGNFUNCTION":
+            case "BUILTIN":
                 result = Interpreter.handleForeignFunction(
                     scope, functionData, evaluatedArgs
                 );

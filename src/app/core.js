@@ -13,17 +13,17 @@ var createCore = function (parser) {
 
     Core.handleCode = function (code) {
             var ast = parser.parse(code);
-            Interpreter.interpret(globalScope, ast);
+            Interpreter.evaluate(globalScope, ast);
         try {
         } catch (err) {
             console.log(err);
         }
     };
 
-    Core.scheduleCallback = function (time, lambda) {
+    Core.scheduleCallback = function (time, closure) {
         setTimeout(function () {
             try {
-                Interpreter.handleApplication(globalScope, lambda, []);
+                Interpreter.apply(globalScope, closure, []);
             } catch (err) {
                 console.log(err);
             }

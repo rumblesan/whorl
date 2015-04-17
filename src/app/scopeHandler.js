@@ -26,7 +26,7 @@ var createScopeHandler = function () {
     };
 
     ScopeHandler.addFF = function (scope, name, foreignFunction) {
-        scope[name] = ["FOREIGNFUNCTION", foreignFunction];
+        scope[name] = ["BUILTIN", foreignFunction];
     };
 
     return ScopeHandler;
