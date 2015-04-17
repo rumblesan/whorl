@@ -29,6 +29,7 @@
   width: 100%;
   min-height: 30px;
   background-color: #000;
+  padding: 10px;
   line-height: 1.5em;
   overflow-y: auto;
 }
@@ -39,4 +40,8 @@
 }
 
 #terminal-body p::-moz-selection { background: #0b209e; }
+
+#terminal-body heading { color: yellow!important; }
+#terminal-body msg { color: lime!important; }
+#terminal-body err { color: red!important; }
 

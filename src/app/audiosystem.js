@@ -1,6 +1,8 @@
 /*jslint browser: true */
 /*global AudioContext */
 
+var Error = require('./error');
+
 var createContext = function (w) {
     var context;
     try {
@@ -8,7 +10,7 @@ var createContext = function (w) {
         window.AudioContext = window.AudioContext||window.webkitAudioContext;
         context = new AudioContext();
     } catch(e) {
-        throw "WebAudio API not available";
+        Error.create("WebAudio API not available");
     }
     return context;
 };

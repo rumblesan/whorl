@@ -17,6 +17,9 @@ var createTerminal = function (terminalBodyEl) {
         return str.replace(/[&<> ]/g, replaceTag);
     };
 
+    var msgPrompt = "<msg>" + symbolReplace(">> ") + "</msg>";
+    var errPrompt = "<err>" + symbolReplace(">> ") + "</err>";
+
     var header = [
         "#####################",
         "#                   #",
@@ -26,16 +29,25 @@ var createTerminal = function (terminalBodyEl) {
     ]
     Terminal.displayHeader = function () {
         var el = terminalBodyEl.children("p:first");
-        var str;
         var i;
         for (i = 0; i < header.length; i += 1) {
-            str = symbolReplace(header[i]);
-            el.append(str + "<br>\n");
+            el.append(
+                "<heading>" + symbolReplace(header[i]) + "</heading><br>\n"
+            );
         }
     };
 
-    Terminal.addLine = function (string) {
-        terminalBodyEl.children("p:first").append(symbolReplace(string) + "<br>\n");
+    Terminal.message = function (string) {
+        terminalBodyEl.children("p:first").append(
+            msgPrompt + symbolReplace(string) + "<br>\n"
+        );
+        Terminal.scrollToBottom();
+    };
+
+    Terminal.error = function (err) {
+        terminalBodyEl.children("p:first").append(
+            errPrompt + symbolReplace(err) + "<br>\n"
+        );
         Terminal.scrollToBottom();
     };
 

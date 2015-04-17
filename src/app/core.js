@@ -3,6 +3,7 @@
 var StdLib = require('./stdLib');
 var ScopeHandler = require('./scopeHandler').create();
 var Interpreter = require('./interpreter').create(ScopeHandler);
+var Error = require('./error');
 
 var createCore = function (parser, terminal) {
 
@@ -17,10 +18,7 @@ var createCore = function (parser, terminal) {
             ast = parser.parse(code);
             Interpreter.evaluate(globalScope, ast);
         } catch (err) {
-            console.log(err);
-            if (ast) {
-                console.log(ast);
-            }
+            Core.displayError(err);
         }
     };
 
@@ -29,13 +27,26 @@ var createCore = function (parser, terminal) {
             try {
                 Interpreter.apply(globalScope, closure, []);
             } catch (err) {
-                console.log(err);
+                Core.displayError(err);
             }
         }, time);
     };
 
+    Core.displayError = function (err) {
+        var errLines;
+        if (typeof err === 'string') {
+            errLines = [err];
+        } else {
+            errLines = err.text();
+        }
+        var i;
+        for (i = 0; i < errLines.length; i += 1) {
+            terminal.error(errLines[i]);
+        }
+    };
+
     Core.display = function (data) {
-        terminal.addLine(data);
+        terminal.message(data);
     };
 
     return Core;

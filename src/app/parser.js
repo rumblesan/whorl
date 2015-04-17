@@ -1,13 +1,14 @@
 /*global require */
 
 var JisonParser = require('../jison-parser').parser;
+var Error = require('./error');
 
 var createParser = function () {
 
     var Parser = {};
 
     JisonParser.yy.parseError = function (message, details) {
-        throw [message, details];
+        throw Error.create(message.split("\n"));
     };
 
     // Can raise an exception

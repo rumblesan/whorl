@@ -1,4 +1,6 @@
-/* global */
+/*global require */
+
+var Error = require('./error');
 
 var createScopeHandler = function () {
 
@@ -19,7 +21,7 @@ var createScopeHandler = function () {
     ScopeHandler.get = function(scope, name) {
         var v = scope[name];
         if (v === undefined) {
-            throw "No variable with that name: " + name;
+            throw Error.create("No variable with that name: " + name);
         } else {
             return v;
         }

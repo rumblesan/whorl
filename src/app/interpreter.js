@@ -1,5 +1,7 @@
 /*global require */
 
+var Error = require('./error');
+
 var createInterpreter = function (ScopeHandler) {
 
     var Interpreter = {};
@@ -89,7 +91,7 @@ var createInterpreter = function (ScopeHandler) {
                 output = internal.handleVector(scope, astExpr);
                 break;
             default:
-                throw "exprType not valid: " + exprType;
+                Error.create("exprType not valid: " + exprType);
         }
         return output;
     };
@@ -203,7 +205,7 @@ var createInterpreter = function (ScopeHandler) {
                 );
                 break;
             default:
-                throw "function type not valid: " + functionType;
+                Error.create("function type not valid: " + functionType);
         }
         return result;
     };
@@ -213,7 +215,7 @@ var createInterpreter = function (ScopeHandler) {
         var functionBody     = functionData[2];
 
         if (functionArgs.length < functionArgNames.length) {
-            throw "Not enough arguments for function";
+            Error.create("Not enough arguments for function");
         }
 
         var childScope = ScopeHandler.createChildScope(scope);
