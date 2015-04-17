@@ -18,8 +18,7 @@ $(function () {
 
     var core = Core.create(parser, terminal);
 
-    var editorEl = document.getElementById('program');
-    var editor = Editor.create(editorEl, core.handleCode);
+    var editor = Editor.create($('#program'), core.handleCode);
 
     var app = App.create();
 

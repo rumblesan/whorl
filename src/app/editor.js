@@ -16,7 +16,8 @@ var createEditor = function (editorEl, codeHandlerFunc) {
 
     CodeMirror.Vim.map(',', 'va(');
 
-    var editor = CodeMirror(editorEl, {
+    // unwrap from jquery
+    var editor = CodeMirror(editorEl[0], {
         keyMap: 'vim',
         mode: 'scheme'
     });
