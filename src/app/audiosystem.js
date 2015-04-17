@@ -7,10 +7,10 @@ var createContext = function (w) {
     var context;
     try {
         // Fix up for prefixing
-        window.AudioContext = window.AudioContext||window.webkitAudioContext;
-        context = new AudioContext();
+        w.AudioContext = w.AudioContext||w.webkitAudioContext;
+        context = new w.AudioContext();
     } catch(e) {
-        Error.create("WebAudio API not available");
+        throw Error.create("WebAudio API not available");
     }
     return context;
 };
@@ -18,22 +18,73 @@ var createContext = function (w) {
 var createSystem = function (context) {
     var AudioSystem = {};
 
-    AudioSystem.createBeep = function () {
+    var internal = {};
 
+    internal.createOsc = function (oscRep) {
+        var oscillator = context.createOscillator();
+        oscillator.type = oscRep.wave;
+        var play = function (freq) {
+            oscillator.frequency.value = freq;
+            oscillator.start();
+        };
+        var stop = function () {
+            oscillator.stop();
+        };
+        return {
+            node: oscillator,
+            play: play,
+            stop: stop
+        };
+    }
+
+    internal.createEnv = function (envRep) {
+        var amp = context.createGain();
+        amp.gain.value = 0;
+
+        var source = AudioSystem.createDSPGraph(envRep.source);
+        source.node.connect(amp);
+
+        var play = function (freq) {
+            source.play(freq);
+            amp.gain.linearRampToValueAtTime(1, context.currentTime + envRep.attack);
+        };
+        var stop = function () {
+            amp.gain.linearRampToValueAtTime(0, context.currentTime + envRep.decay);
+            setTimeout(function () {
+                oscillator.stop();
+            }, envRep.decay * 1000);
+        };
+        return {
+            node: amp,
+            play: play,
+            stop: stop
+        };
     };
 
-    AudioSystem.createSynth = function(
-        voiceConstructor,
-        envelopeConstructor,
-        voiceNumber
-    ) {
-        var synth = {};
-        var i;
-        var voice, env;
-        for (i = 0; i < voiceNumber; i += 1) {
-            voice = voiceConstructor();
-            env = envelopeConstructor();
+    AudioSystem.createDSPGraph = function(graphRep) {
+        var result;
+        switch (graphRep.type) {
+            case 'OSCILLATOR':
+                result = internal.createOsc(graphRep);
+                break;
+            case 'ENVELOPE':
+                result = internal.createEnv(graphRep);
+                break;
+            default:
+                throw Error.create("Unknown DSP graph type: " + graphRep.type);
         }
+        return result;
+    };
+
+    AudioSystem.connectDSPGraph = function(dspGraph) {
+        dspGraph.node.connect(context.destination);
+    };
+
+    AudioSystem.triggerGraph = function(dspGraph, playLength, freq) {
+        dspGraph.play(freq);
+        setTimeout(function () {
+            dspGraph.stop();
+        }, playLength * 1000);
     };
 
     return AudioSystem;

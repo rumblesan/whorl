@@ -5,9 +5,11 @@ var ScopeHandler = require('./scopeHandler').create();
 var Interpreter = require('./interpreter').create(ScopeHandler);
 var Error = require('./error');
 
-var createCore = function (parser, terminal) {
+var createCore = function (parser, terminal, audio) {
 
     var Core = {};
+
+    Core.Audio = audio;
 
     var globalScope = ScopeHandler.createScope();
     StdLib.addFunctions(Core, ScopeHandler, globalScope);
