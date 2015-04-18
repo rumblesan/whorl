@@ -1,6 +1,7 @@
 /*global require */
 
 var Error = require('./error');
+var Ast = require('./ast');
 
 var createScopeHandler = function () {
 
@@ -27,8 +28,8 @@ var createScopeHandler = function () {
         }
     };
 
-    ScopeHandler.addFF = function (scope, name, foreignFunction) {
-        scope[name] = ["BUILTIN", foreignFunction];
+    ScopeHandler.addFF = function (scope, name, func) {
+        scope[name] = Ast.BuiltIn(func);
     };
 
     return ScopeHandler;

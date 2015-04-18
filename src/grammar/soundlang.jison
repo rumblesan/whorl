@@ -53,6 +53,12 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 
 /lex
 
+%{
+
+var Ast = require('./app/ast');
+ 
+%}
+
 %start Program
 
 %ebnf
@@ -73,14 +79,14 @@ Form
 Definition
     : VariableDefinition
     | t_oparen t_begin Definition* t_cparen
-        { $$ = ["BEGIN", $3]; }
+        { $$ = Ast.Begin($3); }
     ;
 
 VariableDefinition
     : t_oparen t_define Variable Expression t_cparen
-        { $$ = ["DEFINE", $3, $4]; }
+        { $$ = Ast.Define($3, $4); }
     | t_oparen t_define t_oparen Variable Variable* t_cparen Body t_cparen
-        { $$ = ["DEFINEFUNCTION", $4, $5, $7]; }
+        { $$ = Ast.DefineFunction($4, $5, $7); }
     ;
 
 Variable
@@ -89,24 +95,22 @@ Variable
 
 Body
     : Definition* Expression+
-        { $$ = ["BODY", $1, $2]; }
+        { $$ = Ast.Body($1, $2); }
     ;
 
 /* Expressions */
 Expression
     : Constant
     | Variable
-        { $$ = ["VARIABLE", $1]; }
+        { $$ = Ast.Variable($1); }
     | t_oparen t_quote Datum t_cparen
-        { $$ = ["QUOTE", $3]; }
+        { $$ = Ast.Quote($3); }
     | t_oparen t_lambda Formals Body t_cparen
-        { $$ = ["LAMBDA", $3, $4]; }
+        { $$ = Ast.Lambda($3, $4); }
     | t_oparen t_if Expression Expression t_cparen
-        { $$ = ["IF", $3, $4]; }
+        { $$ = Ast.If($3, $4); }
     | t_oparen t_if Expression Expression Expression t_cparen
-        { $$ = ["IFELSE", $3, $4, $5]; }
-    | t_oparen t_set Variable Expression t_cparen
-        { $$ = ["SET", $3, $4]; }
+        { $$ = Ast.IfElse($3, $4, $5); }
     | Application
     ;
 
@@ -119,13 +123,14 @@ Constant
 
 Formals
     : Variable
+        { $$ = [$2]; }
     | t_oparen Variable* t_cparen
         { $$ = $2; }
     ;
 
 Application
     : t_oparen Expression Expression* t_cparen
-        { $$ = ["APPLICATION", $2, $3]; }
+        { $$ = Ast.Application($2, $3); }
     ;
 
 /* Identifiers */
@@ -143,52 +148,46 @@ Datum
     | String
     | Symbol
     | List
-    | Vector
     ;
 
 Boolean
     : t_true
-        { $$ = ["BOOLEAN", "TRUE"]; }
+        { $$ = Ast.Bool(true); }
     | t_false
-        { $$ = ["BOOLEAN", "FALSE"]; }
+        { $$ = Ast.Bool(false); }
     ;
 
 Number
     : t_number
-        { $$ = ["NUMBER", Number(yytext)]; }
+        { $$ = Ast.Num(Number(yytext)); }
     ;
 
 Character
     : "#\\" letter
-        { $$ = ["CHARACTER", yytext]; }
+        { $$ = Ast.Character(yytext); }
     | "#\\" symchar
-        { $$ = ["CHARACTER", yytext]; }
+        { $$ = Ast.Character(yytext); }
     | "#\\" digit
-        { $$ = ["CHARACTER", yytext]; }
+        { $$ = Ast.Character(yytext); }
     | "#\\newline"
-        { $$ = ["CHARACTER", yytext]; }
+        { $$ = Ast.Character(yytext); }
     | "#\\space"
-        { $$ = ["CHARACTER", yytext]; }
+        { $$ = Ast.Character(yytext); }
     ;
 
 String
     : t_string
-        { $$ = ["STRING", yytext]; }
+        { $$ = Ast.Str(yytext); }
     ;
 
 Symbol
     : Identifier
-        { $$ = ["SYMBOL", $1]; }
+        { $$ = Ast.Symbol($1); }
     ;
 
 List
     : t_oparen Datum* t_cparen
-        { $$ = ["LIST", $2]; }
-    ;
-
-Vector
-    : "#" t_oparen Datum* t_cparen
-        { $$ = ["VECTOR", $3]; }
+        { $$ = Ast.List($2); }
     ;
 
 %%
