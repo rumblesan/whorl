@@ -94,7 +94,7 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleDefine = function (scope, define) {
-        var defName = define.name
+        var defName = define.name;
         var defValue = internal.evaluateExpression(scope, define.expression);
 
         ScopeHandler.set(scope, defName, defValue);
@@ -188,7 +188,7 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleFunction = function(scope, func, functionArgs) {
-        var functionArgNames = func.argNames
+        var functionArgNames = func.argNames;
         var functionBody     = func.body;
 
         if (functionArgs.length !== functionArgNames.length) {
