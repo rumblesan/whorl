@@ -31,9 +31,6 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 "begin"               return "t_begin"
 "define"              return "t_define"
 "lambda"              return "t_lambda"
-"quote"               return "t_quote"
-{squote}              return "t_quote"
-"set!"                return "t_set"
 "if"                  return "t_if"
 "."                   return "t_dot"
 
@@ -103,8 +100,6 @@ Expression
     : Constant
     | Variable
         { $$ = Ast.Variable($1); }
-    | t_oparen t_quote Datum t_cparen
-        { $$ = Ast.Quote($3); }
     | t_oparen t_lambda Formals Body t_cparen
         { $$ = Ast.Lambda($3, $4); }
     | t_oparen t_if Expression Expression t_cparen
