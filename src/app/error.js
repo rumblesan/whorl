@@ -3,17 +3,13 @@
 var createError = function (lines) {
 
     var WebSoundError = {};
-    var errorLines = [];
+    var message = [];
 
     if ( typeof lines === 'string' ) {
-        errorLines = [lines];
+        message = [lines];
     } else {
-        errorLines = lines;
+        message = lines;
     }
-
-    WebSoundError.text = function () {
-        return errorLines;
-    };
 
     return WebSoundError;
 };

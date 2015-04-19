@@ -20,6 +20,7 @@ var createCore = function (parser, terminal, audio) {
             ast = parser.parse(code);
             Interpreter.evaluate(globalScope, ast);
         } catch (err) {
+            console.log(err);
             Core.displayError(err);
         }
     };
@@ -29,6 +30,7 @@ var createCore = function (parser, terminal, audio) {
             try {
                 Interpreter.apply(globalScope, closure, []);
             } catch (err) {
+                console.log(err);
                 Core.displayError(err);
             }
         }, time);
@@ -36,10 +38,10 @@ var createCore = function (parser, terminal, audio) {
 
     Core.displayError = function (err) {
         var errLines;
-        if (typeof err === 'string') {
-            errLines = [err];
+        if (typeof err.message === 'string') {
+            errLines = [err.message];
         } else {
-            errLines = err.text();
+            errLines = err.message;
         }
         var i;
         for (i = 0; i < errLines.length; i += 1) {
