@@ -121,7 +121,7 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleLambda = function (scope, lambda) {
-        return Ast.Closure(lambda.argNames, lambda.body, lambda.scope);
+        return Ast.Closure(lambda.argNames, lambda.body, scope);
     };
 
     internal.handleIf = function (scope, ifNode) {
