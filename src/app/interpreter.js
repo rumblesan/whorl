@@ -32,9 +32,6 @@ var createInterpreter = function (ScopeHandler) {
         var output;
 
         switch(astExpr.type) {
-            case "BEGIN":
-                output = internal.handleBegin(scope, astExpr);
-                break;
             case "DEFINE":
                 output = internal.handleDefine(scope, astExpr);
                 break;
@@ -46,9 +43,6 @@ var createInterpreter = function (ScopeHandler) {
                 break;
             case "VARIABLE":
                 output = internal.handleVariable(scope, astExpr);
-                break;
-            case "QUOTE":
-                output = internal.handleQuote(scope, astExpr);
                 break;
             case "LAMBDA":
                 output = internal.handleLambda(scope, astExpr);
@@ -79,9 +73,6 @@ var createInterpreter = function (ScopeHandler) {
                 break;
             case "LIST":
                 output = internal.handleList(scope, astExpr);
-                break;
-            case "VECTOR":
-                output = internal.handleVector(scope, astExpr);
                 break;
             default:
                 throw Error.create("AST Expression not valid: " + astExpr.type);

@@ -28,7 +28,6 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 ")"                   return "t_cparen"
 
 /* syntax bits */
-"begin"               return "t_begin"
 "define"              return "t_define"
 "lambda"              return "t_lambda"
 "if"                  return "t_if"
@@ -75,8 +74,6 @@ Form
 /* Definitions */
 Definition
     : VariableDefinition
-    | t_oparen t_begin Definition* t_cparen
-        { $$ = Ast.Begin($3); }
     ;
 
 VariableDefinition

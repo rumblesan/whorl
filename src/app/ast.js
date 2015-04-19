@@ -2,13 +2,6 @@
 
 module.exports = {
 
-    Begin: function (definitions) {
-        return {
-            type: "BEGIN",
-            definitions: definitions
-        };
-    },
-
     Define: function (name, expression) {
         return {
             type: "DEFINE",
@@ -23,21 +16,6 @@ module.exports = {
             name: name,
             args: args,
             body: body
-        };
-    },
-
-    Func: function (argNames, body) {
-        return {
-            type: "FUNCTION",
-            argNames: argNames,
-            body: body
-        };
-    },
-
-    BuiltIn: function (func) {
-        return {
-            type: "BUILTIN",
-            func: func
         };
     },
 
@@ -61,15 +39,6 @@ module.exports = {
             type: "LAMBDA",
             argNames: argNames,
             body: body
-        };
-    },
-
-    Closure: function (argNames, body, scope) {
-        return {
-            type: "CLOSURE",
-            argNames: argNames,
-            body: body,
-            scope: scope
         };
     },
 
@@ -139,6 +108,33 @@ module.exports = {
             values: values
         };
     },
+
+    /* Applications
+     * Not created by parser but by interpreter
+     **/
+    Func: function (argNames, body) {
+        return {
+            type: "FUNCTION",
+            argNames: argNames,
+            body: body
+        };
+    },
+
+    BuiltIn: function (func) {
+        return {
+            type: "BUILTIN",
+            func: func
+        };
+    },
+
+    Closure: function (argNames, body, scope) {
+        return {
+            type: "CLOSURE",
+            argNames: argNames,
+            body: body,
+            scope: scope
+        };
+    }
 
 };
 
