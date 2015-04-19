@@ -21,6 +21,9 @@ var createCore = function (parser, terminal, audio) {
             Interpreter.evaluate(globalScope, ast);
         } catch (err) {
             console.log(err);
+            if (err.getStack) {
+                console.log(err.getStack());
+            }
             Core.displayError(err);
         }
     };
@@ -31,6 +34,9 @@ var createCore = function (parser, terminal, audio) {
                 Interpreter.apply(globalScope, closure, []);
             } catch (err) {
                 console.log(err);
+                if (err.getStack) {
+                    console.log(err.getStack());
+                }
                 Core.displayError(err);
             }
         }, time);
