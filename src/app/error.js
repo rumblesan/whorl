@@ -2,13 +2,14 @@
 
 var createError = function (lines) {
 
-    var WebSoundError = {};
-    var message = [];
+    var WebSoundError = {
+        message: []
+    };
 
     if ( typeof lines === 'string' ) {
-        message = [lines];
+        WebSoundError.message = [lines];
     } else {
-        message = lines;
+        WebSoundError.message = lines;
     }
 
     return WebSoundError;
