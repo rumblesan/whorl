@@ -80,10 +80,6 @@ var createInterpreter = function (ScopeHandler) {
         return output;
     };
 
-    internal.handleBegin = function (scope, begin) {
-        return internal.evaluateBlock(scope, begin.defines);
-    };
-
     internal.handleDefine = function (scope, define) {
         var defName = define.name;
         var defValue = internal.evaluateExpression(scope, define.expression);
