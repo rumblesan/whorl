@@ -56,10 +56,10 @@ module.exports = {
         };
     },
 
-    Lambda: function (args, body) {
+    Lambda: function (argNames, body) {
         return {
             type: "LAMBDA",
-            args: args,
+            argNames: argNames,
             body: body
         };
     },
