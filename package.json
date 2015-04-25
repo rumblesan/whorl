@@ -10,7 +10,8 @@
     "build": "browserify . > ./dist/app.js",
     "postbuild": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css;",
     "clean": "rm -rf ./dist/* src/jison-parser.js",
-    "test": "nodeunit tests"
+    "test": "nodeunit tests",
+    "pages": "npm run-script build; git checkout gh-pages; cp ./dist/* ."
   },
   "devDependencies": {
     "browserify": "^9.0.6",
