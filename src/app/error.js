@@ -2,18 +2,18 @@
 
 var createError = function (lines) {
 
-    var WebSoundError = {
-        websoundErr: true,
+    var InternalError = {
+        internal: true,
         message: []
     };
 
     if ( typeof lines === 'string' ) {
-        WebSoundError.message = [lines];
+        InternalError.message = [lines];
     } else {
-        WebSoundError.message = lines;
+        InternalError.message = lines;
     }
 
-    return WebSoundError;
+    return InternalError;
 };
 
 

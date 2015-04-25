@@ -20,7 +20,7 @@ var createCore = function (parser, terminal, audio) {
             ast = parser.parse(code);
             Interpreter.evaluate(globalScope, ast);
         } catch (err) {
-            if (err.websoundErr === true) {
+            if (err.internal === true) {
                 Core.displayError(err);
             } else {
                 throw err;
@@ -33,7 +33,7 @@ var createCore = function (parser, terminal, audio) {
             try {
                 Interpreter.apply(globalScope, closure, []);
             } catch (err) {
-                if (err.websoundErr === true) {
+                if (err.internal === true) {
                     Core.displayError(err);
                 } else {
                     throw err;
