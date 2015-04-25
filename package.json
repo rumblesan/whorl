@@ -11,7 +11,9 @@
     "postbuild": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css;",
     "clean": "rm -rf ./dist/* src/jison-parser.js",
     "test": "nodeunit tests",
-    "pages": "npm run-script build; git checkout gh-pages; cp ./dist/* ."
+    "prepages": "npm run-script build",
+    "pages": "git checkout gh-pages; cp ./dist/* .; git add app.js index.html style.css; git ci -m 'Updating pages';",
+    "postpages": "git checkout master; git clean -dfx; git submodule update --init; npm install; npm run-script build"
   },
   "devDependencies": {
     "browserify": "^9.0.6",
