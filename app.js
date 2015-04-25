@@ -289,11 +289,11 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],4:[function(require,module,exports){
-/*global require*/
+/* @flow */
 
 module.exports = {
 
-    Define: function (name, expression) {
+    Define: function (name        , expression) {
         return {
             type: "DEFINE",
             name: name,
@@ -430,40 +430,47 @@ module.exports = {
 };
 
 
+
 },{}],5:[function(require,module,exports){
+/* @flow */
 
 var Error = require('../error');
 
-var DSPGraph = {};
+                                                            
+                                                                              
+                                                                                                     
+                                                                                                                                                
+                                                                   
+                                                                                
 
-var checkConst = function (v) {
-    var out;
+                                                                                            
+
+var dsp = {};
+
+var checkConst = function (v                            )      {
     switch (typeof v) {
         case 'number':
-            out = DSPGraph.Constant(v);
-            break;
+            return dsp.Constant(v);
         case 'string':
-            out = DSPGraph.Constant(v);
-            break;
+            return dsp.Constant(v);
         default:
             if (v.type !== undefined) {
                 // Assuming v is a DSP Graph
-                out = v;
+                return v;
             } else {
                 throw Error.create("Invalid value in DSP Graph: " + v);
             }
     }
-    return out;
 };
 
-DSPGraph.Constant = function (value) {
+dsp.Constant = function (value                 )              {
     return {
         type: 'CONSTANT',
         value: value
     };
 };
 
-DSPGraph.Param = function (name, defaultValue) {
+dsp.Param = function (name        , defaultValue                 )           {
     return {
         type: 'PARAM',
         name: name,
@@ -471,7 +478,7 @@ DSPGraph.Param = function (name, defaultValue) {
     };
 };
 
-DSPGraph.AREnvelope = function (attack, decay) {
+dsp.AREnvelope = function (attack                        , decay                        )                {
     return {
         type: 'ARENVELOPE',
         attack: checkConst(attack),
@@ -479,15 +486,15 @@ DSPGraph.AREnvelope = function (attack, decay) {
     };
 };
 
-DSPGraph.Oscillator = function(frequency, wave) {
+dsp.Oscillator = function(frequency                        , waveshape                        )                {
     return {
         type: 'OSCILLATOR',
         frequency: checkConst(frequency),
-        wave: checkConst(wave)
+        waveshape: checkConst(waveshape)
     };
 };
 
-DSPGraph.Filter = function(source, filterType, frequency, resonance) {
+dsp.Filter = function(source          , filterType                        , frequency          , resonance                        )            {
     return {
         type: 'FILTER',
         source: source,
@@ -497,7 +504,7 @@ DSPGraph.Filter = function(source, filterType, frequency, resonance) {
     };
 };
 
-DSPGraph.Amp = function(source, volume) {
+dsp.Amp = function(source          , volume          )         {
     return {
         type: 'AMP',
         source: source,
@@ -506,28 +513,28 @@ DSPGraph.Amp = function(source, volume) {
 };
 
 
-module.exports = DSPGraph;
+module.exports = dsp;
+
 
 
 },{"../error":11}],6:[function(require,module,exports){
-/*jslint browser: true */
-/*global AudioParam: true, OscillatorNode: true, BiquadFilterNode: true */
+/* @flow */
 
-AudioParam.prototype.set = function (newValue) {
+AudioParam.prototype.set = function (newValue     ) {
     this.value = newValue;
 };
 
-AudioParam.prototype.setNow = function (newValue, audioCtx) {
+AudioParam.prototype.setNow = function (newValue     , audioCtx) {
     this.value.setValueAtTime(newValue, audioCtx.currentTime);
 };
 
 OscillatorNode.prototype.getWaveParam = function () {
     var self = this;
     return {
-        set: function (waveType) {
+        set: function (waveType        )       {
             self.type = waveType;
         },
-        get: function () {
+        get: function ()         {
             return self.type;
         }
     };
@@ -536,10 +543,10 @@ OscillatorNode.prototype.getWaveParam = function () {
 BiquadFilterNode.prototype.getFilterTypeParam = function () {
     var self = this;
     return {
-        set: function (filterType) {
+        set: function (filterType        )       {
             self.type = filterType;
         },
-        get: function () {
+        get: function ()       {
             return self.type;
         }
     };
@@ -550,8 +557,9 @@ module.exports = {
 };
 
 
+
 },{}],7:[function(require,module,exports){
-/*jslint browser: true */
+/* @flow */
 
 var helpers = {};
 
@@ -581,9 +589,9 @@ helpers.mergeNodeParams = function (paramNodes) {
 module.exports = helpers;
 
 
+
 },{}],8:[function(require,module,exports){
-/*jslint browser: true */
-/*global AudioContext */
+/* @flow */
 
 var AudioHelpers = require('./audio/helpers');
 var AudioGlobals = require('./audio/globals');
@@ -854,27 +862,28 @@ module.exports = {
     createSystem: createSystem,
 };
 
-},{"./audio/globals":6,"./audio/helpers":7,"./error":11}],9:[function(require,module,exports){
-/*global require */
 
-var StdLib = require('./stdLib');
+},{"./audio/globals":6,"./audio/helpers":7,"./error":11}],9:[function(require,module,exports){
+/* @flow */
+
+var StdLib = require('./stdlib');
 var ScopeHandler = require('./scopeHandler').create();
 var Interpreter = require('./interpreter').create(ScopeHandler);
 var Error = require('./error');
 
-var createCore = function (parser, terminal, audio) {
+var Parser = require('./parser').create();
+
+var createCore = function (audio                 , dispatcher            )      {
 
     var Core = {};
 
-    Core.Audio = audio;
-
     var globalScope = ScopeHandler.createScope();
-    StdLib.addFunctions(Core, ScopeHandler, globalScope);
+    StdLib.addFunctions(audio, dispatcher, ScopeHandler, globalScope);
 
     Core.handleCode = function (code) {
         var ast;
         try {
-            ast = parser.parse(code);
+            ast = Parser.parse(code);
             Interpreter.evaluate(globalScope, ast);
         } catch (err) {
             if (err.internal === true) {
@@ -907,16 +916,16 @@ var createCore = function (parser, terminal, audio) {
         } else {
             errLines = err.message;
         }
-        var i;
-        for (i = 0; i < errLines.length; i += 1) {
-            terminal.error(errLines[i]);
-        }
+        dispatcher.dispatch('term-error', errLines.join("\n"));
     };
 
-    Core.display = function (data) {
-        console.log(data);
-        terminal.message(data);
-    };
+    dispatcher.register('execute-code', function (code) {
+        Core.handleCode(code);
+    });
+
+    dispatcher.register('schedule-callback', function (time, closure) {
+        Core.scheduleCallback(time, closure);
+    });
 
     return Core;
 };
@@ -926,18 +935,19 @@ module.exports = {
 };
 
 
-},{"./error":11,"./interpreter":12,"./scopeHandler":14,"./stdLib":17}],10:[function(require,module,exports){
-/*global require */
+
+},{"./error":11,"./interpreter":12,"./parser":14,"./scopeHandler":15,"./stdlib":18}],10:[function(require,module,exports){
+/* @flow */
 
 var CodeMirror = require('../codemirror/lib/codemirror');
 require('../codemirror/keymap/vim');
 require('../codemirror/mode/scheme/scheme');
 
-var createEditor = function (editorEl, codeHandlerFunc) {
+var createEditor = function (editorEl, dispatcher) {
 
     CodeMirror.Vim.defineAction('execute', function (cm, args, vim) {
         var code = cm.doc.getSelection();
-        codeHandlerFunc(code);
+        dispatcher.dispatch('execute-code', code);
     });
     CodeMirror.Vim.mapCommand('<C-g>', 'action', 'keyexecute', null, {
         action: 'execute'
@@ -951,6 +961,10 @@ var createEditor = function (editorEl, codeHandlerFunc) {
         mode: 'scheme'
     });
 
+    dispatcher.register('load-program', function (programName, programData) {
+        editor.doc.setValue(programData);
+    })
+
     return editor;
 };
 
@@ -959,10 +973,13 @@ module.exports = {
 };
 
 
-},{"../codemirror/keymap/vim":25,"../codemirror/lib/codemirror":26,"../codemirror/mode/scheme/scheme":27}],11:[function(require,module,exports){
 
+},{"../codemirror/keymap/vim":28,"../codemirror/lib/codemirror":29,"../codemirror/mode/scheme/scheme":30}],11:[function(require,module,exports){
+/* @flow */
 
-var createError = function (lines) {
+                                                              
+
+var createError = function (lines                   )                 {
 
     var InternalError = {
         internal: true,
@@ -983,8 +1000,9 @@ module.exports = {
     create: createError
 };
 
+
 },{}],12:[function(require,module,exports){
-/*global require */
+/* @flow */
 
 var Error = require('./error');
 var Ast = require('./ast');
@@ -1098,10 +1116,10 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleIf = function (scope, ifNode) {
-        var predicate = internal.evaluateExpression(ifNode.predicate);
+        var predicate = internal.evaluateExpression(scope, ifNode.predicate);
         var value;
         if (predicate === true || predicate !== 0) {
-            value = internal.evaluateBlock(ifNode.expression);
+            value = internal.evaluateBlock(scope, ifNode.expression);
         } else {
             value = false;
         }
@@ -1109,12 +1127,12 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleIfElse = function (scope, ifElse) {
-        var predicate = internal.evaluateExpression(ifElse.predicate);
+        var predicate = internal.evaluateExpression(scope, ifElse.predicate);
         var value;
         if (predicate === true || predicate !== 0) {
-            value = internal.evaluateBlock(ifElse.trueExpression);
+            value = internal.evaluateBlock(scope, ifElse.trueExpression);
         } else {
-            value = internal.evaluateBlock(ifElse.falseExpression);
+            value = internal.evaluateBlock(scope, ifElse.falseExpression);
         }
         return value;
     };
@@ -1206,10 +1224,73 @@ module.exports = {
 };
 
 
-},{"./ast":4,"./error":11}],13:[function(require,module,exports){
-/*global require */
 
-var JisonParser = require('../jison-parser').parser;
+},{"./ast":4,"./error":11}],13:[function(require,module,exports){
+/* @flow */
+
+var Demos = require('../generated/demos');
+var Tutorials = require('../generated/tutorials');
+var $ = require('../lib/jquery-2.1.3');
+
+var NavBar = {};
+
+NavBar.createTutorialMenu = function (dispatcher            ) {
+
+    var tutlist = $('#tutoriallist');
+    var name;
+    var listel;
+    var t;
+    for (t = 0; t < Tutorials.names.length; t += 1) {
+        name = Tutorials.names[t];
+        listel = $(
+            '<li><a data-prog="' + name + '">' + name + '</a></li>'
+        );
+        tutlist.append(listel);
+    }
+    tutlist.find('a').click(function (e) {
+        var programName = $(this).data('prog');
+        var programData = Tutorials.data[programName];
+        dispatcher.dispatch('load-program', programName, programData);
+        dispatcher.dispatch('term-message', 'Loading tutorial: ' + programName);
+    });
+
+};
+
+NavBar.createDemoMenu = function (dispatcher            ) {
+
+    var demolist = $('#demolist');
+    var name;
+    var listel;
+    var d;
+    for (d = 0; d < Demos.names.length; d += 1) {
+        name = Demos.names[d];
+        listel = $(
+            '<li><a data-prog="' + name + '">' + name + '</a></li>'
+        );
+        demolist.append(listel);
+    }
+    demolist.find('a').click(function (e) {
+        var programName = $(this).data('prog');
+        var programData = Demos.data[programName];
+        dispatcher.dispatch('load-program', programName, programData);
+        dispatcher.dispatch('term-message', 'Loading demo: ' + programName);
+    });
+
+};
+
+NavBar.create = function (dispatcher            ) {
+    NavBar.createTutorialMenu(dispatcher);
+    NavBar.createDemoMenu(dispatcher);
+};
+
+module.exports = NavBar;
+
+
+
+},{"../generated/demos":31,"../generated/tutorials":33,"../lib/jquery-2.1.3":34}],14:[function(require,module,exports){
+/* @flow */
+
+var JisonParser = require('../generated/jison-parser').parser;
 var Error = require('./error');
 
 var createParser = function () {
@@ -1234,8 +1315,8 @@ module.exports = {
 
 
 
-},{"../jison-parser":28,"./error":11}],14:[function(require,module,exports){
-/*global require */
+},{"../generated/jison-parser":32,"./error":11}],15:[function(require,module,exports){
+/* @flow */
 
 var Error = require('./error');
 var Ast = require('./ast');
@@ -1278,11 +1359,13 @@ module.exports = {
 };
 
 
-},{"./ast":4,"./error":11}],15:[function(require,module,exports){
+
+},{"./ast":4,"./error":11}],16:[function(require,module,exports){
+/* @flow */
 
 var DspGraph = require('../audio/dspGraph');
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     ScopeHandler.addFF(scope, 'param',
         function(name, defaultValue) {
@@ -1317,31 +1400,31 @@ var addFunctions = function (Core, ScopeHandler, scope) {
 
     ScopeHandler.addFF(scope, 'createSynth',
         function(dspGraph) {
-            return Core.Audio.createSynth(dspGraph);
+            return audio.createSynth(dspGraph);
         }
     );
 
     ScopeHandler.addFF(scope, 'play',
         function(synth, playLength) {
-            Core.Audio.playSynth(synth, playLength, []);
+            audio.playSynth(synth, playLength, []);
         }
     );
 
     ScopeHandler.addFF(scope, 'start',
         function(synth, parameterList) {
-            Core.Audio.startSynth(synth, parameterList);
+            audio.startSynth(synth, parameterList);
         }
     );
 
     ScopeHandler.addFF(scope, 'stop',
         function(synth) {
-            Core.Audio.stopSynth(synth);
+            audio.stopSynth(synth);
         }
     );
 
     ScopeHandler.addFF(scope, 'set',
         function(synth, paramName, paramValue) {
-            Core.Audio.setSynthParam(synth, paramName, paramValue);
+            audio.setSynthParam(synth, paramName, paramValue);
         }
     );
 
@@ -1349,7 +1432,7 @@ var addFunctions = function (Core, ScopeHandler, scope) {
         function(synth, parameterList) {
             var i;
             for (i = 0; i < parameterList.length; i += 2) {
-                Core.Audio.setSynthParam(
+                audio.setSynthParam(
                     synth,
                     parameterList[i],
                     parameterList[i+1]
@@ -1365,9 +1448,11 @@ module.exports = {
 };
 
 
-},{"../audio/dspGraph":5}],16:[function(require,module,exports){
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+},{"../audio/dspGraph":5}],17:[function(require,module,exports){
+/* @flow */
+
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     var equal = function (a, b) {
         return a === b;
@@ -1407,8 +1492,9 @@ module.exports = {
 
 
 
-},{}],17:[function(require,module,exports){
-/* global require */
+
+},{}],18:[function(require,module,exports){
+/* @flow */
 
 var Math = require('./math');
 var Comparison = require('./comparison');
@@ -1416,18 +1502,17 @@ var Logic = require('./logic');
 var Timing = require('./timing');
 var Audio = require('./audio');
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
-    Math.addFunctions(Core, ScopeHandler, scope);
-    Comparison.addFunctions(Core, ScopeHandler, scope);
-    Logic.addFunctions(Core, ScopeHandler, scope);
-    Timing.addFunctions(Core, ScopeHandler, scope);
-    Audio.addFunctions(Core, ScopeHandler, scope);
+    Math.addFunctions(audio, dispatcher, ScopeHandler, scope);
+    Comparison.addFunctions(audio, dispatcher, ScopeHandler, scope);
+    Logic.addFunctions(audio, dispatcher, ScopeHandler, scope);
+    Timing.addFunctions(audio, dispatcher, ScopeHandler, scope);
+    Audio.addFunctions(audio, dispatcher, ScopeHandler, scope);
 
-    var display = function (v) {
-        Core.display(v);
-    };
-    ScopeHandler.addFF(scope, 'display', display);
+    ScopeHandler.addFF(scope, 'display', function (data) {
+        dispatcher.dispatch('term-message', data);
+    });
 };
 
 module.exports = {
@@ -1435,9 +1520,11 @@ module.exports = {
 };
 
 
-},{"./audio":15,"./comparison":16,"./logic":18,"./math":19,"./timing":20}],18:[function(require,module,exports){
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+},{"./audio":16,"./comparison":17,"./logic":19,"./math":20,"./timing":21}],19:[function(require,module,exports){
+/* @flow */
+
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     var logicalAnd = function (a, b) {
         return (a && b);
@@ -1461,9 +1548,11 @@ module.exports = {
 };
 
 
-},{}],19:[function(require,module,exports){
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+},{}],20:[function(require,module,exports){
+/* @flow */
+
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     var plus = function (a, b) {
         return a + b;
@@ -1503,15 +1592,16 @@ module.exports = {
 };
 
 
-},{}],20:[function(require,module,exports){
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+},{}],21:[function(require,module,exports){
+/* @flow */
+
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     // time in ms
-    var schedule = function(time, lambda) {
-        Core.scheduleCallback(time, lambda);
-    };
-    ScopeHandler.addFF(scope, 'schedule', schedule);
+    ScopeHandler.addFF(scope, 'schedule', function(time, closure) {
+        dispatcher.dispatch('schedule-callback', time, closure);
+    });
 
 };
 
@@ -1523,10 +1613,11 @@ module.exports = {
 
 
 
-},{}],21:[function(require,module,exports){
-/*global require */
 
-var createTerminal = function (terminalBodyEl) {
+},{}],22:[function(require,module,exports){
+/* @flow */
+
+var createTerminal = function (terminalBodyEl, dispatcher) {
 
     var Terminal = {};
 
@@ -1550,9 +1641,9 @@ var createTerminal = function (terminalBodyEl) {
             case 'function':
                 return 'function';
             default:
-                return x + '';
+                return String(x);
         }
-    }
+    };
 
     var msgPrompt = "<msg>" + symbolReplace(">> ") + "</msg>";
     var errPrompt = "<err>" + symbolReplace(">> ") + "</err>";
@@ -1563,7 +1654,7 @@ var createTerminal = function (terminalBodyEl) {
         "#     WEB SOUND     #",
         "#                   #",
         "#####################"
-    ]
+    ];
     Terminal.displayHeader = function () {
         var el = terminalBodyEl.children("p:first");
         var i;
@@ -1592,6 +1683,14 @@ var createTerminal = function (terminalBodyEl) {
         terminalBodyEl.scrollTop(terminalBodyEl.prop('scrollHeight'));
     };
 
+    dispatcher.register('term-message', function (message) {
+        Terminal.message(message);
+    });
+
+    dispatcher.register('term-error', function (error) {
+        Terminal.error(error);
+    });
+
     return Terminal;
 };
 
@@ -1600,7 +1699,82 @@ module.exports = {
 };
 
 
-},{}],22:[function(require,module,exports){
+
+},{}],23:[function(require,module,exports){
+/* @flow */
+
+var createDispatcher = function ()             {
+
+    var DispatcherObj = {};
+    var callbacks = {};
+
+    DispatcherObj.register = function (eventName, callback) {
+        callbacks[eventName] = callbacks[eventName] || [];
+        callbacks[eventName].push(callback);
+    };
+
+    DispatcherObj.dispatch = function (eventName /* , args... */) {
+        var i;
+        var cbList = callbacks[eventName] || [];
+        for (i = 0; i < cbList.length; i += 1) {
+            cbList[i].apply(this, Array.prototype.slice.call(arguments, 1));
+        }
+    };
+    DispatcherObj.unregister = function (eventName, callback) {
+        var cbList = callbacks[eventName];
+        var fIds = cbList.indexOf(callback);
+        if (fIds > -1) {
+            cbList.splice(fIds, 1);
+        }
+    };
+
+    return DispatcherObj;
+
+};
+
+module.exports = {
+    create: createDispatcher
+};
+
+
+},{}],24:[function(require,module,exports){
+/* @flow */
+
+var $ = require('../lib/jquery-2.1.3');
+
+var Dispatch = require('./util/dispatcher');
+
+var NavBar = require('./navbar');
+var Editor = require('./editor');
+var Terminal = require('./terminal');
+var AudioSystem = require('./audiosystem');
+var Core = require('./core');
+
+var Whorl = {};
+
+Whorl.create = function () {
+
+    var dispatcher             = Dispatch.create();
+
+    var navbar = NavBar.create(dispatcher);
+
+    var audioContext = AudioSystem.createContext(window);
+    var audio = AudioSystem.createSystem(audioContext);
+
+    var terminal = Terminal.create($("#terminal-body"), dispatcher);
+
+    var core = Core.create(audio, dispatcher);
+
+    var editor = Editor.create($('#program'), dispatcher);
+
+    terminal.displayHeader();
+};
+
+module.exports = Whorl;
+
+
+
+},{"../lib/jquery-2.1.3":34,"./audiosystem":8,"./core":9,"./editor":10,"./navbar":13,"./terminal":22,"./util/dispatcher":23}],25:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -1759,7 +1933,8 @@ module.exports = {
   });
 });
 
-},{"../../lib/codemirror":26}],23:[function(require,module,exports){
+
+},{"../../lib/codemirror":29}],26:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -1881,7 +2056,8 @@ module.exports = {
   });
 });
 
-},{"../../lib/codemirror":26}],24:[function(require,module,exports){
+
+},{"../../lib/codemirror":29}],27:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -2072,7 +2248,8 @@ module.exports = {
   });
 });
 
-},{"../../lib/codemirror":26}],25:[function(require,module,exports){
+
+},{"../../lib/codemirror":29}],28:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -7022,7 +7199,8 @@ module.exports = {
   CodeMirror.Vim = Vim();
 });
 
-},{"../addon/dialog/dialog":22,"../addon/edit/matchbrackets.js":23,"../addon/search/searchcursor":24,"../lib/codemirror":26}],26:[function(require,module,exports){
+
+},{"../addon/dialog/dialog":25,"../addon/edit/matchbrackets.js":26,"../addon/search/searchcursor":27,"../lib/codemirror":29}],29:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -15709,7 +15887,8 @@ module.exports = {
   return CodeMirror;
 });
 
-},{}],27:[function(require,module,exports){
+
+},{}],30:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -15960,7 +16139,51 @@ CodeMirror.defineMIME("text/x-scheme", "scheme");
 
 });
 
-},{"../../lib/codemirror":26}],28:[function(require,module,exports){
+
+},{"../../lib/codemirror":29}],31:[function(require,module,exports){
+/* @flow */
+
+var demos = {};
+
+demos.data = {};
+
+demos.names = ["basicsynth", "functiondef", "math"];
+
+demos.data.basicsynth = "\n\
+; defining a basic synth\n\
+\n\
+(define basic\n\
+  (amp\n\
+    (osc (param \"freq\" 440) \"square\")\n\
+    (arEnv 0.1 0.2)\n\
+  )\n\
+)\n\
+";
+
+demos.data.functiondef = "\n\
+; function definition\n\
+\n\
+(define (func a b)\n\
+  (define c (+ a b))\n\
+  (* c b)\n\
+)\n\
+\n\
+(display (func 3 4))\n\
+";
+
+demos.data.math = "\n\
+; simple maths\n\
+\n\
+(define a 3)\n\
+(define b 5)\n\
+\n\
+(display (+ a (* b 4)))\n\
+";
+
+module.exports = demos;
+
+
+},{}],32:[function(require,module,exports){
 (function (process){
 /* parser generated by jison 0.4.15 */
 /*
@@ -16263,7 +16486,7 @@ parse: function parse(input) {
 }};
 
 
-var Ast = require('./app/ast');
+var Ast = require('../app/ast');
  
 
 
@@ -16663,8 +16886,30 @@ if (typeof module !== 'undefined' && require.main === module) {
   exports.main(process.argv.slice(1));
 }
 }
+
 }).call(this,require('_process'))
-},{"./app/ast":4,"_process":3,"fs":1,"path":2}],29:[function(require,module,exports){
+},{"../app/ast":4,"_process":3,"fs":1,"path":2}],33:[function(require,module,exports){
+/* @flow */
+
+var tutorials = {};
+
+tutorials.data = {};
+
+tutorials.names = ["math"];
+
+tutorials.data.math = "\n\
+; simple maths\n\
+\n\
+(define a 3)\n\
+(define b 5)\n\
+\n\
+(display (+ a (* b 4)))\n\
+";
+
+module.exports = tutorials;
+
+
+},{}],34:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -25871,32 +26116,156 @@ return jQuery;
 
 }));
 
-},{}],30:[function(require,module,exports){
-/*jslint browser: true */
-/*global require */
+
+},{}],35:[function(require,module,exports){
+/*
+ * jQuery Dropdown: A simple dropdown plugin
+ *
+ * Contribute: https://github.com/claviska/jquery-dropdown
+ *
+ * @license: MIT license: http://opensource.org/licenses/MIT
+ *
+ */
+if (jQuery) (function ($) {
+
+    $.extend($.fn, {
+        jqDropdown: function (method, data) {
+
+            switch (method) {
+                case 'show':
+                    show(null, $(this));
+                    return $(this);
+                case 'hide':
+                    hide();
+                    return $(this);
+                case 'attach':
+                    return $(this).attr('data-jq-dropdown', data);
+                case 'detach':
+                    hide();
+                    return $(this).removeAttr('data-jq-dropdown');
+                case 'disable':
+                    return $(this).addClass('jq-dropdown-disabled');
+                case 'enable':
+                    hide();
+                    return $(this).removeClass('jq-dropdown-disabled');
+            }
+
+        }
+    });
+
+    function show(event, object) {
+
+        var trigger = event ? $(this) : object,
+            jqDropdown = $(trigger.attr('data-jq-dropdown')),
+            isOpen = trigger.hasClass('jq-dropdown-open');
+
+        // In some cases we don't want to show it
+        if (event) {
+            if ($(event.target).hasClass('jq-dropdown-ignore')) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            if (trigger !== object.target && $(object.target).hasClass('jq-dropdown-ignore')) return;
+        }
+        hide();
+
+        if (isOpen || trigger.hasClass('jq-dropdown-disabled')) return;
+
+        // Show it
+        trigger.addClass('jq-dropdown-open');
+        jqDropdown
+            .data('jq-dropdown-trigger', trigger)
+            .show();
+
+        // Position it
+        position();
+
+        // Trigger the show callback
+        jqDropdown
+            .trigger('show', {
+                jqDropdown: jqDropdown,
+                trigger: trigger
+            });
+
+    }
+
+    function hide(event) {
+
+        // In some cases we don't hide them
+        var targetGroup = event ? $(event.target).parents().addBack() : null;
+
+        // Are we clicking anywhere in a jq-dropdown?
+        if (targetGroup && targetGroup.is('.jq-dropdown')) {
+            // Is it a jq-dropdown menu?
+            if (targetGroup.is('.jq-dropdown-menu')) {
+                // Did we click on an option? If so close it.
+                if (!targetGroup.is('A')) return;
+            } else {
+                // Nope, it's a panel. Leave it open.
+                return;
+            }
+        }
+
+        // Hide any jq-dropdown that may be showing
+        $(document).find('.jq-dropdown:visible').each(function () {
+            var jqDropdown = $(this);
+            jqDropdown
+                .hide()
+                .removeData('jq-dropdown-trigger')
+                .trigger('hide', { jqDropdown: jqDropdown });
+        });
+
+        // Remove all jq-dropdown-open classes
+        $(document).find('.jq-dropdown-open').removeClass('jq-dropdown-open');
+
+    }
+
+    function position() {
+
+        var jqDropdown = $('.jq-dropdown:visible').eq(0),
+            trigger = jqDropdown.data('jq-dropdown-trigger'),
+            hOffset = trigger ? parseInt(trigger.attr('data-horizontal-offset') || 0, 10) : null,
+            vOffset = trigger ? parseInt(trigger.attr('data-vertical-offset') || 0, 10) : null;
+
+        if (jqDropdown.length === 0 || !trigger) return;
+
+        // Position the jq-dropdown relative-to-parent...
+        if (jqDropdown.hasClass('jq-dropdown-relative')) {
+            jqDropdown.css({
+                left: jqDropdown.hasClass('jq-dropdown-anchor-right') ?
+                    trigger.position().left - (jqDropdown.outerWidth(true) - trigger.outerWidth(true)) - parseInt(trigger.css('margin-right'), 10) + hOffset :
+                    trigger.position().left + parseInt(trigger.css('margin-left'), 10) + hOffset,
+                top: trigger.position().top + trigger.outerHeight(true) - parseInt(trigger.css('margin-top'), 10) + vOffset
+            });
+        } else {
+            // ...or relative to document
+            jqDropdown.css({
+                left: jqDropdown.hasClass('jq-dropdown-anchor-right') ?
+                    trigger.offset().left - (jqDropdown.outerWidth() - trigger.outerWidth()) + hOffset : trigger.offset().left + hOffset,
+                top: trigger.offset().top + trigger.outerHeight() + vOffset
+            });
+        }
+    }
+
+    $(document).on('click.jq-dropdown', '[data-jq-dropdown]', show);
+    $(document).on('click.jq-dropdown', hide);
+    $(window).on('resize', position);
+
+})(jQuery);
+
+},{}],36:[function(require,module,exports){
+/* @flow */
 
 var $ = require('./lib/jquery-2.1.3');
+// necessary so that jquery plugins work
+window.jQuery = $;
+require('./lib/jquery.dropdown');
 
-var Editor = require('./app/editor');
-var Parser = require('./app/parser');
-var Terminal = require('./app/terminal');
-var AudioSystem = require('./app/audiosystem');
-var Core = require('./app/core');
+var Whorl = require('./app/whorl');
 
-$(function () {
-
-    var audioContext = AudioSystem.createContext(window);
-    var audio = AudioSystem.createSystem(audioContext);
-    var parser = Parser.create();
-
-    var terminal = Terminal.create($("#terminal-body"));
-    terminal.displayHeader();
-
-    var core = Core.create(parser, terminal, audio);
-
-    var editor = Editor.create($('#program'), core.handleCode);
-
-});
+$(Whorl.create);
 
 
-},{"./app/audiosystem":8,"./app/core":9,"./app/editor":10,"./app/parser":13,"./app/terminal":21,"./lib/jquery-2.1.3":29}]},{},[30]);
+
+},{"./app/whorl":24,"./lib/jquery-2.1.3":34,"./lib/jquery.dropdown":35}]},{},[36]);
