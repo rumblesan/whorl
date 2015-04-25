@@ -43,6 +43,7 @@ var createCore = function (parser, terminal, audio) {
     };
 
     Core.displayError = function (err) {
+        console.log(err);
         var errLines;
         if (typeof err.message === 'string') {
             errLines = [err.message];
@@ -56,6 +57,7 @@ var createCore = function (parser, terminal, audio) {
     };
 
     Core.display = function (data) {
+        console.log(data);
         terminal.message(data);
     };
 
