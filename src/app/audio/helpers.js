@@ -1,39 +1,29 @@
 /*jslint browser: true */
-/*global AudioParam, OscillatorNode, BiquadFilterNode */
 
-AudioParam.prototype.set = function (newValue) {
-    this.value = newValue;
-};
+var helpers = {};
 
-AudioParam.prototype.setNow = function (newValue, audioCtx) {
-    this.value.setValueAtTime(newValue, audioCtx.currentTime);
-};
-
-OscillatorNode.prototype.getWaveParam = function () {
-    var self = this;
-    return {
-        set: function (waveType) {
-            self.type = waveType;
-        },
-        get: function () {
-            return self.type;
-        }
+helpers.mergeNodeParams = function (paramNodes) {
+    var output = {
+        params: []
     };
-};
-
-BiquadFilterNode.prototype.getFilterTypeParam = function () {
-    var self = this;
-    return {
-        set: function (filterType) {
-            self.type = filterType;
-        },
-        get: function () {
-            return self.type;
+    var node;
+    var paramName;
+    var n, p, pf;
+    for (n = 0; n < paramNodes.length; n += 1) {
+        node = paramNodes[n];
+        for (p = 0; p < node.params.length; p += 1) {
+            paramName = node.params[p];
+            if (output[paramName] === undefined) {
+                output[paramName] = [];
+                output.params.push(paramName);
+            }
+            for (pf = 0; pf < node[paramName].length; pf += 1) {
+                output[paramName].push(node[paramName][pf]);
+            }
         }
-    };
+    }
+    return output;
 };
 
-module.exports = {
-    imported: true
-};
+module.exports = helpers;
 
