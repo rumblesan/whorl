@@ -32,6 +32,7 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 "lambda"              return "t_lambda"
 "if"                  return "t_if"
 "."                   return "t_dot"
+"list"                return "t_list"
 
 {number}              return "t_number"
 {identifier}          return "t_id"
@@ -111,6 +112,7 @@ Constant
     | Number
     | Character
     | String
+    | List
     ;
 
 Formals
@@ -178,8 +180,8 @@ Symbol
     ;
 
 List
-    : t_oparen Datum* t_cparen
-        { $$ = Ast.List($2); }
+    : t_oparen t_list Datum* t_cparen
+        { $$ = Ast.List($3); }
     ;
 
 %%
