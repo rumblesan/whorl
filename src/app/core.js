@@ -20,11 +20,11 @@ var createCore = function (parser, terminal, audio) {
             ast = parser.parse(code);
             Interpreter.evaluate(globalScope, ast);
         } catch (err) {
-            console.log(err);
-            if (err.getStack) {
-                console.log(err.getStack());
+            if (err.websoundErr === true) {
+                Core.displayError(err);
+            } else {
+                throw err;
             }
-            Core.displayError(err);
         }
     };
 
@@ -33,11 +33,11 @@ var createCore = function (parser, terminal, audio) {
             try {
                 Interpreter.apply(globalScope, closure, []);
             } catch (err) {
-                console.log(err);
-                if (err.getStack) {
-                    console.log(err.getStack());
+                if (err.websoundErr === true) {
+                    Core.displayError(err);
+                } else {
+                    throw err;
                 }
-                Core.displayError(err);
             }
         }, time);
     };

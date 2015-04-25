@@ -3,6 +3,7 @@
 var createError = function (lines) {
 
     var WebSoundError = {
+        websoundErr: true,
         message: []
     };
 
