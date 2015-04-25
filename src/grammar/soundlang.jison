@@ -27,11 +27,16 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 "("                   return "t_oparen"
 ")"                   return "t_cparen"
 
+/* booleans */
+"#t"                  return "t_true"
+"#f"                  return "t_false"
+
 /* syntax bits */
 "define"              return "t_define"
 "lambda"              return "t_lambda"
 "if"                  return "t_if"
 "."                   return "t_dot"
+"#"                   return "t_hash"
 "list"                return "t_list"
 
 {number}              return "t_number"
@@ -39,14 +44,10 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 
 {dquote}{strchars}{dquote} yytext = yytext.substr(1,yyleng-2); return "t_string"
 
-/* booleans */
-"#t"                  return "t_true"
-"#f"                  return "t_false"
 /* misc */
 <<EOF>>               return "t_eof"
 \s+                   /* skip whitespace */
 .                     return "INVALID"
-
 
 /lex
 
@@ -181,6 +182,8 @@ Symbol
 
 List
     : t_oparen t_list Datum* t_cparen
+        { $$ = Ast.List($3); }
+    | t_hash t_oparen Datum* t_cparen
         { $$ = Ast.List($3); }
     ;
 
