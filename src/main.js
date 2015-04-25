@@ -3,7 +3,6 @@
 
 var $ = require('./lib/jquery-2.1.3');
 
-var App = require('./app/app');
 var Editor = require('./app/editor');
 var Parser = require('./app/parser');
 var Terminal = require('./app/terminal');
@@ -22,10 +21,6 @@ $(function () {
     var core = Core.create(parser, terminal, audio);
 
     var editor = Editor.create($('#program'), core.handleCode);
-
-    var app = App.create();
-
-    app.run();
 
 });
 
