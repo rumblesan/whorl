@@ -10,7 +10,7 @@ def file_to_string(folder_path, file_path):
     file_name = splitext(basename(file_path))[0]
     with open(join(folder_path, file_path)) as f:
         filelines = f.read().splitlines()
-        data = "\\\n".join(filelines).replace('"', '\\"')
+        data = "\\n\\\n".join(filelines).replace('"', '\\"')
 
     return (file_name, data)
 
@@ -25,7 +25,7 @@ def write_to_file(folder_path, output_folder, data):
         of.write("""\n%s.names = [%s];\n""" % (package_name, demo_names))
 
         for l in data:
-            of.write("""\n%s.%s = "%s";\n""" % (package_name, l[0], l[1]))
+            of.write("""\n%s.data.%s = "%s";\n""" % (package_name, l[0], l[1]))
         of.write("""\nmodule.exports = %s;\n""" % package_name)
 
 

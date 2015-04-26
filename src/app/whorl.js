@@ -3,6 +3,7 @@
 
 var $ = require('../lib/jquery-2.1.3');
 
+var NavBar = require('./navbar');
 var Editor = require('./editor');
 var Parser = require('./parser');
 var Terminal = require('./terminal');
@@ -23,6 +24,8 @@ Whorl.create = function () {
     var core = Core.create(parser, terminal, audio);
 
     var editor = Editor.create($('#program'), core.handleCode);
+
+    var navbar = NavBar.create(terminal, editor);
 
 };
 

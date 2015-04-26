@@ -7,9 +7,10 @@
   "license": "BSD-3",
   "scripts": {
     "gendemos": "./scripts/progbuild.py ./src/demos ./src/generated",
+    "gentutorials": "./scripts/progbuild.py ./src/tutorials ./src/generated",
     "genparser": "jison src/grammar/soundlang.jison -o src/jison-parser.js -m commonjs",
 
-    "prebuild": "npm run genparser & npm run gendemos",
+    "prebuild": "npm run genparser & npm run gendemos & npm run gentutorials",
     "build": "browserify . > ./dist/app.js",
     "postbuild": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css;",
     "clean": "rm -rf ./dist/* src/jison-parser.js",
