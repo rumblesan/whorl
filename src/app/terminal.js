@@ -1,6 +1,6 @@
 /*global require */
 
-var createTerminal = function (terminalBodyEl) {
+var createTerminal = function (terminalBodyEl, dispatcher) {
 
     var Terminal = {};
 
@@ -24,9 +24,9 @@ var createTerminal = function (terminalBodyEl) {
             case 'function':
                 return 'function';
             default:
-                return x + '';
+                return String(x);
         }
-    }
+    };
 
     var msgPrompt = "<msg>" + symbolReplace(">> ") + "</msg>";
     var errPrompt = "<err>" + symbolReplace(">> ") + "</err>";
@@ -37,7 +37,7 @@ var createTerminal = function (terminalBodyEl) {
         "#     WEB SOUND     #",
         "#                   #",
         "#####################"
-    ]
+    ];
     Terminal.displayHeader = function () {
         var el = terminalBodyEl.children("p:first");
         var i;
@@ -65,6 +65,14 @@ var createTerminal = function (terminalBodyEl) {
     Terminal.scrollToBottom = function () {
         terminalBodyEl.scrollTop(terminalBodyEl.prop('scrollHeight'));
     };
+
+    dispatcher.register('term-message', function (message) {
+        Terminal.message(message);
+    });
+
+    dispatcher.register('term-error', function (error) {
+        Terminal.error(error);
+    });
 
     return Terminal;
 };

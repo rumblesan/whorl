@@ -5,7 +5,7 @@ var ScopeHandler = require('./scopeHandler').create();
 var Interpreter = require('./interpreter').create(ScopeHandler);
 var Error = require('./error');
 
-var createCore = function (parser, terminal, audio) {
+var createCore = function (parser, audio, dispatcher) {
 
     var Core = {};
 
@@ -50,16 +50,17 @@ var createCore = function (parser, terminal, audio) {
         } else {
             errLines = err.message;
         }
-        var i;
-        for (i = 0; i < errLines.length; i += 1) {
-            terminal.error(errLines[i]);
-        }
+        dispatcher.dispatch('term-error', errLines.join("\n"));
     };
 
     Core.display = function (data) {
         console.log(data);
-        terminal.message(data);
+        dispatcher.dispatch('term-message', data);
     };
+
+    dispatcher.register('execute-code', function (code) {
+        Core.handleCode(code);
+    });
 
     return Core;
 };

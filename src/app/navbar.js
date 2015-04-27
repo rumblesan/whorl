@@ -7,7 +7,7 @@ var $ = require('../lib/jquery-2.1.3');
 
 var NavBar = {};
 
-NavBar.createTutorialMenu = function (terminal, editor) {
+NavBar.createTutorialMenu = function (dispatcher) {
 
     var tutlist = $('#tutoriallist');
     var name;
@@ -21,15 +21,15 @@ NavBar.createTutorialMenu = function (terminal, editor) {
         tutlist.append(listel);
     }
     tutlist.find('a').click(function (e) {
-        var progName = $(this).data('prog');
-        var prog = Tutorials.data[progName];
-        editor.doc.setValue(prog);
-        terminal.message('Loading tutorial: ' + progName);
+        var programName = $(this).data('prog');
+        var programData = Tutorials.data[programName];
+        dispatcher.dispatch('load-program', programName, programData);
+        dispatcher.dispatch('term-message', 'Loading tutorial: ' + programName);
     });
 
 };
 
-NavBar.createDemoMenu = function (terminal, editor) {
+NavBar.createDemoMenu = function (dispatcher) {
 
     var demolist = $('#demolist');
     var name;
@@ -43,18 +43,17 @@ NavBar.createDemoMenu = function (terminal, editor) {
         demolist.append(listel);
     }
     demolist.find('a').click(function (e) {
-        var progName = $(this).data('prog');
-        var prog = Demos.data[progName];
-        console.log(prog);
-        editor.doc.setValue(prog);
-        terminal.message('Loading demo: ' + progName);
+        var programName = $(this).data('prog');
+        var programData = Demos.data[programName];
+        dispatcher.dispatch('load-program', programName, programData);
+        dispatcher.dispatch('term-message', 'Loading demo: ' + programName);
     });
 
 };
 
-NavBar.create = function (terminal, editor) {
-    NavBar.createTutorialMenu(terminal, editor);
-    NavBar.createDemoMenu(terminal, editor);
+NavBar.create = function (dispatcher) {
+    NavBar.createTutorialMenu(dispatcher);
+    NavBar.createDemoMenu(dispatcher);
 };
 
 module.exports = NavBar;

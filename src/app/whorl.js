@@ -3,6 +3,8 @@
 
 var $ = require('../lib/jquery-2.1.3');
 
+var Dispatcher = require('./util/dispatcher');
+
 var NavBar = require('./navbar');
 var Editor = require('./editor');
 var Parser = require('./parser');
@@ -14,19 +16,22 @@ var Whorl = {};
 
 Whorl.create = function () {
 
+    var dispatcher = Dispatcher.create();
+
+    var navbar = NavBar.create(dispatcher);
+
     var audioContext = AudioSystem.createContext(window);
     var audio = AudioSystem.createSystem(audioContext);
+
     var parser = Parser.create();
 
-    var terminal = Terminal.create($("#terminal-body"));
+    var terminal = Terminal.create($("#terminal-body"), dispatcher);
+
+    var core = Core.create(parser, audio, dispatcher);
+
+    var editor = Editor.create($('#program'), dispatcher);
+
     terminal.displayHeader();
-
-    var core = Core.create(parser, terminal, audio);
-
-    var editor = Editor.create($('#program'), core.handleCode);
-
-    var navbar = NavBar.create(terminal, editor);
-
 };
 
 module.exports = Whorl;
