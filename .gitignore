@@ -1,5 +1,4 @@
 node_modules/
 dist/
-src/jison-parser.js
 npm-debug.log
 src/generated/

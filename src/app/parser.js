@@ -1,6 +1,6 @@
 /* @flow */
 
-var JisonParser = require('../jison-parser').parser;
+var JisonParser = require('../generated/jison-parser').parser;
 var Error = require('./error');
 
 var createParser = function () {
