@@ -1,12 +1,11 @@
 /* @flow */
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     // time in ms
-    var schedule = function(time, lambda) {
-        Core.scheduleCallback(time, lambda);
-    };
-    ScopeHandler.addFF(scope, 'schedule', schedule);
+    ScopeHandler.addFF(scope, 'schedule', function(time, closure) {
+        dispatcher.dispatch('schedule-callback', time, closure);
+    });
 
 };
 

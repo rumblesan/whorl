@@ -9,10 +9,8 @@ var createCore = function (parser, audio, dispatcher) {
 
     var Core = {};
 
-    Core.Audio = audio;
-
     var globalScope = ScopeHandler.createScope();
-    StdLib.addFunctions(Core, ScopeHandler, globalScope);
+    StdLib.addFunctions(audio, dispatcher, ScopeHandler, globalScope);
 
     Core.handleCode = function (code) {
         var ast;
@@ -53,13 +51,12 @@ var createCore = function (parser, audio, dispatcher) {
         dispatcher.dispatch('term-error', errLines.join("\n"));
     };
 
-    Core.display = function (data) {
-        console.log(data);
-        dispatcher.dispatch('term-message', data);
-    };
-
     dispatcher.register('execute-code', function (code) {
         Core.handleCode(code);
+    });
+
+    dispatcher.register('schedule-callback', function (time, closure) {
+        Core.scheduleCallback(time, closure);
     });
 
     return Core;

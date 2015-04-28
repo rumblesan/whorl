@@ -2,7 +2,7 @@
 
 var DspGraph = require('../audio/dspGraph');
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     ScopeHandler.addFF(scope, 'param',
         function(name, defaultValue) {
@@ -37,31 +37,31 @@ var addFunctions = function (Core, ScopeHandler, scope) {
 
     ScopeHandler.addFF(scope, 'createSynth',
         function(dspGraph) {
-            return Core.Audio.createSynth(dspGraph);
+            return audio.createSynth(dspGraph);
         }
     );
 
     ScopeHandler.addFF(scope, 'play',
         function(synth, playLength) {
-            Core.Audio.playSynth(synth, playLength, []);
+            audio.playSynth(synth, playLength, []);
         }
     );
 
     ScopeHandler.addFF(scope, 'start',
         function(synth, parameterList) {
-            Core.Audio.startSynth(synth, parameterList);
+            audio.startSynth(synth, parameterList);
         }
     );
 
     ScopeHandler.addFF(scope, 'stop',
         function(synth) {
-            Core.Audio.stopSynth(synth);
+            audio.stopSynth(synth);
         }
     );
 
     ScopeHandler.addFF(scope, 'set',
         function(synth, paramName, paramValue) {
-            Core.Audio.setSynthParam(synth, paramName, paramValue);
+            audio.setSynthParam(synth, paramName, paramValue);
         }
     );
 
@@ -69,7 +69,7 @@ var addFunctions = function (Core, ScopeHandler, scope) {
         function(synth, parameterList) {
             var i;
             for (i = 0; i < parameterList.length; i += 2) {
-                Core.Audio.setSynthParam(
+                audio.setSynthParam(
                     synth,
                     parameterList[i],
                     parameterList[i+1]

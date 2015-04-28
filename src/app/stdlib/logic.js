@@ -1,6 +1,6 @@
 /* @flow */
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     var logicalAnd = function (a, b) {
         return (a && b);

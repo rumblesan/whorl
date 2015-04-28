@@ -6,18 +6,17 @@ var Logic = require('./logic');
 var Timing = require('./timing');
 var Audio = require('./audio');
 
-var addFunctions = function (Core, ScopeHandler, scope) {
+var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
-    Math.addFunctions(Core, ScopeHandler, scope);
-    Comparison.addFunctions(Core, ScopeHandler, scope);
-    Logic.addFunctions(Core, ScopeHandler, scope);
-    Timing.addFunctions(Core, ScopeHandler, scope);
-    Audio.addFunctions(Core, ScopeHandler, scope);
+    Math.addFunctions(audio, dispatcher, ScopeHandler, scope);
+    Comparison.addFunctions(audio, dispatcher, ScopeHandler, scope);
+    Logic.addFunctions(audio, dispatcher, ScopeHandler, scope);
+    Timing.addFunctions(audio, dispatcher, ScopeHandler, scope);
+    Audio.addFunctions(audio, dispatcher, ScopeHandler, scope);
 
-    var display = function (v) {
-        Core.display(v);
-    };
-    ScopeHandler.addFF(scope, 'display', display);
+    ScopeHandler.addFF(scope, 'display', function (data) {
+        dispatcher.dispatch('term-message', data);
+    });
 };
 
 module.exports = {
