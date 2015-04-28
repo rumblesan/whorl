@@ -1,5 +1,4 @@
-/*jslint browser: true */
-/*global AudioContext */
+/* @flow */
 
 var AudioHelpers = require('./audio/helpers');
 var AudioGlobals = require('./audio/globals');

@@ -19,6 +19,7 @@ def write_to_file(folder_path, output_folder, data):
     package_name = basename(folder_path)
     output_file = join(output_folder, package_name + ".js")
     with open(output_file, 'w') as of:
+        of.write("""/* @flow */\n""")
         of.write("""\nvar %s = {};\n""" % package_name)
         of.write("""\n%s.data = {};\n""" % package_name)
         demo_names = ", ".join(['"' + n[0] + '"' for n in data])

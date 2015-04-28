@@ -1,5 +1,4 @@
-/*jslint browser: true */
-/*global require */
+/* @flow */
 
 var Demos = require('../generated/demos');
 var Tutorials = require('../generated/tutorials');

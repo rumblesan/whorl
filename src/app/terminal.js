@@ -1,4 +1,4 @@
-/*global require */
+/* @flow */
 
 var createTerminal = function (terminalBodyEl, dispatcher) {
 

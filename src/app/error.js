@@ -1,4 +1,4 @@
-
+/* @flow */
 
 var createError = function (lines) {
 

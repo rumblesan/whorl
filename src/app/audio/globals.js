@@ -1,5 +1,4 @@
-/*jslint browser: true */
-/*global AudioParam: true, OscillatorNode: true, BiquadFilterNode: true */
+/* @flow */
 
 AudioParam.prototype.set = function (newValue) {
     this.value = newValue;

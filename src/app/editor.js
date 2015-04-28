@@ -1,4 +1,4 @@
-/*global require */
+/* @flow */
 
 var CodeMirror = require('../codemirror/lib/codemirror');
 require('../codemirror/keymap/vim');

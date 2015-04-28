@@ -1,4 +1,4 @@
-/*global require */
+/* @flow */
 
 var JisonParser = require('../jison-parser').parser;
 var Error = require('./error');
@@ -22,5 +22,4 @@ var createParser = function () {
 module.exports = {
     create: createParser
 };
-
 

@@ -1,6 +1,6 @@
-/*global require */
+/* @flow */
 
-var StdLib = require('./stdLib');
+var StdLib = require('./stdlib');
 var ScopeHandler = require('./scopeHandler').create();
 var Interpreter = require('./interpreter').create(ScopeHandler);
 var Error = require('./error');

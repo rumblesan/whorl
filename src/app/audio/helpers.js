@@ -1,4 +1,4 @@
-/*jslint browser: true */
+/* @flow */
 
 var helpers = {};
 

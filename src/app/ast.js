@@ -1,8 +1,8 @@
-/*global require*/
+/* @flow */
 
 module.exports = {
 
-    Define: function (name, expression) {
+    Define: function (name: string, expression) {
         return {
             type: "DEFINE",
             name: name,

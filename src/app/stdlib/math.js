@@ -1,3 +1,4 @@
+/* @flow */
 
 var addFunctions = function (Core, ScopeHandler, scope) {
 

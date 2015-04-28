@@ -1,5 +1,4 @@
-/*jslint browser: true */
-/*global require */
+/* @flow */
 
 var $ = require('./lib/jquery-2.1.3');
 // necessary so that jquery plugins work
