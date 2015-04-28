@@ -2,36 +2,41 @@
 
 var Error = require('../error');
 
-var DSPGraph = {};
+type DSPConstant = { type: string; value: number | string };
+type DSPParam = { type: string; name: string; defaultValue: number | string };
+type DSPAREnvelope = { type: string; attack: DSPConstant | DSPParam; decay: DSPConstant | DSPParam };
+type DSPFilter = { type: string; source: DSPGraph; filterType: DSPConstant | DSPParam; frequency: DSPGraph; resonance: DSPConstant | DSPParam };
+type DSPAmp = { type: string; source: DSPGraph; volume: DSPGraph };
+type DSPOscillator = { type: string; frequency: DSPGraph; waveshape: DSPGraph };
 
-var checkConst = function (v) {
-    var out;
+type DSPGraph = DSPConstant | DSPParam | DSPAREnvelope | DSPFilter | DSPAmp | DSPOscillator;
+
+var dsp = {};
+
+var checkConst = function (v: number | string | DSPGraph): any {
     switch (typeof v) {
         case 'number':
-            out = DSPGraph.Constant(v);
-            break;
+            return dsp.Constant(v);
         case 'string':
-            out = DSPGraph.Constant(v);
-            break;
+            return dsp.Constant(v);
         default:
             if (v.type !== undefined) {
                 // Assuming v is a DSP Graph
-                out = v;
+                return v;
             } else {
                 throw Error.create("Invalid value in DSP Graph: " + v);
             }
     }
-    return out;
 };
 
-DSPGraph.Constant = function (value) {
+dsp.Constant = function (value: number | string): DSPConstant {
     return {
         type: 'CONSTANT',
         value: value
     };
 };
 
-DSPGraph.Param = function (name, defaultValue) {
+dsp.Param = function (name: string, defaultValue: number | string): DSPParam {
     return {
         type: 'PARAM',
         name: name,
@@ -39,7 +44,7 @@ DSPGraph.Param = function (name, defaultValue) {
     };
 };
 
-DSPGraph.AREnvelope = function (attack, decay) {
+dsp.AREnvelope = function (attack: DSPConstant | DSPParam, decay: DSPConstant | DSPParam): DSPAREnvelope {
     return {
         type: 'ARENVELOPE',
         attack: checkConst(attack),
@@ -47,15 +52,15 @@ DSPGraph.AREnvelope = function (attack, decay) {
     };
 };
 
-DSPGraph.Oscillator = function(frequency, wave) {
+dsp.Oscillator = function(frequency: DSPConstant | DSPGraph, waveshape: DSPConstant | DSPParam): DSPOscillator {
     return {
         type: 'OSCILLATOR',
         frequency: checkConst(frequency),
-        wave: checkConst(wave)
+        waveshape: checkConst(waveshape)
     };
 };
 
-DSPGraph.Filter = function(source, filterType, frequency, resonance) {
+dsp.Filter = function(source: DSPGraph, filterType: DSPConstant | DSPParam, frequency: DSPGraph, resonance: DSPConstant | DSPParam): DSPFilter {
     return {
         type: 'FILTER',
         source: source,
@@ -65,7 +70,7 @@ DSPGraph.Filter = function(source, filterType, frequency, resonance) {
     };
 };
 
-DSPGraph.Amp = function(source, volume) {
+dsp.Amp = function(source: DSPGraph, volume: DSPGraph): DSPAmp {
     return {
         type: 'AMP',
         source: source,
@@ -74,5 +79,5 @@ DSPGraph.Amp = function(source, volume) {
 };
 
 
-module.exports = DSPGraph;
+module.exports = dsp;
 
