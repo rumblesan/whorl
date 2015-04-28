@@ -112,10 +112,10 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleIf = function (scope, ifNode) {
-        var predicate = internal.evaluateExpression(ifNode.predicate);
+        var predicate = internal.evaluateExpression(scope, ifNode.predicate);
         var value;
         if (predicate === true || predicate !== 0) {
-            value = internal.evaluateBlock(ifNode.expression);
+            value = internal.evaluateBlock(scope, ifNode.expression);
         } else {
             value = false;
         }
@@ -123,12 +123,12 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleIfElse = function (scope, ifElse) {
-        var predicate = internal.evaluateExpression(ifElse.predicate);
+        var predicate = internal.evaluateExpression(scope, ifElse.predicate);
         var value;
         if (predicate === true || predicate !== 0) {
-            value = internal.evaluateBlock(ifElse.trueExpression);
+            value = internal.evaluateBlock(scope, ifElse.trueExpression);
         } else {
-            value = internal.evaluateBlock(ifElse.falseExpression);
+            value = internal.evaluateBlock(scope, ifElse.falseExpression);
         }
         return value;
     };
