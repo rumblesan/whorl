@@ -1,5 +1,6 @@
 
-declare var WebAudioContext: Object;
+declare class WebAudioContext {
+};
 
 declare var AudioParam: Object;
 declare var OscillatorNode: Object;

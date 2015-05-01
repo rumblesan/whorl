@@ -6,7 +6,7 @@ var $ = require('../lib/jquery-2.1.3');
 
 var NavBar = {};
 
-NavBar.createTutorialMenu = function (dispatcher) {
+NavBar.createTutorialMenu = function (dispatcher: Dispatcher) {
 
     var tutlist = $('#tutoriallist');
     var name;
@@ -28,7 +28,7 @@ NavBar.createTutorialMenu = function (dispatcher) {
 
 };
 
-NavBar.createDemoMenu = function (dispatcher) {
+NavBar.createDemoMenu = function (dispatcher: Dispatcher) {
 
     var demolist = $('#demolist');
     var name;
@@ -50,7 +50,7 @@ NavBar.createDemoMenu = function (dispatcher) {
 
 };
 
-NavBar.create = function (dispatcher) {
+NavBar.create = function (dispatcher: Dispatcher) {
     NavBar.createTutorialMenu(dispatcher);
     NavBar.createDemoMenu(dispatcher);
 };

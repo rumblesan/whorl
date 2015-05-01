@@ -1,24 +1,23 @@
 /* @flow */
 
-var createDispatcher = function () {
+var createDispatcher = function (): Dispatcher {
 
-    var Dispatcher = {};
+    var DispatcherObj = {};
     var callbacks = {};
 
-    Dispatcher.register = function (eventName, callback) {
+    DispatcherObj.register = function (eventName, callback) {
         callbacks[eventName] = callbacks[eventName] || [];
         callbacks[eventName].push(callback);
     };
 
-    Dispatcher.dispatch = function (eventName /* , args... */) {
+    DispatcherObj.dispatch = function (eventName /* , args... */) {
         var i;
         var cbList = callbacks[eventName] || [];
         for (i = 0; i < cbList.length; i += 1) {
             cbList[i].apply(this, Array.prototype.slice.call(arguments, 1));
         }
     };
-
-    Dispatcher.unregister = function (eventName, callback) {
+    DispatcherObj.unregister = function (eventName, callback) {
         var cbList = callbacks[eventName];
         var fIds = cbList.indexOf(callback);
         if (fIds > -1) {
@@ -26,7 +25,7 @@ var createDispatcher = function () {
         }
     };
 
-    return Dispatcher;
+    return DispatcherObj;
 
 };
 

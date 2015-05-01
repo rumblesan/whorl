@@ -1,6 +1,6 @@
 /* @flow */
 
-type InternalError = { internal: boolean, message: [string] };
+type InternalError = { internal: boolean; message: [string] };
 
 var createError = function (lines: string | [string]): InternalError  {
 

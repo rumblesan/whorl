@@ -5,7 +5,9 @@ var ScopeHandler = require('./scopeHandler').create();
 var Interpreter = require('./interpreter').create(ScopeHandler);
 var Error = require('./error');
 
-var createCore = function (parser, audio, dispatcher) {
+var Parser = require('./parser').create();
+
+var createCore = function (audio: WebAudioContext, dispatcher: Dispatcher): any {
 
     var Core = {};
 
@@ -15,7 +17,7 @@ var createCore = function (parser, audio, dispatcher) {
     Core.handleCode = function (code) {
         var ast;
         try {
-            ast = parser.parse(code);
+            ast = Parser.parse(code);
             Interpreter.evaluate(globalScope, ast);
         } catch (err) {
             if (err.internal === true) {
