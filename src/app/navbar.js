@@ -6,6 +6,19 @@ var $ = require('../lib/jquery-2.1.3');
 
 var NavBar = {};
 
+NavBar.createBindingsMenu = function (dispatcher: Dispatcher) {
+
+    var keylist = $('#keybindings');
+    keylist.append('<li><a data-binding="default">Default</a></li>');
+    keylist.append('<li><a data-binding="vim">Vim</a></li>');
+
+    keylist.find('a').click(function (e) {
+        var bindingName = $(this).data('binding');
+        dispatcher.dispatch('set-key-binding', bindingName);
+    });
+
+};
+
 NavBar.createTutorialMenu = function (dispatcher: Dispatcher) {
 
     var tutlist = $('#tutoriallist');
@@ -53,6 +66,7 @@ NavBar.createDemoMenu = function (dispatcher: Dispatcher) {
 NavBar.create = function (dispatcher: Dispatcher) {
     NavBar.createTutorialMenu(dispatcher);
     NavBar.createDemoMenu(dispatcher);
+    NavBar.createBindingsMenu(dispatcher);
 };
 
 module.exports = NavBar;
