@@ -29,6 +29,7 @@ Whorl.create = function () {
 
         terminal.displayHeader();
     } catch (e) {
+        console.log(e);
         terminal.error(e);
     }
 

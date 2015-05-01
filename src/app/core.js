@@ -18,7 +18,7 @@ var createCore = function (
     var audio = AudioSystem.createSystem(audioContext);
     var scopeHandler = ScopeHandler.create();
     var interpreter = Interpreter.create(scopeHandler);
-    var globalScope = ScopeHandler.createScope();
+    var globalScope = scopeHandler.createScope();
 
     StdLib.addFunctions(audio, dispatcher, scopeHandler, globalScope);
 
@@ -26,7 +26,7 @@ var createCore = function (
         var ast;
         try {
             ast = Parser.parse(code);
-            Interpreter.evaluate(globalScope, ast);
+            interpreter.evaluate(globalScope, ast);
         } catch (err) {
             if (err.internal === true) {
                 Core.displayError(err);
@@ -39,7 +39,7 @@ var createCore = function (
     Core.scheduleCallback = function (time, closure) {
         setTimeout(function () {
             try {
-                Interpreter.apply(globalScope, closure, []);
+                interpreter.apply(globalScope, closure, []);
             } catch (err) {
                 if (err.internal === true) {
                     Core.displayError(err);
