@@ -18,15 +18,20 @@ Whorl.create = function () {
 
     var navbar = NavBar.create(dispatcher);
 
-    var audioContext = AudioSystem.createContext(window);
-
     var terminal = Terminal.create($("#terminal-body"), dispatcher);
-
-    var core = Core.create(audioContext, dispatcher);
 
     var editor = Editor.create($('#program'), dispatcher);
 
-    terminal.displayHeader();
+    try {
+        var audioContext = AudioSystem.createContext(window);
+
+        var core = Core.create(audioContext, dispatcher);
+
+        terminal.displayHeader();
+    } catch (e) {
+        terminal.error(e);
+    }
+
 };
 
 module.exports = Whorl;
