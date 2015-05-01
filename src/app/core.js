@@ -1,18 +1,26 @@
 /* @flow */
 
 var StdLib = require('./stdlib');
-var ScopeHandler = require('./scopeHandler').create();
-var Interpreter = require('./interpreter').create(ScopeHandler);
+var ScopeHandler = require('./scopeHandler');
+var Interpreter = require('./interpreter');
+var AudioSystem = require('./audiosystem');
 var Error = require('./error');
 
 var Parser = require('./parser').create();
 
-var createCore = function (audio: WebAudioContext, dispatcher: Dispatcher): any {
+var createCore = function (
+    audioContext: WebAudioContext,
+    dispatcher: Dispatcher
+): any {
 
     var Core = {};
 
+    var audio = AudioSystem.createSystem(audioContext);
+    var scopeHandler = ScopeHandler.create();
+    var interpreter = Interpreter.create(scopeHandler);
     var globalScope = ScopeHandler.createScope();
-    StdLib.addFunctions(audio, dispatcher, ScopeHandler, globalScope);
+
+    StdLib.addFunctions(audio, dispatcher, scopeHandler, globalScope);
 
     Core.handleCode = function (code) {
         var ast;

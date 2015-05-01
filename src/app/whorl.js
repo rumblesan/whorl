@@ -7,8 +7,8 @@ var Dispatch = require('./util/dispatcher');
 var NavBar = require('./navbar');
 var Editor = require('./editor');
 var Terminal = require('./terminal');
-var AudioSystem = require('./audiosystem');
 var Core = require('./core');
+var AudioSystem = require('./audiosystem');
 
 var Whorl = {};
 
@@ -19,11 +19,10 @@ Whorl.create = function () {
     var navbar = NavBar.create(dispatcher);
 
     var audioContext = AudioSystem.createContext(window);
-    var audio = AudioSystem.createSystem(audioContext);
 
     var terminal = Terminal.create($("#terminal-body"), dispatcher);
 
-    var core = Core.create(audio, dispatcher);
+    var core = Core.create(audioContext, dispatcher);
 
     var editor = Editor.create($('#program'), dispatcher);
 
