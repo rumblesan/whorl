@@ -23,5 +23,6 @@
     "browserify": "^9.0.8",
     "jison": "^0.4.15",
     "nodeunit": "^0.9.1",
+    "thicket": "git://github.com/rumblesan/thicket.git"
   }
 }
