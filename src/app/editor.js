@@ -1,10 +1,9 @@
-/* @flow */
 
 var CodeMirror = require('../codemirror/lib/codemirror');
 require('../codemirror/keymap/vim');
 require('../codemirror/mode/scheme/scheme');
 
-var createEditor = function (editorEl, dispatcher: Dispatcher) {
+var createEditor = function (editorEl, dispatcher) {
 
     CodeMirror.Vim.defineAction('execute', function (cm, args, vim) {
         var code = cm.doc.getSelection();
@@ -25,7 +24,7 @@ var createEditor = function (editorEl, dispatcher: Dispatcher) {
 
     dispatcher.register('load-program', function (programName, programData) {
         editor.doc.setValue(programData);
-    })
+    });
 
     dispatcher.register('set-key-binding', function (bindingName) {
         editor.setOption('keymap', bindingName);
@@ -34,7 +33,7 @@ var createEditor = function (editorEl, dispatcher: Dispatcher) {
         } else {
             editor.setOption('vimMode', false);
         }
-    })
+    });
 
     console.log(editor);
 

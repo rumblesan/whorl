@@ -1,4 +1,4 @@
-/* @flow */
+/*jslint browser: true */
 
 var $ = require('../lib/jquery-2.1.3');
 
@@ -14,7 +14,7 @@ var Whorl = {};
 
 Whorl.create = function () {
 
-    var dispatcher: Dispatcher = Dispatch.create();
+    var dispatcher = Dispatch.create();
 
     var navbar = NavBar.create(dispatcher);
 

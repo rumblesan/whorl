@@ -1,8 +1,7 @@
-/* @flow */
 
 module.exports = {
 
-    Define: function (name: string, expression) {
+    Define: function (name, expression) {
         return {
             type: "DEFINE",
             name: name,

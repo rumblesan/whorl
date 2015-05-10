@@ -1,4 +1,3 @@
-/* @flow */
 
 var Demos = require('../generated/demos');
 var Tutorials = require('../generated/tutorials');
@@ -6,7 +5,7 @@ var $ = require('../lib/jquery-2.1.3');
 
 var NavBar = {};
 
-NavBar.createBindingsMenu = function (dispatcher: Dispatcher) {
+NavBar.createBindingsMenu = function (dispatcher) {
 
     var keylist = $('#keybindings');
     keylist.append('<li><a data-binding="default">Default</a></li>');
@@ -19,7 +18,7 @@ NavBar.createBindingsMenu = function (dispatcher: Dispatcher) {
 
 };
 
-NavBar.createTutorialMenu = function (dispatcher: Dispatcher) {
+NavBar.createTutorialMenu = function (dispatcher) {
 
     var tutlist = $('#tutoriallist');
     var name;
@@ -41,7 +40,7 @@ NavBar.createTutorialMenu = function (dispatcher: Dispatcher) {
 
 };
 
-NavBar.createDemoMenu = function (dispatcher: Dispatcher) {
+NavBar.createDemoMenu = function (dispatcher) {
 
     var demolist = $('#demolist');
     var name;
@@ -63,7 +62,7 @@ NavBar.createDemoMenu = function (dispatcher: Dispatcher) {
 
 };
 
-NavBar.create = function (dispatcher: Dispatcher) {
+NavBar.create = function (dispatcher) {
     NavBar.createTutorialMenu(dispatcher);
     NavBar.createDemoMenu(dispatcher);
     NavBar.createBindingsMenu(dispatcher);

@@ -1,4 +1,3 @@
-/* @flow */
 
 var Math = require('./math');
 var Comparison = require('./comparison');

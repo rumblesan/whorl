@@ -1,4 +1,3 @@
-/* @flow */
 
 var JisonParser = require('../generated/jison-parser').parser;
 var Error = require('./error');

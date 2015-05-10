@@ -1,6 +1,5 @@
-/* @flow */
 
-var createDispatcher = function (): Dispatcher {
+var createDispatcher = function () {
 
     var DispatcherObj = {};
     var callbacks = {};

@@ -1,4 +1,3 @@
-/* @flow */
 
 var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 

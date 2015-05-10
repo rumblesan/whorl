@@ -1,4 +1,3 @@
-/* @flow */
 
 var createTerminal = function (terminalBodyEl, dispatcher) {
 

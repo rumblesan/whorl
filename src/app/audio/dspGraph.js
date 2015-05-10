@@ -1,33 +1,31 @@
-/* @flow */
 
 var Error = require('../error');
 
 var dsp = {};
 
-var checkConst = function (v: number | string | DSPGraph): any {
+var checkConst = function (v) {
     switch (typeof v) {
         case 'number':
             return dsp.Constant(v);
         case 'string':
             return dsp.Constant(v);
         default:
-            if (v.type !== undefined) {
-                // Assuming v is a DSP Graph
-                return v;
-            } else {
+            if (v.type === undefined) {
                 throw Error.create("Invalid value in DSP Graph: " + v);
             }
+            // Assuming v is a DSP Graph
+            return v;
     }
 };
 
-dsp.Constant = function (value: number | string): DSPConstant {
+dsp.Constant = function (value) {
     return {
         type: 'CONSTANT',
         value: value
     };
 };
 
-dsp.Param = function (name: string, defaultValue: number | string): DSPParam {
+dsp.Param = function (name, defaultValue) {
     return {
         type: 'PARAM',
         name: name,
@@ -35,7 +33,7 @@ dsp.Param = function (name: string, defaultValue: number | string): DSPParam {
     };
 };
 
-dsp.AREnvelope = function (attack: DSPConstant | DSPParam, decay: DSPConstant | DSPParam): DSPAREnvelope {
+dsp.AREnvelope = function (attack, decay) {
     return {
         type: 'ARENVELOPE',
         attack: checkConst(attack),
@@ -43,7 +41,7 @@ dsp.AREnvelope = function (attack: DSPConstant | DSPParam, decay: DSPConstant | 
     };
 };
 
-dsp.Oscillator = function(frequency: DSPConstant | DSPGraph, waveshape: DSPConstant | DSPParam): DSPOscillator {
+dsp.Oscillator = function(frequency, waveshape) {
     return {
         type: 'OSCILLATOR',
         frequency: checkConst(frequency),
@@ -51,7 +49,7 @@ dsp.Oscillator = function(frequency: DSPConstant | DSPGraph, waveshape: DSPConst
     };
 };
 
-dsp.Filter = function(source: DSPGraph, filterType: DSPConstant | DSPParam, frequency: DSPGraph, resonance: DSPConstant | DSPParam): DSPFilter {
+dsp.Filter = function(source, filterType, frequency, resonance) {
     return {
         type: 'FILTER',
         source: source,
@@ -61,7 +59,7 @@ dsp.Filter = function(source: DSPGraph, filterType: DSPConstant | DSPParam, freq
     };
 };
 
-dsp.Amp = function(source: DSPGraph, volume: DSPGraph): DSPAmp {
+dsp.Amp = function(source, volume) {
     return {
         type: 'AMP',
         source: source,

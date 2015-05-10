@@ -1,10 +1,9 @@
-/* @flow */
 
 var AudioHelpers = require('./audio/helpers');
 var AudioGlobals = require('./audio/globals');
 var Error = require('./error');
 
-var createContext = function (w): WebAudioContext {
+var createContext = function (w) {
     var context;
     try {
         // Fix up for prefixing

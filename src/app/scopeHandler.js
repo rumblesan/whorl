@@ -1,4 +1,3 @@
-/* @flow */
 
 var Error = require('./error');
 var Ast = require('./ast');

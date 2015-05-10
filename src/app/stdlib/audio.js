@@ -1,4 +1,3 @@
-/* @flow */
 
 var DspGraph = require('../audio/dspGraph');
 

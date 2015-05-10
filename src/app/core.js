@@ -1,4 +1,3 @@
-/* @flow */
 
 var StdLib = require('./stdlib');
 var ScopeHandler = require('./scopeHandler');
@@ -9,9 +8,9 @@ var Error = require('./error');
 var Parser = require('./parser').create();
 
 var createCore = function (
-    audioContext: WebAudioContext,
-    dispatcher: Dispatcher
-): any {
+    audioContext,
+    dispatcher
+) {
 
     var Core = {};
 
