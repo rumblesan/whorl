@@ -8,7 +8,7 @@ var NavBar = require('./navbar');
 var Editor = require('./editor');
 var Terminal = require('./terminal');
 var Core = require('./core');
-var AudioSystem = require('./audiosystem');
+var AudioSystem = require('./audio');
 
 var Whorl = {};
 

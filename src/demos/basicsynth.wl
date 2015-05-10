@@ -8,3 +8,9 @@
   )
 )
 
+(define synth (createSynth basic))
+
+(routeToMaster synth)
+
+(play synth 1)
+

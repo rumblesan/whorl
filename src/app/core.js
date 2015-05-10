@@ -2,15 +2,13 @@
 var StdLib = require('./stdlib');
 var ScopeHandler = require('./scopeHandler');
 var Interpreter = require('./interpreter');
-var AudioSystem = require('./audiosystem');
 var Error = require('./error');
+
+var AudioSystem = require('./audio');
 
 var Parser = require('./parser').create();
 
-var createCore = function (
-    audioContext,
-    dispatcher
-) {
+var createCore = function (audioContext, dispatcher) {
 
     var Core = {};
 
