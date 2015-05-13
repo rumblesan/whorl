@@ -124,7 +124,6 @@ var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     ScopeHandler.addFF(scope, 'routeToMaster',
         function(sourceSynth) {
-            console.log(audio.masterOut);
             audio.Synth.connectSynthToInput(
                 audio.masterOut, 'master',
                 sourceSynth, 'default'

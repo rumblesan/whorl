@@ -35,8 +35,6 @@ var createEditor = function (editorEl, dispatcher) {
         }
     });
 
-    console.log(editor);
-
     return editor;
 };
 
