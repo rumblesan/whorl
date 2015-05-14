@@ -31,11 +31,11 @@ var createInterpreter = function (ScopeHandler) {
         var output;
 
         switch(astExpr.type) {
-            case "DEFINE":
-                output = internal.handleDefine(scope, astExpr);
+            case "LETDEFINITION":
+                output = internal.handleLetDefinition(scope, astExpr);
                 break;
-            case "DEFINEFUNCTION":
-                output = internal.handleDefineFunction(scope, astExpr);
+            case "FUNCTIONDEFINITION":
+                output = internal.handleFunctionDefinition(scope, astExpr);
                 break;
             case "BODY":
                 output = internal.handleBody(scope, astExpr);
@@ -61,17 +61,26 @@ var createInterpreter = function (ScopeHandler) {
             case "NUMBER":
                 output = astExpr.value;
                 break;
-            case "CHARACTER":
-                output = astExpr.value;
-                break;
             case "STRING":
                 output = astExpr.value;
                 break;
             case "SYMBOL":
                 output = astExpr.value;
                 break;
+            case "NOTE":
+                output = astExpr.value;
+                break;
+            case "BEAT":
+                output = astExpr.value;
+                break;
             case "LIST":
                 output = internal.handleList(scope, astExpr);
+                break;
+            case "MAP":
+                output = internal.handleMap(scope, astExpr);
+                break;
+            case "MAPPAIR":
+                output = internal.handleMapPair(scope, astExpr);
                 break;
             default:
                 throw Error.create("AST Expression not valid: " + astExpr.type);
@@ -79,7 +88,7 @@ var createInterpreter = function (ScopeHandler) {
         return output;
     };
 
-    internal.handleDefine = function (scope, define) {
+    internal.handleLetDefinition = function (scope, define) {
         var defName = define.name;
         var defValue = internal.evaluateExpression(scope, define.expression);
 
@@ -87,7 +96,7 @@ var createInterpreter = function (ScopeHandler) {
         return defValue;
     };
 
-    internal.handleDefineFunction = function (scope, defineFunction) {
+    internal.handleFunctionDefinition = function (scope, defineFunction) {
         var functionName = defineFunction.name;
         var functionArgNames = defineFunction.args;
         var functionBody = defineFunction.body;
@@ -209,6 +218,22 @@ var createInterpreter = function (ScopeHandler) {
             results.push(r);
         }
         return results;
+    };
+
+    internal.handleMap = function (scope, map) {
+        var i, e, entries = map.entries, result = {};
+        for (i = 0; i < entries.length; i += 1) {
+            e = internal.evaluateExpression(entries[i]);
+            result[e.key] = e.value;
+        }
+        return result;
+    };
+
+    internal.handleMapPair = function (scope, pair) {
+        var k, v;
+        k = internal.evaluateExpression(scope, pair.key);
+        v = internal.evaluateExpression(scope, pair.value);
+        return { key: k, value: v };
     };
 
     return Interpreter;

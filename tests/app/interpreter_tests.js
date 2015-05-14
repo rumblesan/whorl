@@ -2,7 +2,7 @@
 var ScopeHandler = require('../../src/app/scopeHandler').create();
 var Interpreter = require('../../src/app/interpreter').create(ScopeHandler);
 var Parser = require('../../src/app/parser').create();
-var StdLib = require('../../src/app/stdLib');
+var MathLib = require('../../src/app/stdlib/math');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -27,45 +27,77 @@ var StdLib = require('../../src/app/stdLib');
 module.exports = {
 
     setUp: function (callback) {
-        // Make sure that stdlib functions are added to scope
-        var Core = {};
+        // Make sure that stdlib math functions are added to scope
         this.scope = ScopeHandler.createScope();
-        StdLib.addFunctions(Core, ScopeHandler, this.scope);
+        MathLib.addFunctions({}, {}, ScopeHandler, this.scope);
         callback();
     },
 
-    'define adds value to scope': function (test) {
-        var program = '(define a 3)';
-        var ast = Parser.parse(program);
-        Interpreter.evaluate(this.scope, ast);
-        test.equal(ScopeHandler.get(this.scope, 'a'), 3);
-        test.done();
+    'let adds value to scope': function (test) {
+        try {
+            var program = '(let a 3)';
+            var ast = Parser.parse(program);
+            Interpreter.evaluate(this.scope, ast);
+            test.equal(ScopeHandler.get(this.scope, 'a'), 3);
+            test.done();
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     },
 
-    'define function adds function to scope': function (test) {
-        var program = '(define (sum a b) (+ a b))';
-        var ast = Parser.parse(program);
-        Interpreter.evaluate(this.scope, ast);
-        test.ok(ScopeHandler.get(this.scope, 'sum'));
-        test.done();
+    'def adds function to scope': function (test) {
+        try {
+            var program = '(def (sum a b) (+ a b))';
+            var ast = Parser.parse(program);
+            Interpreter.evaluate(this.scope, ast);
+            test.ok(ScopeHandler.get(this.scope, 'sum'));
+            test.done();
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     },
 
-    'defined functions can be run': function (test) {
-        var program = "(define (sum a b) (+ a b))\n(define c (sum 1 2))";
-        var ast = Parser.parse(program);
-        Interpreter.evaluate(this.scope, ast);
-        test.ok(ScopeHandler.get(this.scope, 'sum'));
-        test.equal(ScopeHandler.get(this.scope, 'c'), 3);
-        test.done();
+    'user defined functions can be run': function (test) {
+        try {
+            var program = "(def (sum a b) (+ a b))\n(let c (sum 1 2))";
+            var ast = Parser.parse(program);
+            Interpreter.evaluate(this.scope, ast);
+            test.ok(ScopeHandler.get(this.scope, 'sum'), 'sum function is in scope');
+            test.equal(ScopeHandler.get(this.scope, 'c'), 3, 'function call result is 3');
+            test.done();
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     },
 
     'lambdas can be run': function (test) {
-        var program = "(define l (lambda (a b) (+ a b)))\n(define c (l 1 2))";
-        var ast = Parser.parse(program);
-        Interpreter.evaluate(this.scope, ast);
-        test.ok(ScopeHandler.get(this.scope, 'l'));
-        test.equal(ScopeHandler.get(this.scope, 'c'), 3);
-        test.done();
+        try {
+            var program = "(let l (lambda (a b) (+ a b)))\n(let c (l 1 2))";
+            var ast = Parser.parse(program);
+            Interpreter.evaluate(this.scope, ast);
+            test.ok(ScopeHandler.get(this.scope, 'l'));
+            test.equal(ScopeHandler.get(this.scope, 'c'), 3);
+            test.done();
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    },
+
+    'notes can be defined': function (test) {
+        try {
+            var program = "(let n 'C#2)";
+            var ast = Parser.parse(program);
+            Interpreter.evaluate(this.scope, ast);
+            test.ok(ScopeHandler.get(this.scope, 'n'), 'note value is defined');
+            test.done();
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     }
 
 

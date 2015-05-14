@@ -1,17 +1,17 @@
 
 module.exports = {
 
-    Define: function (name, expression) {
+    LetDefinition: function (name, expression) {
         return {
-            type: "DEFINE",
+            type: "LETDEFINITION",
             name: name,
             expression: expression
         };
     },
 
-    DefineFunction: function (name, args, body) {
+    FunctionDefinition: function (name, args, body) {
         return {
-            type: "DEFINEFUNCTION",
+            type: "FUNCTIONDEFINITION",
             name: name,
             args: args,
             body: body
@@ -80,13 +80,6 @@ module.exports = {
         };
     },
 
-    Character: function (value) {
-        return {
-            type: "CHARACTER",
-            value: value
-        };
-    },
-
     Str: function (value) {
         return {
             type: "CHARACTER",
@@ -101,10 +94,41 @@ module.exports = {
         };
     },
 
+    Note: function (note, octave) {
+        return {
+            type: "NOTE",
+            value: (note + " in octave " + octave),
+            note: note,
+            octave: octave
+        };
+    },
+
+    Beat: function (value) {
+        return {
+            type: "BEAT",
+            value: value
+        };
+    },
+
     List: function (values) {
         return {
             type: "LIST",
             values: values
+        };
+    },
+
+    Map: function (entries) {
+        return {
+            type: "MAP",
+            entries: entries
+        };
+    },
+
+    MapPair: function (key, value) {
+        return {
+            type: "MAPPAIR",
+            key: key,
+            value: value
         };
     },
 
