@@ -17,7 +17,7 @@ var createCore = function (audioContext, dispatcher) {
     var interpreter = Interpreter.create(scopeHandler);
     var globalScope = scopeHandler.createScope();
 
-    StdLib.addFunctions(audio, dispatcher, scopeHandler, globalScope);
+    StdLib.add(audio, dispatcher, scopeHandler, globalScope);
 
     Core.handleCode = function (code) {
         var ast;
