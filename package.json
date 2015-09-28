@@ -9,7 +9,7 @@
     "gendemos": "./scripts/progbuild.py ./src/demos ./src/generated",
     "gentutorials": "./scripts/progbuild.py ./src/tutorials ./src/generated",
     "genparser": "jison src/grammar/soundlang.jison -o src/generated/jison-parser.js -m commonjs",
-    "compile": "browserify . > ./dist/app.js",
+    "compile": "browserify .  -t babelify -o ./dist/app.js",
     "prebuild": "npm run genparser & npm run gendemos & npm run gentutorials",
     "build": "npm run compile",
     "postbuild": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css;",
@@ -21,6 +21,7 @@
     "serve": "http-server ./dist"
   },
   "devDependencies": {
+    "babelify": "^6.3.0",
     "browserify": "^9.0.8",
     "http-server": "^0.8.0",
     "jison": "^0.4.15",
