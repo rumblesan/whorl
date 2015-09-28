@@ -1,31 +1,31 @@
 /*jslint browser: true */
 
-var $ = require('../lib/jquery-2.1.3');
+const $ = require('../lib/jquery-2.1.3');
 
-var Dispatch = require('./util/dispatcher');
+const Dispatch = require('./util/dispatcher');
 
-var NavBar = require('./navbar');
-var Editor = require('./editor');
-var Terminal = require('./terminal');
-var Core = require('./core');
-var AudioSystem = require('./audio');
+const NavBar = require('./navbar');
+const Editor = require('./editor');
+const Terminal = require('./terminal');
+const Core = require('./core');
+const AudioSystem = require('./audio');
 
-var Whorl = {};
+const Whorl = {};
 
 Whorl.create = function () {
 
-    var dispatcher = Dispatch.create();
+    const dispatcher = Dispatch.create();
 
-    var navbar = NavBar.create(dispatcher);
+    NavBar.create(dispatcher);
 
-    var terminal = Terminal.create($("#terminal-body"), dispatcher);
+    const terminal = Terminal.create($('#terminal-body'), dispatcher);
 
-    var editor = Editor.create($('#program'), dispatcher);
+    Editor.create($('#program'), dispatcher);
 
     try {
-        var audioContext = AudioSystem.createContext(window);
+        const audioContext = AudioSystem.createContext(window);
 
-        var core = Core.create(audioContext, dispatcher);
+        Core.create(audioContext, dispatcher);
 
         terminal.displayHeader();
     } catch (e) {
