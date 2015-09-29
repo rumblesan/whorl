@@ -82,7 +82,7 @@ module.exports = {
 
     Str: function (value) {
         return {
-            type: "CHARACTER",
+            type: "STRING",
             value: value
         };
     },

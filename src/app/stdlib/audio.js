@@ -124,7 +124,7 @@ var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
 
     ScopeHandler.addFF(scope, 'routeToMaster',
         function(sourceSynth) {
-            audio.Synth.connectSynthToInput(
+            audio.Synth.connectSynthToInputs(
                 audio.masterOut, 'master',
                 sourceSynth, 'default'
             );
@@ -134,13 +134,13 @@ var addFunctions = function (audio, dispatcher, ScopeHandler, scope) {
     // TODO Thicket should really be handling the name of the input
     ScopeHandler.addFF(scope, 'connectSynthToInput',
         function(synth, inputName, sourceSynth) {
-            audio.Synth.connectSynthToInput(synth, inputName, sourceSynth, 'default');
+            audio.Synth.connectSynthToInputs(synth, inputName, sourceSynth, 'default');
         }
     );
 
     ScopeHandler.addFF(scope, 'connectToInput',
         function(synth, inputName, sourceSynth) {
-            audio.Synth.connectToInput(synth, inputName, sourceSynth, 'default');
+            audio.Synth.connectToInputs(synth, inputName, sourceSynth, 'default');
         }
     );
 
