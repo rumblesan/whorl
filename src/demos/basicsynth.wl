@@ -1,14 +1,14 @@
 
 ; defining a basic synth
 
-(define basic
+(let basic
   (amp
     (osc (param "freq" 440) "square")
     (arEnv 0.1 0.2)
   )
 )
 
-(define synth (createSynth basic))
+(let synth (createSynth basic))
 
 (routeToMaster synth)
 
