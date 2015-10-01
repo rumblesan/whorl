@@ -28,7 +28,8 @@ Audio.createSystem = function (audioCtx) {
         Audio.AST.Param('mastervolume', 0.5)
     );
 
-    system.masterOut = thicket.Synth.create(masterOut, audioCtx.destination);
+    system.masterOut = thicket.Effects.create(masterOut);
+    thicket.Synth.connectToMasterOut(system.masterOut, 'default');
 
     return system;
 };
