@@ -4,15 +4,17 @@
   "description": "A web based audio live coding environment",
   "main": "src/main.js",
   "author": "Guy John",
-  "license": "BSD-3",
+  "license": "BSD-3-Clause",
+  "repository": "rumblesan/whorl",
   "scripts": {
     "gendemos": "./scripts/progbuild.py ./src/demos ./src/generated",
     "gentutorials": "./scripts/progbuild.py ./src/tutorials ./src/generated",
     "genparser": "jison src/grammar/soundlang.jison -o src/generated/jison-parser.js -m commonjs",
-    "compile": "browserify .  -t babelify -o ./dist/app.js",
-    "prebuild": "npm run genparser & npm run gendemos & npm run gentutorials",
-    "build": "npm run compile",
-    "postbuild": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css;",
+    "gen": "npm run genparser & npm run gendemos & npm run gentutorials",
+    "browserify": "browserify .  -t babelify -o ./dist/app.js",
+    "statics": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css;",
+    "build": "npm run gen && npm run browserify && npm run statics",
+    "watch": "watchify . -t babelify -o ./dist/app.js",
     "clean": "rm -rf ./dist/* ./src/generated/*",
     "test": "nodeunit tests",
     "prepages": "npm run build",
@@ -20,12 +22,15 @@
     "postpages": "git checkout master;",
     "serve": "http-server ./dist"
   },
+  "dependencies": {
+    "thicket": "git://github.com/rumblesan/thicket.git"
+  },
   "devDependencies": {
     "babelify": "^6.3.0",
-    "browserify": "^9.0.8",
+    "browserify": "^11.2.0",
     "http-server": "^0.8.0",
-    "jison": "git@github.com:rumblesan/jison.git#strictfix",
+    "jison": "rumblesan/jison#strictfix",
     "nodeunit": "^0.9.1",
-    "thicket": "git://github.com/rumblesan/thicket.git"
+    "watchify": "^3.4.0"
   }
 }
