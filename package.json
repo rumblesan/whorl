@@ -7,20 +7,7 @@
   "license": "BSD-3-Clause",
   "repository": "rumblesan/whorl",
   "scripts": {
-    "gendemos": "./scripts/progbuild.py ./src/demos ./src/generated",
-    "gentutorials": "./scripts/progbuild.py ./src/tutorials ./src/generated",
-    "genparser": "jison src/grammar/soundlang.jison -o src/generated/jison-parser.js -m commonjs",
-    "gen": "npm run genparser & npm run gendemos & npm run gentutorials",
-    "browserify": "browserify .  -t babelify -o ./dist/app.js",
-    "statics": "cp -r ./html/* ./dist/; cat ./style/*.css > ./dist/style.css;",
-    "build": "npm run gen && npm run browserify && npm run statics",
-    "watch": "watchify . -t babelify -o ./dist/app.js",
-    "clean": "rm -rf ./dist/* ./src/generated/*",
-    "test": "nodeunit tests",
-    "prepages": "npm run build",
-    "pages": "git checkout gh-pages; cp ./dist/* .; git add app.js index.html style.css favicon.ico; git ci -m 'Updating pages'; git push origin gh-pages",
-    "postpages": "git checkout master;",
-    "serve": "http-server ./dist"
+    "test": "nodeunit tests"
   },
   "dependencies": {
     "thicket": "git://github.com/rumblesan/thicket.git"

@@ -1,0 +1,54 @@
+#! /usr/bin/env bash
+
+function generate {
+    echo ">> Generating Demos"
+    ./scripts/progbuild.py ./src/demos ./src/generated
+    echo ">> Generating Tutorials"
+    ./scripts/progbuild.py ./src/tutorials ./src/generated
+    echo ">> Generating Parser"
+    jison src/grammar/soundlang.jison -o src/generated/jison-parser.js -m commonjs
+}
+
+function buildjs {
+    echo ">> Building JavaScript"
+    browserify ./src/main.js -t [ babelify --ignore "codemirror" --ignore "jquery" ] -o ./dist/app.js
+}
+
+function statics {
+    echo ">> Handling Statics"
+    cp -r ./html/* ./dist/
+    cat ./style/*.css > ./dist/style.css
+}
+
+function build {
+    echo ">> Building App"
+    generate
+    buildjs
+    statics
+}
+
+function clean {
+    echo ">> Cleaning"
+    rm -rf ./dist/* ./src/generated/*
+}
+
+function test {
+    echo ">> Testing"
+    nodeunit tests
+}
+
+function serve {
+    echo ">> Serve"
+    http-server ./dist
+}
+
+function ghpage {
+    echo ">> Build Github Pages"
+    jspages "app.js" "index.html" "style.css" "favicon.ico"
+}
+
+function watch {
+    echo ">> Watch"
+    watchify ./src/main.js -t babelify -o ./dist/app.js
+}
+
