@@ -44,7 +44,31 @@ function serve {
 
 function ghpage {
     echo ">> Build Github Pages"
-    jspages "app.js" "index.html" "style.css" "favicon.ico"
+
+    declare -a files=( "app.js" "index.html" "style.css" "favicon.ico" )
+    build
+
+    git checkout gh-pages
+
+    cp -r ./dist/* .;
+
+    for f in "${files[@]}"
+    do
+        if [ -e "$f" ]; then
+            echo "Adding $f"
+            git add "$f"
+        fi
+    done
+
+    git ci -m 'Updating pages'
+    git push origin gh-pages
+
+    if [ "$CREATE_BRANCH" == "y" ]; then
+        git clean -dfx
+    fi
+
+    git checkout master
+
 }
 
 function watch {
