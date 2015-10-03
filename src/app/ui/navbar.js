@@ -21,7 +21,7 @@ const createTutorialMenu = function (dispatcher) {
 
     const tutlist = $('#tutoriallist');
 
-    Tutorials.names.map((name) => {
+    Tutorials.names.forEach((name) => {
         const listel = $(
             `<li><a data-prog="${name}">${name}</a></li>`
         );
@@ -41,7 +41,7 @@ const createDemoMenu = function (dispatcher) {
 
     const demolist = $('#demolist');
 
-    Demos.names.map((name) => {
+    Demos.names.forEach((name) => {
         const listel = $(
             `<li><a data-prog="${name}">${name}</a></li>`
         );

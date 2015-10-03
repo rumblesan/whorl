@@ -11,7 +11,7 @@ export const create = () => {
 
     DispatcherObj.dispatch = function (eventName , ...args) {
         const cbList = callbacks[eventName] || [];
-        cbList.map((cb) => cb.apply({}, args));
+        cbList.forEach((cb) => cb.apply({}, args));
     };
 
     DispatcherObj.unregister = function (eventName, callback) {
