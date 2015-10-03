@@ -58,6 +58,9 @@ var createInterpreter = function (ScopeHandler) {
             case "BOOLEAN":
                 output = astExpr.value;
                 break;
+            case "UNDEFINED":
+                output = astExpr.value;
+                break;
             case "NUMBER":
                 output = astExpr.value;
                 break;

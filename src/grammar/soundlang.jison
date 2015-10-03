@@ -150,6 +150,7 @@ Identifier
 /* Literals */
 Literal
     : Boolean
+    | Undefined
     | Number
     | String
     | Symbol
@@ -164,6 +165,11 @@ Boolean
         { $$ = Ast.Bool(true); }
     | t_false
         { $$ = Ast.Bool(false); }
+    ;
+
+Undefined
+    : t_undefined
+        { $$ = Ast.Undefined(); }
     ;
 
 Number

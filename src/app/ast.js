@@ -66,6 +66,13 @@ module.exports = {
         };
     },
 
+    Undefined: function (value) {
+        return {
+            type: "UNDEFINED",
+            value: "undefined"
+        };
+    },
+
     Bool: function (value) {
         return {
             type: "BOOLEAN",
