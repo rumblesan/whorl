@@ -206,8 +206,6 @@ Beat
 List
     : t_oparen t_list Expression* t_cparen
         { $$ = Ast.List($3); }
-    | t_obracket Expression* t_cbracket
-        { $$ = Ast.List($3); }
     ;
 
 // TODO
