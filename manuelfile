@@ -1,12 +1,15 @@
 #! /usr/bin/env bash
 
+function parser {
+    echo ">> Generating Parser"
+    jison src/grammar/soundlang.jison -o src/generated/jison-parser.js -m commonjs
+}
+
 function generate {
     echo ">> Generating Demos"
     ./scripts/progbuild.py ./src/demos ./src/generated
     echo ">> Generating Tutorials"
     ./scripts/progbuild.py ./src/tutorials ./src/generated
-    echo ">> Generating Parser"
-    jison src/grammar/soundlang.jison -o src/generated/jison-parser.js -m commonjs
 }
 
 function buildjs {
@@ -22,6 +25,7 @@ function statics {
 
 function build {
     echo ">> Building App"
+    parser
     generate
     buildjs
     statics
