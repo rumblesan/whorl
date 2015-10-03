@@ -1,41 +1,37 @@
 
 import * as Thicket from 'thicket';
 
-module.exports = {
+export const helpers = Thicket.helpers;
 
-    helpers: Thicket.helpers,
+export const AST = Thicket.AST;
 
-    AST: Thicket.AST,
+export const createContext = Thicket.createContext;
 
-    createContext: Thicket.createContext,
+export const createSystem = (audioCtx) => {
 
-    createSystem: function (audioCtx) {
+    const thicket = Thicket.createSystem(audioCtx);
 
-        const thicket = Thicket.createSystem(audioCtx);
-
-        const masterOut = Thicket.AST.Amp(
-            Thicket.AST.Compressor(
-                Thicket.AST.Amp(
-                    Thicket.AST.Input('master'),
-                    0.4
-                ),
-                -50, 3, -20, -20, 0, 0.3
+    const masterOut = Thicket.AST.Amp(
+        Thicket.AST.Compressor(
+            Thicket.AST.Amp(
+                Thicket.AST.Input('master'),
+                0.4
             ),
-            Thicket.AST.Param('mastervolume', 0.5)
-        );
+            -50, 3, -20, -20, 0, 0.3
+        ),
+        Thicket.AST.Param('mastervolume', 0.5)
+    );
 
-        const system = {
+    const system = {
 
-            Synth: thicket.Synth,
+        Synth: thicket.Synth,
 
-            masterOut: thicket.Effects.create(masterOut)
+        masterOut: thicket.Effects.create(masterOut)
 
-        };
+    };
 
-        thicket.Synth.connectToMasterOut(system.masterOut, 'default');
+    thicket.Synth.connectToMasterOut(system.masterOut, 'default');
 
-        return system;
-    }
-
+    return system;
 };
 
