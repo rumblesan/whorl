@@ -1,38 +1,41 @@
 
-var Thicket = require('thicket');
+const Thicket = require('thicket');
 
-var Audio = {};
+module.exports = {
 
-Audio.helpers = Thicket.helpers;
+    helpers: Thicket.helpers,
 
-Audio.AST = Thicket.AST;
+    AST: Thicket.AST,
 
-Audio.createContext = Thicket.createContext;
+    createContext: Thicket.createContext,
 
-Audio.createSystem = function (audioCtx) {
+    createSystem: function (audioCtx) {
 
-    var thicket = Thicket.createSystem(audioCtx);
+        const thicket = Thicket.createSystem(audioCtx);
 
-    var system = {};
-
-    system.Synth = thicket.Synth;
-
-    var masterOut = Audio.AST.Amp(
-        Audio.AST.Compressor(
-            Audio.AST.Amp(
-                Audio.AST.Input('master'),
-                0.4
+        const masterOut = Thicket.AST.Amp(
+            Thicket.AST.Compressor(
+                Thicket.AST.Amp(
+                    Thicket.AST.Input('master'),
+                    0.4
+                ),
+                -50, 3, -20, -20, 0, 0.3
             ),
-            -50, 3, -20, -20, 0, 0.3
-        ),
-        Audio.AST.Param('mastervolume', 0.5)
-    );
+            Thicket.AST.Param('mastervolume', 0.5)
+        );
 
-    system.masterOut = thicket.Effects.create(masterOut);
-    thicket.Synth.connectToMasterOut(system.masterOut, 'default');
+        const system = {
 
-    return system;
+            Synth: thicket.Synth,
+
+            masterOut: thicket.Effects.create(masterOut)
+
+        };
+
+        thicket.Synth.connectToMasterOut(system.masterOut, 'default');
+
+        return system;
+    }
+
 };
-
-module.exports = Audio;
 
