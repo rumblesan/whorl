@@ -1,21 +1,23 @@
 
-var createError = function (lines) {
+export const create = function (type, message, details) {
 
-    var InternalError = {
+    let InternalError = {
         internal: true,
+        type: type,
+        details: details,
         message: []
     };
 
-    if ( typeof lines === 'string' ) {
-        InternalError.message = [lines];
+    if ( typeof message === 'string' ) {
+        InternalError.message = [message];
     } else {
-        InternalError.message = lines;
+        InternalError.message = message;
     }
 
     return InternalError;
 };
 
-
-module.exports = {
-    create: createError
+export const types = {
+    parse: 'Parse'
 };
+
