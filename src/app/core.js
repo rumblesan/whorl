@@ -7,7 +7,7 @@ import * as AudioSystem  from './audio';
 
 import * as Parser       from './language/parser';
 
-export const create = function (audioContext, dispatcher) {
+export const create = (audioContext, dispatcher) => {
 
     const audio        = AudioSystem.createSystem(audioContext);
     const interpreter  = Interpreter.create(ScopeHandler);

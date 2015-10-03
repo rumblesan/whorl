@@ -19,6 +19,8 @@ export const create = function (type, message, details) {
 
 export const types = {
     parse: 'Parse',
-    undefVar: 'Undefined Variable'
+    undefVar: 'Undefined Variable',
+    invalidAST: 'Invalid AST',
+    application: 'Invalid Application'
 };
 

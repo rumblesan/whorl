@@ -1,109 +1,98 @@
 
-var Error = require('../error');
-var Ast = require('./ast');
+import * as Error from '../error';
+import * as Ast   from './ast';
 
-var createInterpreter = function (ScopeHandler) {
+export const create = (ScopeHandler) => {
 
-    var Interpreter = {};
-    var internal = {};
-
-    // scope is a dictionary, stored in and passed in by the Core
-    Interpreter.evaluate = function (scope, ast) {
-        internal.evaluateBlock(scope, ast);
-    };
-
-    Interpreter.apply = function(scope, closure, args) {
-        internal.handleApplication(scope, closure, args);
-    };
+    let internal = {};
 
     internal.evaluateBlock = function (scope, ast) {
-        var i, r, expr, results = [];
-        for (i = 0; i < ast.length; i += 1) {
-            expr = ast[i];
-            r = internal.evaluateExpression(scope, expr);
-            results.push(r);
-        }
-        return results;
+        return ast.map((expr) => {
+            return internal.evaluateExpression(scope, expr);
+        });
     };
 
     internal.evaluateExpression = function (scope, astExpr) {
 
-        var output;
+        let output;
 
         switch(astExpr.type) {
-            case "LETDEFINITION":
-                output = internal.handleLetDefinition(scope, astExpr);
-                break;
-            case "FUNCTIONDEFINITION":
-                output = internal.handleFunctionDefinition(scope, astExpr);
-                break;
-            case "BODY":
-                output = internal.handleBody(scope, astExpr);
-                break;
-            case "VARIABLE":
-                output = internal.handleVariable(scope, astExpr);
-                break;
-            case "LAMBDA":
-                output = internal.handleLambda(scope, astExpr);
-                break;
-            case "IF":
-                output = internal.handleIf(scope, astExpr);
-                break;
-            case "IFELSE":
-                output = internal.handleIfElse(scope, astExpr);
-                break;
-            case "APPLICATION":
-                output = internal.handleApplicationExpression(scope, astExpr);
-                break;
-            case "BOOLEAN":
-                output = astExpr.value;
-                break;
-            case "UNDEFINED":
-                output = astExpr.value;
-                break;
-            case "NUMBER":
-                output = astExpr.value;
-                break;
-            case "STRING":
-                output = astExpr.value;
-                break;
-            case "SYMBOL":
-                output = astExpr.value;
-                break;
-            case "NOTE":
-                output = astExpr.value;
-                break;
-            case "BEAT":
-                output = astExpr.value;
-                break;
-            case "LIST":
-                output = internal.handleList(scope, astExpr);
-                break;
-            case "MAP":
-                output = internal.handleMap(scope, astExpr);
-                break;
-            case "MAPPAIR":
-                output = internal.handleMapPair(scope, astExpr);
-                break;
-            default:
-                throw Error.create("AST Expression not valid: " + astExpr.type);
+        case 'LETDEFINITION':
+            output = internal.handleLetDefinition(scope, astExpr);
+            break;
+        case 'FUNCTIONDEFINITION':
+            output = internal.handleFunctionDefinition(scope, astExpr);
+            break;
+        case 'BODY':
+            output = internal.handleBody(scope, astExpr);
+            break;
+        case 'VARIABLE':
+            output = internal.handleVariable(scope, astExpr);
+            break;
+        case 'LAMBDA':
+            output = internal.handleLambda(scope, astExpr);
+            break;
+        case 'IF':
+            output = internal.handleIf(scope, astExpr);
+            break;
+        case 'IFELSE':
+            output = internal.handleIfElse(scope, astExpr);
+            break;
+        case 'APPLICATION':
+            output = internal.handleApplicationExpression(scope, astExpr);
+            break;
+        case 'BOOLEAN':
+            output = astExpr.value;
+            break;
+        case 'UNDEFINED':
+            output = astExpr.value;
+            break;
+        case 'NUMBER':
+            output = astExpr.value;
+            break;
+        case 'STRING':
+            output = astExpr.value;
+            break;
+        case 'SYMBOL':
+            output = astExpr.value;
+            break;
+        case 'NOTE':
+            output = astExpr.value;
+            break;
+        case 'BEAT':
+            output = astExpr.value;
+            break;
+        case 'LIST':
+            output = internal.handleList(scope, astExpr);
+            break;
+        case 'MAP':
+            output = internal.handleMap(scope, astExpr);
+            break;
+        case 'MAPPAIR':
+            output = internal.handleMapPair(scope, astExpr);
+            break;
+        default:
+            throw Error.create(
+                Error.types.invalidAST,
+                `AST Expression not valid: ${astExpr.type}`
+            );
         }
         return output;
     };
 
     internal.handleLetDefinition = function (scope, define) {
-        var defName = define.name;
-        var defValue = internal.evaluateExpression(scope, define.expression);
+        const defName = define.name;
+        const defValue = internal.evaluateExpression(scope, define.expression);
 
         ScopeHandler.set(scope, defName, defValue);
         return defValue;
     };
 
     internal.handleFunctionDefinition = function (scope, defineFunction) {
-        var functionName = defineFunction.name;
-        var functionArgNames = defineFunction.args;
-        var functionBody = defineFunction.body;
-        var functionValue = Ast.Func(functionArgNames, functionBody);
+        const functionName = defineFunction.name;
+        const functionArgNames = defineFunction.args;
+        const functionBody = defineFunction.body;
+        const functionValue = Ast.Func(functionArgNames, functionBody);
 
         ScopeHandler.set(scope, functionName, functionValue);
         return functionValue;
@@ -123,8 +112,8 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleIf = function (scope, ifNode) {
-        var predicate = internal.evaluateExpression(scope, ifNode.predicate);
-        var value;
+        const predicate = internal.evaluateExpression(scope, ifNode.predicate);
+        let value;
         if (predicate === true || predicate !== 0) {
             value = internal.evaluateBlock(scope, ifNode.expression);
         } else {
@@ -134,8 +123,8 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleIfElse = function (scope, ifElse) {
-        var predicate = internal.evaluateExpression(scope, ifElse.predicate);
-        var value;
+        const predicate = internal.evaluateExpression(scope, ifElse.predicate);
+        let value;
         if (predicate === true || predicate !== 0) {
             value = internal.evaluateBlock(scope, ifElse.trueExpression);
         } else {
@@ -145,57 +134,56 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleApplicationExpression = function (scope, application) {
-        var target = internal.evaluateExpression(scope, application.target);
-        var applicationArgs = application.args;
+        const target = internal.evaluateExpression(scope, application.target);
+        const applicationArgs = application.args;
 
-        var evaluatedArgs = [];
-        var i;
-        for (i = 0; i < applicationArgs.length; i += 1) {
-            evaluatedArgs.push(
-                internal.evaluateExpression(scope, applicationArgs[i])
-            );
-        }
+        const evaluatedArgs = applicationArgs.map((arg) => {
+            return internal.evaluateExpression(scope, arg);
+        });
 
         return internal.handleApplication(scope, target, evaluatedArgs);
     };
 
     internal.handleApplication = function (scope, applicationData, evaluatedArgs) {
-        var result;
+        let result;
         switch (applicationData.type) {
-            case "FUNCTION":
-                result = internal.handleFunction(
-                    scope, applicationData, evaluatedArgs
-                );
-                break;
-            case "BUILTIN":
-                result = internal.handleBuiltIn(
-                    scope, applicationData, evaluatedArgs
-                );
-                break;
-            case "CLOSURE":
-                result = internal.handleFunction(
-                    applicationData.scope, applicationData, evaluatedArgs
-                );
-                break;
-            default:
-                throw Error.create(
-                    "Application type not valid: " + applicationData.type
-                );
+        case 'FUNCTION':
+            result = internal.handleFunction(
+                scope, applicationData, evaluatedArgs
+            );
+            break;
+        case 'BUILTIN':
+            result = internal.handleBuiltIn(
+                scope, applicationData, evaluatedArgs
+            );
+            break;
+        case 'CLOSURE':
+            result = internal.handleFunction(
+                applicationData.scope, applicationData, evaluatedArgs
+            );
+            break;
+        default:
+            throw Error.create(
+                Error.types.application,
+                `Application type not valid: ${applicationData.type}`
+            );
         }
         return result;
     };
 
     internal.handleFunction = function(scope, func, functionArgs) {
-        var functionArgNames = func.argNames;
-        var functionBody     = func.body;
+        const functionArgNames = func.argNames;
+        const functionBody     = func.body;
 
         if (functionArgs.length !== functionArgNames.length) {
-            throw Error.create("Incorrect argument number");
+            throw Error.create(
+                Error.types.application,
+                'Incorrect argument number'
+            );
         }
 
-        var childScope = ScopeHandler.createChildScope(scope);
-        var i;
-        for (i = 0; i < functionArgNames.length; i += 1) {
+        let childScope = ScopeHandler.createChildScope(scope);
+        for (let i = 0; i < functionArgNames.length; i += 1) {
             ScopeHandler.set(childScope, functionArgNames[i], functionArgs[i]);
         }
 
@@ -203,46 +191,49 @@ var createInterpreter = function (ScopeHandler) {
     };
 
     internal.handleBuiltIn = function(scope, builtIn, functionArgs) {
-        var func = builtIn.func;
+        const func = builtIn.func;
 
         if (functionArgs.length !== func.length) {
-            throw Error.create("Incorrect argument number");
+            throw Error.create(
+                Error.types.application,
+                'Incorrect argument number'
+            );
         }
 
-        var childScope = ScopeHandler.createChildScope(scope);
+        const childScope = ScopeHandler.createChildScope(scope);
         // function args have already been evaluated
         return func.apply(childScope, functionArgs);
     };
 
     internal.handleList = function (scope, list) {
-        var i, r, listExpressions = list.values, results = [];
-        for (i = 0; i < listExpressions.length; i += 1) {
-            r = internal.evaluateExpression(scope, listExpressions[i]);
-            results.push(r);
-        }
-        return results;
+        return list.values.map((lExp) => {
+            return internal.evaluateExpression(scope, lExp);
+        });
     };
 
     internal.handleMap = function (scope, map) {
-        var i, e, entries = map.entries, result = {};
-        for (i = 0; i < entries.length; i += 1) {
-            e = internal.evaluateExpression(entries[i]);
-            result[e.key] = e.value;
-        }
-        return result;
+        return map.entries.map((mExp) => {
+            return internal.evaluateExpression(scope, mExp);
+        });
     };
 
     internal.handleMapPair = function (scope, pair) {
-        var k, v;
-        k = internal.evaluateExpression(scope, pair.key);
-        v = internal.evaluateExpression(scope, pair.value);
-        return { key: k, value: v };
+        return {
+            k: internal.evaluateExpression(scope, pair.key),
+            v: internal.evaluateExpression(scope, pair.value)
+        };
     };
 
-    return Interpreter;
-};
+    return {
+        // scope is a dictionary, stored in and passed in by the Core
+        evaluate: function (scope, ast) {
+            internal.evaluateBlock(scope, ast);
+        },
 
-module.exports = {
-    create: createInterpreter
+        apply: function(scope, closure, args) {
+            internal.handleApplication(scope, closure, args);
+        }
+    };
+
 };
 

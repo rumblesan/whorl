@@ -2,14 +2,14 @@
 
 const $ = require('../lib/jquery-2.1.3');
 
-const Dispatch = require('./util/dispatcher');
+import * as Dispatch    from './util/dispatcher';
 
-import * as NavBar   from './ui/navbar';
-import * as Editor   from './ui/editor';
-import * as Terminal from './ui/terminal';
+import * as NavBar      from './ui/navbar';
+import * as Editor      from './ui/editor';
+import * as Terminal    from './ui/terminal';
 
-const Core = require('./core');
-const AudioSystem = require('./audio');
+import * as Core        from './core';
+import * as AudioSystem from './audio';
 
 const Whorl = {};
 
