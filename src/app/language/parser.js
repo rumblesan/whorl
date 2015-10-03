@@ -1,6 +1,6 @@
 
-var JisonParser = require('../generated/jison-parser').parser;
-import * as Error from './error';
+var JisonParser = require('../../generated/jison-parser').parser;
+import * as Error from '../error';
 
 var createParser = function () {
 

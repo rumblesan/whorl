@@ -1,5 +1,5 @@
 
-var Error = require('./error');
+var Error = require('../error');
 var Ast = require('./ast');
 
 var createInterpreter = function (ScopeHandler) {

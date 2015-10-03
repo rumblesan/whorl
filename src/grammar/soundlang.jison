@@ -63,7 +63,7 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 
 %{
 
-var Ast = require('../app/ast');
+var Ast = require('../app/language/ast');
 
 %}
 
