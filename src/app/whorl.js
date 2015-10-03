@@ -5,7 +5,7 @@ const $ = require('../lib/jquery-2.1.3');
 const Dispatch = require('./util/dispatcher');
 
 const NavBar = require('./navbar');
-const Editor = require('./editor');
+import * as Editor from './editor';
 const Terminal = require('./terminal');
 const Core = require('./core');
 const AudioSystem = require('./audio');

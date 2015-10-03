@@ -1,32 +1,33 @@
 
+// Use require so that plugins load correctly
 var CodeMirror = require('../codemirror/lib/codemirror');
-require('../codemirror/keymap/vim');
-require('../codemirror/mode/scheme/scheme');
+import '../codemirror/keymap/vim';
+import '../codemirror/mode/scheme/scheme';
 
-var createEditor = function (editorEl, dispatcher) {
+export const create = function (editorEl, dispatcher) {
 
-    CodeMirror.Vim.defineAction('execute', function (cm, args, vim) {
-        var code = cm.doc.getSelection();
+    CodeMirror.Vim.defineAction('execute', (cm, args, vim) => {
+        const code = cm.doc.getSelection();
         dispatcher.dispatch('execute-code', code);
     });
 
     // unwrap from jquery
-    var editor = CodeMirror(editorEl[0], {
+    const editor = CodeMirror(editorEl[0], {
         mode: 'scheme'
     });
 
-    editor.setOption("extraKeys", {
-      "Ctrl-G": function(cm) {
-        var code = cm.doc.getSelection();
-        dispatcher.dispatch('execute-code', code);
-      }
+    editor.setOption('extraKeys', {
+        'Ctrl-G': function(cm) {
+            const code = cm.doc.getSelection();
+            dispatcher.dispatch('execute-code', code);
+        }
     });
 
-    dispatcher.register('load-program', function (programName, programData) {
+    dispatcher.register('load-program', (programName, programData) => {
         editor.doc.setValue(programData);
     });
 
-    dispatcher.register('set-key-binding', function (bindingName) {
+    dispatcher.register('set-key-binding', (bindingName) => {
         editor.setOption('keymap', bindingName);
         if (bindingName === 'vim') {
             editor.setOption('vimMode', true);
@@ -36,9 +37,5 @@ var createEditor = function (editorEl, dispatcher) {
     });
 
     return editor;
-};
-
-module.exports = {
-    create: createEditor
 };
 
