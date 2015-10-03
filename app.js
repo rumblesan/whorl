@@ -1482,242 +1482,89 @@ module.exports = util;
 
 
 },{}],14:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-
-    LetDefinition: function LetDefinition(name, expression) {
-        return {
-            type: "LETDEFINITION",
-            name: name,
-            expression: expression
-        };
-    },
-
-    FunctionDefinition: function FunctionDefinition(name, args, body) {
-        return {
-            type: "FUNCTIONDEFINITION",
-            name: name,
-            args: args,
-            body: body
-        };
-    },
-
-    Body: function Body(definitions, expressions) {
-        return {
-            type: "BODY",
-            definitions: definitions,
-            expressions: expressions
-        };
-    },
-
-    Variable: function Variable(name) {
-        return {
-            type: "VARIABLE",
-            name: name
-        };
-    },
-
-    Lambda: function Lambda(argNames, body) {
-        return {
-            type: "LAMBDA",
-            argNames: argNames,
-            body: body
-        };
-    },
-
-    If: function If(predicate, expression) {
-        return {
-            type: "IF",
-            predicate: predicate,
-            expression: expression
-        };
-    },
-
-    IfElse: function IfElse(predicate, trueExpression, falseExpression) {
-        return {
-            type: "IFELSE",
-            predicate: predicate,
-            trueExpression: trueExpression,
-            falseExpression: falseExpression
-        };
-    },
-
-    Application: function Application(target, args) {
-        return {
-            type: "APPLICATION",
-            target: target,
-            args: args
-        };
-    },
-
-    Bool: function Bool(value) {
-        return {
-            type: "BOOLEAN",
-            value: value
-        };
-    },
-
-    Num: function Num(value) {
-        return {
-            type: "NUMBER",
-            value: value
-        };
-    },
-
-    Str: function Str(value) {
-        return {
-            type: "STRING",
-            value: value
-        };
-    },
-
-    Symbol: function Symbol(value) {
-        return {
-            type: "SYMBOL",
-            value: value
-        };
-    },
-
-    Note: function Note(note, octave) {
-        return {
-            type: "NOTE",
-            value: note + " in octave " + octave,
-            note: note,
-            octave: octave
-        };
-    },
-
-    Beat: function Beat(value) {
-        return {
-            type: "BEAT",
-            value: value
-        };
-    },
-
-    List: function List(values) {
-        return {
-            type: "LIST",
-            values: values
-        };
-    },
-
-    Map: function Map(entries) {
-        return {
-            type: "MAP",
-            entries: entries
-        };
-    },
-
-    MapPair: function MapPair(key, value) {
-        return {
-            type: "MAPPAIR",
-            key: key,
-            value: value
-        };
-    },
-
-    /* Applications
-     * Not created by parser but by interpreter
-     **/
-    Func: function Func(argNames, body) {
-        return {
-            type: "FUNCTION",
-            argNames: argNames,
-            body: body
-        };
-    },
-
-    BuiltIn: function BuiltIn(func) {
-        return {
-            type: "BUILTIN",
-            func: func
-        };
-    },
-
-    Closure: function Closure(argNames, body, scope) {
-        return {
-            type: "CLOSURE",
-            argNames: argNames,
-            body: body,
-            scope: scope
-        };
-    }
-
-};
-
-},{}],15:[function(require,module,exports){
 'use strict';
 
-var Thicket = require('thicket');
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
 
-var Audio = {};
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-Audio.helpers = Thicket.helpers;
+var _thicket = require('thicket');
 
-Audio.AST = Thicket.AST;
+var Thicket = _interopRequireWildcard(_thicket);
 
-Audio.createContext = Thicket.createContext;
+var helpers = Thicket.helpers;
 
-Audio.createSystem = function (audioCtx) {
+exports.helpers = helpers;
+var AST = Thicket.AST;
+
+exports.AST = AST;
+var createContext = Thicket.createContext;
+
+exports.createContext = createContext;
+var createSystem = function createSystem(audioCtx) {
 
     var thicket = Thicket.createSystem(audioCtx);
 
-    var system = {};
+    var masterOut = Thicket.AST.Amp(Thicket.AST.Compressor(Thicket.AST.Amp(Thicket.AST.Input('master'), 0.4), -50, 3, -20, -20, 0, 0.3), Thicket.AST.Param('mastervolume', 0.5));
 
-    system.Synth = thicket.Synth;
+    var system = {
 
-    var masterOut = Audio.AST.Amp(Audio.AST.Compressor(Audio.AST.Amp(Audio.AST.Input('master'), 0.4), -50, 3, -20, -20, 0, 0.3), Audio.AST.Param('mastervolume', 0.5));
+        Synth: thicket.Synth,
 
-    system.masterOut = thicket.Effects.create(masterOut);
+        masterOut: thicket.Effects.create(masterOut)
+
+    };
+
     thicket.Synth.connectToMasterOut(system.masterOut, 'default');
 
     return system;
 };
+exports.createSystem = createSystem;
 
-module.exports = Audio;
-
-},{"thicket":10}],16:[function(require,module,exports){
+},{"thicket":10}],15:[function(require,module,exports){
 'use strict';
 
-var StdLib = require('./stdlib');
-var ScopeHandler = require('./scopeHandler');
-var Interpreter = require('./interpreter');
-var Error = require('./error');
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
 
-var AudioSystem = require('./audio');
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-var Parser = require('./parser').create();
+var _stdlib = require('./stdlib');
 
-var createCore = function createCore(audioContext, dispatcher) {
+var StdLib = _interopRequireWildcard(_stdlib);
 
-    var Core = {};
+var _languageScopeHandler = require('./language/scopeHandler');
+
+var ScopeHandler = _interopRequireWildcard(_languageScopeHandler);
+
+var _languageInterpreter = require('./language/interpreter');
+
+var Interpreter = _interopRequireWildcard(_languageInterpreter);
+
+var _audio = require('./audio');
+
+var AudioSystem = _interopRequireWildcard(_audio);
+
+var _languageParser = require('./language/parser');
+
+var Parser = _interopRequireWildcard(_languageParser);
+
+var create = function create(audioContext, dispatcher) {
 
     var audio = AudioSystem.createSystem(audioContext);
-    var scopeHandler = ScopeHandler.create();
-    var interpreter = Interpreter.create(scopeHandler);
-    var globalScope = scopeHandler.createScope();
+    var globalScope = ScopeHandler.createScope();
 
-    StdLib.add(audio, dispatcher, scopeHandler, globalScope);
+    StdLib.add(audio, dispatcher, globalScope);
 
-    Core.handleCode = function (code) {
-        var ast;
-        try {
-            ast = Parser.parse(code);
-            interpreter.evaluate(globalScope, ast);
-        } catch (err) {
-            if (err.internal === true) {
-                Core.displayError(err);
-            } else {
-                throw err;
-            }
-        }
-    };
+    var Core = {
 
-    Core.scheduleCallback = function (time, closure) {
-        setTimeout(function () {
+        handleCode: function handleCode(code) {
             try {
-                interpreter.apply(globalScope, closure, []);
+                var ast = Parser.parse(code);
+                Interpreter.evaluate(globalScope, ast);
             } catch (err) {
                 if (err.internal === true) {
                     Core.displayError(err);
@@ -1725,18 +1572,31 @@ var createCore = function createCore(audioContext, dispatcher) {
                     throw err;
                 }
             }
-        }, time);
-    };
+        },
 
-    Core.displayError = function (err) {
-        console.log(err);
-        var errLines;
-        if (typeof err.message === 'string') {
-            errLines = [err.message];
-        } else {
-            errLines = err.message;
+        scheduleCallback: function scheduleCallback(time, closure) {
+            setTimeout(function () {
+                try {
+                    Interpreter.apply(globalScope, closure, []);
+                } catch (err) {
+                    if (err.internal === true) {
+                        Core.displayError(err);
+                    } else {
+                        throw err;
+                    }
+                }
+            }, time);
+        },
+
+        displayError: function displayError(err) {
+            var errLines = undefined;
+            if (typeof err.message === 'string') {
+                errLines = [err.message];
+            } else {
+                errLines = err.message;
+            }
+            dispatcher.dispatch('term-error', errLines.join('\n'));
         }
-        dispatcher.dispatch('term-error', errLines.join("\n"));
     };
 
     dispatcher.register('execute-code', function (code) {
@@ -1749,19 +1609,838 @@ var createCore = function createCore(audioContext, dispatcher) {
 
     return Core;
 };
+exports.create = create;
 
-module.exports = {
-    create: createCore
-};
-
-},{"./audio":15,"./error":18,"./interpreter":19,"./parser":21,"./scopeHandler":22,"./stdlib":25}],17:[function(require,module,exports){
+},{"./audio":14,"./language/interpreter":18,"./language/parser":19,"./language/scopeHandler":20,"./stdlib":23}],16:[function(require,module,exports){
 'use strict';
 
-var CodeMirror = require('../codemirror/lib/codemirror');
-require('../codemirror/keymap/vim');
-require('../codemirror/mode/scheme/scheme');
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+var create = function create(type, message, details) {
 
-var createEditor = function createEditor(editorEl, dispatcher) {
+    var InternalError = {
+        internal: true,
+        type: type,
+        details: details,
+        message: []
+    };
+
+    if (typeof message === 'string') {
+        InternalError.message = [message];
+    } else {
+        InternalError.message = message;
+    }
+
+    return InternalError;
+};
+
+exports.create = create;
+var types = {
+    parse: 'Parse',
+    undefVar: 'Undefined Variable',
+    invalidAST: 'Invalid AST',
+    application: 'Invalid Application'
+};
+exports.types = types;
+
+},{}],17:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+var LetDefinition = function LetDefinition(name, expression) {
+    return {
+        type: 'LETDEFINITION',
+        name: name,
+        expression: expression
+    };
+};
+
+exports.LetDefinition = LetDefinition;
+var FunctionDefinition = function FunctionDefinition(name, args, body) {
+    return {
+        type: 'FUNCTIONDEFINITION',
+        name: name,
+        args: args,
+        body: body
+    };
+};
+
+exports.FunctionDefinition = FunctionDefinition;
+var Body = function Body(definitions, expressions) {
+    return {
+        type: 'BODY',
+        definitions: definitions,
+        expressions: expressions
+    };
+};
+
+exports.Body = Body;
+var Variable = function Variable(name) {
+    return {
+        type: 'VARIABLE',
+        name: name
+    };
+};
+
+exports.Variable = Variable;
+var Lambda = function Lambda(argNames, body) {
+    return {
+        type: 'LAMBDA',
+        argNames: argNames,
+        body: body
+    };
+};
+
+exports.Lambda = Lambda;
+var If = function If(predicate, expression) {
+    return {
+        type: 'IF',
+        predicate: predicate,
+        expression: expression
+    };
+};
+
+exports.If = If;
+var IfElse = function IfElse(predicate, trueExpression, falseExpression) {
+    return {
+        type: 'IFELSE',
+        predicate: predicate,
+        trueExpression: trueExpression,
+        falseExpression: falseExpression
+    };
+};
+
+exports.IfElse = IfElse;
+var Application = function Application(target, args) {
+    return {
+        type: 'APPLICATION',
+        target: target,
+        args: args
+    };
+};
+
+exports.Application = Application;
+var Undefined = function Undefined() {
+    return {
+        type: 'UNDEFINED',
+        value: 'undefined'
+    };
+};
+
+exports.Undefined = Undefined;
+var Bool = function Bool(value) {
+    return {
+        type: 'BOOLEAN',
+        value: value
+    };
+};
+
+exports.Bool = Bool;
+var Num = function Num(value) {
+    return {
+        type: 'NUMBER',
+        value: value
+    };
+};
+
+exports.Num = Num;
+var Str = function Str(value) {
+    return {
+        type: 'STRING',
+        value: value
+    };
+};
+
+exports.Str = Str;
+var Symb = function Symb(value) {
+    return {
+        type: 'SYMBOL',
+        value: value
+    };
+};
+
+exports.Symb = Symb;
+var Note = function Note(note, octave) {
+    return {
+        type: 'NOTE',
+        value: note + ' in octave ' + octave,
+        note: note,
+        octave: octave
+    };
+};
+
+exports.Note = Note;
+var Beat = function Beat(value) {
+    return {
+        type: 'BEAT',
+        value: value
+    };
+};
+
+exports.Beat = Beat;
+var List = function List(values) {
+    return {
+        type: 'LIST',
+        values: values
+    };
+};
+
+exports.List = List;
+var Map = function Map(entries) {
+    return {
+        type: 'MAP',
+        entries: entries
+    };
+};
+
+exports.Map = Map;
+var MapPair = function MapPair(key, value) {
+    return {
+        type: 'MAPPAIR',
+        key: key,
+        value: value
+    };
+};
+
+exports.MapPair = MapPair;
+/* Applications
+ * Not created by parser but by interpreter
+ **/
+var Func = function Func(argNames, body) {
+    return {
+        type: 'FUNCTION',
+        argNames: argNames,
+        body: body
+    };
+};
+
+exports.Func = Func;
+var BuiltIn = function BuiltIn(func) {
+    return {
+        type: 'BUILTIN',
+        func: func
+    };
+};
+
+exports.BuiltIn = BuiltIn;
+var Closure = function Closure(argNames, body, scope) {
+    return {
+        type: 'CLOSURE',
+        argNames: argNames,
+        body: body,
+        scope: scope
+    };
+};
+exports.Closure = Closure;
+
+},{}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _error = require('../error');
+
+var Error = _interopRequireWildcard(_error);
+
+var _ast = require('./ast');
+
+var Ast = _interopRequireWildcard(_ast);
+
+var _scopeHandler = require('./scopeHandler');
+
+var ScopeHandler = _interopRequireWildcard(_scopeHandler);
+
+var evaluateBlock = function evaluateBlock(scope, ast) {
+    return ast.map(function (expr) {
+        return evaluateExpression(scope, expr);
+    });
+};
+
+var evaluateExpression = function evaluateExpression(scope, astExpr) {
+
+    var output = undefined;
+
+    switch (astExpr.type) {
+        case 'LETDEFINITION':
+            output = handleLetDefinition(scope, astExpr);
+            break;
+        case 'FUNCTIONDEFINITION':
+            output = handleFunctionDefinition(scope, astExpr);
+            break;
+        case 'BODY':
+            output = handleBody(scope, astExpr);
+            break;
+        case 'VARIABLE':
+            output = handleVariable(scope, astExpr);
+            break;
+        case 'LAMBDA':
+            output = handleLambda(scope, astExpr);
+            break;
+        case 'IF':
+            output = handleIf(scope, astExpr);
+            break;
+        case 'IFELSE':
+            output = handleIfElse(scope, astExpr);
+            break;
+        case 'APPLICATION':
+            output = handleApplicationExpression(scope, astExpr);
+            break;
+        case 'BOOLEAN':
+            output = astExpr.value;
+            break;
+        case 'UNDEFINED':
+            output = astExpr.value;
+            break;
+        case 'NUMBER':
+            output = astExpr.value;
+            break;
+        case 'STRING':
+            output = astExpr.value;
+            break;
+        case 'SYMBOL':
+            output = astExpr.value;
+            break;
+        case 'NOTE':
+            output = astExpr.value;
+            break;
+        case 'BEAT':
+            output = astExpr.value;
+            break;
+        case 'LIST':
+            output = handleList(scope, astExpr);
+            break;
+        case 'MAP':
+            output = handleMap(scope, astExpr);
+            break;
+        case 'MAPPAIR':
+            output = handleMapPair(scope, astExpr);
+            break;
+        default:
+            throw Error.create(Error.types.invalidAST, 'AST Expression not valid: ' + astExpr.type);
+    }
+    return output;
+};
+
+var handleLetDefinition = function handleLetDefinition(scope, define) {
+    var defName = define.name;
+    var defValue = evaluateExpression(scope, define.expression);
+
+    ScopeHandler.set(scope, defName, defValue);
+    return defValue;
+};
+
+var handleFunctionDefinition = function handleFunctionDefinition(scope, defineFunction) {
+    var functionName = defineFunction.name;
+    var functionArgNames = defineFunction.args;
+    var functionBody = defineFunction.body;
+    var functionValue = Ast.Func(functionArgNames, functionBody);
+
+    ScopeHandler.set(scope, functionName, functionValue);
+    return functionValue;
+};
+
+var handleBody = function handleBody(scope, body) {
+    evaluateBlock(scope, body.definitions);
+    return evaluateBlock(scope, body.expressions);
+};
+
+var handleVariable = function handleVariable(scope, variable) {
+    return ScopeHandler.get(scope, variable.name);
+};
+
+var handleLambda = function handleLambda(scope, lambda) {
+    return Ast.Closure(lambda.argNames, lambda.body, scope);
+};
+
+var handleIf = function handleIf(scope, ifNode) {
+    var predicate = evaluateExpression(scope, ifNode.predicate);
+    var value = undefined;
+    if (predicate === true || predicate !== 0) {
+        value = evaluateBlock(scope, ifNode.expression);
+    } else {
+        value = false;
+    }
+    return value;
+};
+
+var handleIfElse = function handleIfElse(scope, ifElse) {
+    var predicate = evaluateExpression(scope, ifElse.predicate);
+    var value = undefined;
+    if (predicate === true || predicate !== 0) {
+        value = evaluateBlock(scope, ifElse.trueExpression);
+    } else {
+        value = evaluateBlock(scope, ifElse.falseExpression);
+    }
+    return value;
+};
+
+var handleApplicationExpression = function handleApplicationExpression(scope, application) {
+    var target = evaluateExpression(scope, application.target);
+    var applicationArgs = application.args;
+
+    var evaluatedArgs = applicationArgs.map(function (arg) {
+        return evaluateExpression(scope, arg);
+    });
+
+    return handleApplication(scope, target, evaluatedArgs);
+};
+
+var handleApplication = function handleApplication(scope, applicationData, evaluatedArgs) {
+    var result = undefined;
+    switch (applicationData.type) {
+        case 'FUNCTION':
+            result = handleFunction(scope, applicationData, evaluatedArgs);
+            break;
+        case 'BUILTIN':
+            result = handleBuiltIn(scope, applicationData, evaluatedArgs);
+            break;
+        case 'CLOSURE':
+            result = handleFunction(applicationData.scope, applicationData, evaluatedArgs);
+            break;
+        default:
+            throw Error.create(Error.types.application, 'Application type not valid: ' + applicationData.type);
+    }
+    return result;
+};
+
+var handleFunction = function handleFunction(scope, func, functionArgs) {
+    var functionArgNames = func.argNames;
+    var functionBody = func.body;
+
+    if (functionArgs.length !== functionArgNames.length) {
+        throw Error.create(Error.types.application, 'Incorrect argument number');
+    }
+
+    var childScope = ScopeHandler.createChildScope(scope);
+    for (var i = 0; i < functionArgNames.length; i += 1) {
+        ScopeHandler.set(childScope, functionArgNames[i], functionArgs[i]);
+    }
+
+    return evaluateExpression(childScope, functionBody);
+};
+
+var handleBuiltIn = function handleBuiltIn(scope, builtIn, functionArgs) {
+    var func = builtIn.func;
+
+    if (functionArgs.length !== func.length) {
+        throw Error.create(Error.types.application, 'Incorrect argument number');
+    }
+
+    var childScope = ScopeHandler.createChildScope(scope);
+    // function args have already been evaluated
+    return func.apply(childScope, functionArgs);
+};
+
+var handleList = function handleList(scope, list) {
+    return list.values.map(function (lExp) {
+        return evaluateExpression(scope, lExp);
+    });
+};
+
+var handleMap = function handleMap(scope, map) {
+    return map.entries.map(function (mExp) {
+        return evaluateExpression(scope, mExp);
+    });
+};
+
+var handleMapPair = function handleMapPair(scope, pair) {
+    return {
+        k: evaluateExpression(scope, pair.key),
+        v: evaluateExpression(scope, pair.value)
+    };
+};
+
+// scope is a dictionary, stored in and passed in by the Core
+var evaluate = function evaluate(scope, ast) {
+    evaluateBlock(scope, ast);
+};
+
+exports.evaluate = evaluate;
+var apply = function apply(scope, closure, args) {
+    handleApplication(scope, closure, args);
+};
+exports.apply = apply;
+
+},{"../error":16,"./ast":17,"./scopeHandler":20}],19:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _generatedJisonParser = require('../../generated/jison-parser');
+
+var JisonParser = _interopRequireWildcard(_generatedJisonParser);
+
+var _error = require('../error');
+
+var Error = _interopRequireWildcard(_error);
+
+JisonParser.parser.yy.parseError = function (message, details) {
+    throw Error.create(Error.types.parse, message.split('\n'), details);
+};
+
+exports['default'] = JisonParser;
+module.exports = exports['default'];
+
+},{"../../generated/jison-parser":39,"../error":16}],20:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _error = require('../error');
+
+var Error = _interopRequireWildcard(_error);
+
+var _ast = require('./ast');
+
+var Ast = _interopRequireWildcard(_ast);
+
+var createScope = function createScope() {
+    return {};
+};
+
+exports.createScope = createScope;
+var createChildScope = function createChildScope(parentScope) {
+    return Object.create(parentScope);
+};
+
+exports.createChildScope = createChildScope;
+var set = function set(scope, name, value) {
+    scope[name] = value;
+};
+
+exports.set = set;
+var get = function get(scope, name) {
+    var v = scope[name];
+    if (v === undefined) {
+        throw Error.create(Error.types.undefVar, 'No variable with that name: ' + name);
+    } else {
+        return v;
+    }
+};
+
+exports.get = get;
+var addFF = function addFF(scope, name, func) {
+    scope[name] = Ast.BuiltIn(func);
+};
+exports.addFF = addFF;
+
+},{"../error":16,"./ast":17}],21:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _audio = require('../audio');
+
+var Audio = _interopRequireWildcard(_audio);
+
+var _languageScopeHandler = require('../language/scopeHandler');
+
+var ScopeHandler = _interopRequireWildcard(_languageScopeHandler);
+
+var add = function add(audio, dispatcher, scope) {
+
+    ScopeHandler.addFF(scope, 'input', function (name) {
+        return Audio.AST.Input(name);
+    });
+
+    ScopeHandler.addFF(scope, 'param', function (name, defaultValue) {
+        return Audio.AST.Param(name, defaultValue);
+    });
+
+    ScopeHandler.addFF(scope, 'mix', function () {
+        var _Audio$AST;
+
+        return (_Audio$AST = Audio.AST).Mix.apply(_Audio$AST, arguments);
+    });
+
+    ScopeHandler.addFF(scope, 'multiply', function (source, factor) {
+        return Audio.AST.Multiply(source, factor);
+    });
+
+    ScopeHandler.addFF(scope, 'arEnv', function (attack, decay) {
+        return Audio.AST.AREnvelope(attack, decay);
+    });
+
+    ScopeHandler.addFF(scope, 'osc', function (frequency, wave) {
+        return Audio.AST.Oscillator(frequency, wave);
+    });
+
+    ScopeHandler.addFF(scope, 'noise', function (noiseType) {
+        return Audio.AST.Noise(noiseType);
+    });
+
+    ScopeHandler.addFF(scope, 'filter', function (source, filterType, frequency, resonance) {
+        return Audio.AST.Filter(source, filterType, frequency, resonance);
+    });
+
+    ScopeHandler.addFF(scope, 'delay', function (source, delayTime, delayMax, feedback) {
+        return Audio.AST.Delay(source, delayTime, delayMax, feedback);
+    });
+
+    ScopeHandler.addFF(scope, 'compressor', function (source, threshold, ratio, knee, reduction, attack, release) {
+        return Audio.AST.Compressor(source, threshold, ratio, knee, reduction, attack, release);
+    });
+
+    ScopeHandler.addFF(scope, 'amp', function (source, volume) {
+        return Audio.AST.Amp(source, volume);
+    });
+
+    /**
+     * Functions for playing built synths
+     */
+    ScopeHandler.addFF(scope, 'createSynth', function (dspGraph) {
+        return audio.Synth.create(dspGraph);
+    });
+
+    ScopeHandler.addFF(scope, 'setParam', function (synth, paramName, paramValue) {
+        audio.Synth.setParam(synth, paramName, paramValue);
+    });
+
+    ScopeHandler.addFF(scope, 'getParam', function (synth, paramName) {
+        return audio.Synth.getParam(synth, paramName);
+    });
+
+    ScopeHandler.addFF(scope, 'start', function (synth, parameterList) {
+        audio.Synth.start(synth, parameterList);
+    });
+
+    ScopeHandler.addFF(scope, 'stop', function (synth) {
+        audio.Synth.stop(synth);
+    });
+
+    ScopeHandler.addFF(scope, 'play', function (synth, playLength) {
+        audio.Synth.play(synth, playLength, []);
+    });
+
+    ScopeHandler.addFF(scope, 'getInputs', function (synth, inputName) {
+        audio.Synth.getInputs(synth, inputName);
+    });
+
+    ScopeHandler.addFF(scope, 'getOutput', function (synth, outputName) {
+        audio.Synth.getOutput(synth, outputName);
+    });
+
+    ScopeHandler.addFF(scope, 'routeToMaster', function (sourceSynth) {
+        audio.Synth.connectSynthToInputs(audio.masterOut, 'master', sourceSynth, 'default');
+    });
+
+    // TODO Thicket should really be handling the name of the input
+    ScopeHandler.addFF(scope, 'connectSynthToInputs', function (synth, inputName, sourceSynth) {
+        audio.Synth.connectSynthToInputs(synth, inputName, sourceSynth, 'default');
+    });
+
+    ScopeHandler.addFF(scope, 'connectToInput', function (synth, inputName, sourceSynth) {
+        audio.Synth.connectToInput(synth, inputName, sourceSynth, 'default');
+    });
+
+    ScopeHandler.addFF(scope, 'setMultiple', function (synth, parameterList) {
+        var i = undefined;
+        for (i = 0; i < parameterList.length; i += 2) {
+            audio.Synth.setParam(synth, parameterList[i], parameterList[i + 1]);
+        }
+    });
+};
+exports.add = add;
+
+},{"../audio":14,"../language/scopeHandler":20}],22:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _languageScopeHandler = require('../language/scopeHandler');
+
+var ScopeHandler = _interopRequireWildcard(_languageScopeHandler);
+
+var add = function add(audio, dispatcher, scope) {
+
+    ScopeHandler.addFF(scope, '==', function (a, b) {
+        return a === b;
+    });
+    ScopeHandler.addFF(scope, '!=', function (a, b) {
+        return a !== b;
+    });
+    ScopeHandler.addFF(scope, '>', function (a, b) {
+        return a > b;
+    });
+    ScopeHandler.addFF(scope, '<', function (a, b) {
+        return a < b;
+    });
+    ScopeHandler.addFF(scope, '>=', function (a, b) {
+        return a >= b;
+    });
+    ScopeHandler.addFF(scope, '<=', function (a, b) {
+        return a <= b;
+    });
+};
+exports.add = add;
+
+},{"../language/scopeHandler":20}],23:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _math = require('./math');
+
+var MathFuncs = _interopRequireWildcard(_math);
+
+var _comparison = require('./comparison');
+
+var Comparison = _interopRequireWildcard(_comparison);
+
+var _logic = require('./logic');
+
+var Logic = _interopRequireWildcard(_logic);
+
+var _timing = require('./timing');
+
+var Timing = _interopRequireWildcard(_timing);
+
+var _audio = require('./audio');
+
+var Audio = _interopRequireWildcard(_audio);
+
+var _languageScopeHandler = require('../language/scopeHandler');
+
+var ScopeHandler = _interopRequireWildcard(_languageScopeHandler);
+
+var add = function add(audio, dispatcher, scope) {
+
+    MathFuncs.add(audio, dispatcher, scope);
+    Comparison.add(audio, dispatcher, scope);
+    Logic.add(audio, dispatcher, scope);
+    Timing.add(audio, dispatcher, scope);
+    Audio.add(audio, dispatcher, scope);
+
+    ScopeHandler.addFF(scope, 'display', function (data) {
+        dispatcher.dispatch('term-message', data);
+    });
+};
+exports.add = add;
+
+},{"../language/scopeHandler":20,"./audio":21,"./comparison":22,"./logic":24,"./math":25,"./timing":26}],24:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _languageScopeHandler = require('../language/scopeHandler');
+
+var ScopeHandler = _interopRequireWildcard(_languageScopeHandler);
+
+var add = function add(audio, dispatcher, scope) {
+    ScopeHandler.addFF(scope, '&&', function (a, b) {
+        return a && b;
+    });
+    ScopeHandler.addFF(scope, '||', function (a, b) {
+        return a || b;
+    });
+    ScopeHandler.addFF(scope, '!', function (a) {
+        return !a;
+    });
+};
+exports.add = add;
+
+},{"../language/scopeHandler":20}],25:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _languageScopeHandler = require('../language/scopeHandler');
+
+var ScopeHandler = _interopRequireWildcard(_languageScopeHandler);
+
+var add = function add(audio, dispatcher, scope) {
+    ScopeHandler.addFF(scope, '+', function (a, b) {
+        return a + b;
+    });
+    ScopeHandler.addFF(scope, '-', function (a, b) {
+        return a - b;
+    });
+    ScopeHandler.addFF(scope, '*', function (a, b) {
+        return a * b;
+    });
+    ScopeHandler.addFF(scope, '/', function (a, b) {
+        return a / b;
+    });
+    ScopeHandler.addFF(scope, '^', function (a, b) {
+        return a ^ b;
+    });
+    ScopeHandler.addFF(scope, '%', function (a, b) {
+        return a % b;
+    });
+};
+exports.add = add;
+
+},{"../language/scopeHandler":20}],26:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _languageScopeHandler = require('../language/scopeHandler');
+
+var ScopeHandler = _interopRequireWildcard(_languageScopeHandler);
+
+var add = function add(audio, dispatcher, scope) {
+    // time in ms
+    ScopeHandler.addFF(scope, 'schedule', function (time, closure) {
+        dispatcher.dispatch('schedule-callback', time, closure);
+    });
+};
+exports.add = add;
+
+},{"../language/scopeHandler":20}],27:[function(require,module,exports){
+
+// Use require so that plugins load correctly
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+require('../../codemirror/keymap/vim');
+
+require('../../codemirror/mode/scheme/scheme');
+
+var CodeMirror = require('../../codemirror/lib/codemirror');
+var create = function create(editorEl, dispatcher) {
 
     CodeMirror.Vim.defineAction('execute', function (cm, args, vim) {
         var code = cm.doc.getSelection();
@@ -1773,8 +2452,8 @@ var createEditor = function createEditor(editorEl, dispatcher) {
         mode: 'scheme'
     });
 
-    editor.setOption("extraKeys", {
-        "Ctrl-G": function CtrlG(cm) {
+    editor.setOption('extraKeys', {
+        'Ctrl-G': function CtrlG(cm) {
             var code = cm.doc.getSelection();
             dispatcher.dispatch('execute-code', code);
         }
@@ -1795,313 +2474,50 @@ var createEditor = function createEditor(editorEl, dispatcher) {
 
     return editor;
 };
+exports.create = create;
 
-module.exports = {
-    create: createEditor
-};
-
-},{"../codemirror/keymap/vim":35,"../codemirror/lib/codemirror":36,"../codemirror/mode/scheme/scheme":37}],18:[function(require,module,exports){
+},{"../../codemirror/keymap/vim":35,"../../codemirror/lib/codemirror":36,"../../codemirror/mode/scheme/scheme":37}],28:[function(require,module,exports){
 'use strict';
 
-var createError = function createError(lines) {
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
 
-    var InternalError = {
-        internal: true,
-        message: []
-    };
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-    if (typeof lines === 'string') {
-        InternalError.message = [lines];
-    } else {
-        InternalError.message = lines;
-    }
+var _generatedDemos = require('../../generated/demos');
 
-    return InternalError;
-};
+var Demos = _interopRequireWildcard(_generatedDemos);
 
-module.exports = {
-    create: createError
-};
+var _generatedTutorials = require('../../generated/tutorials');
 
-},{}],19:[function(require,module,exports){
-'use strict';
+var Tutorials = _interopRequireWildcard(_generatedTutorials);
 
-var Error = require('./error');
-var Ast = require('./ast');
+var $ = require('../../lib/jquery-2.1.3');
 
-var createInterpreter = function createInterpreter(ScopeHandler) {
-
-    var Interpreter = {};
-    var internal = {};
-
-    // scope is a dictionary, stored in and passed in by the Core
-    Interpreter.evaluate = function (scope, ast) {
-        internal.evaluateBlock(scope, ast);
-    };
-
-    Interpreter.apply = function (scope, closure, args) {
-        internal.handleApplication(scope, closure, args);
-    };
-
-    internal.evaluateBlock = function (scope, ast) {
-        var i,
-            r,
-            expr,
-            results = [];
-        for (i = 0; i < ast.length; i += 1) {
-            expr = ast[i];
-            r = internal.evaluateExpression(scope, expr);
-            results.push(r);
-        }
-        return results;
-    };
-
-    internal.evaluateExpression = function (scope, astExpr) {
-
-        var output;
-
-        switch (astExpr.type) {
-            case "LETDEFINITION":
-                output = internal.handleLetDefinition(scope, astExpr);
-                break;
-            case "FUNCTIONDEFINITION":
-                output = internal.handleFunctionDefinition(scope, astExpr);
-                break;
-            case "BODY":
-                output = internal.handleBody(scope, astExpr);
-                break;
-            case "VARIABLE":
-                output = internal.handleVariable(scope, astExpr);
-                break;
-            case "LAMBDA":
-                output = internal.handleLambda(scope, astExpr);
-                break;
-            case "IF":
-                output = internal.handleIf(scope, astExpr);
-                break;
-            case "IFELSE":
-                output = internal.handleIfElse(scope, astExpr);
-                break;
-            case "APPLICATION":
-                output = internal.handleApplicationExpression(scope, astExpr);
-                break;
-            case "BOOLEAN":
-                output = astExpr.value;
-                break;
-            case "NUMBER":
-                output = astExpr.value;
-                break;
-            case "STRING":
-                output = astExpr.value;
-                break;
-            case "SYMBOL":
-                output = astExpr.value;
-                break;
-            case "NOTE":
-                output = astExpr.value;
-                break;
-            case "BEAT":
-                output = astExpr.value;
-                break;
-            case "LIST":
-                output = internal.handleList(scope, astExpr);
-                break;
-            case "MAP":
-                output = internal.handleMap(scope, astExpr);
-                break;
-            case "MAPPAIR":
-                output = internal.handleMapPair(scope, astExpr);
-                break;
-            default:
-                throw Error.create("AST Expression not valid: " + astExpr.type);
-        }
-        return output;
-    };
-
-    internal.handleLetDefinition = function (scope, define) {
-        var defName = define.name;
-        var defValue = internal.evaluateExpression(scope, define.expression);
-
-        ScopeHandler.set(scope, defName, defValue);
-        return defValue;
-    };
-
-    internal.handleFunctionDefinition = function (scope, defineFunction) {
-        var functionName = defineFunction.name;
-        var functionArgNames = defineFunction.args;
-        var functionBody = defineFunction.body;
-        var functionValue = Ast.Func(functionArgNames, functionBody);
-
-        ScopeHandler.set(scope, functionName, functionValue);
-        return functionValue;
-    };
-
-    internal.handleBody = function (scope, body) {
-        internal.evaluateBlock(scope, body.definitions);
-        return internal.evaluateBlock(scope, body.expressions);
-    };
-
-    internal.handleVariable = function (scope, variable) {
-        return ScopeHandler.get(scope, variable.name);
-    };
-
-    internal.handleLambda = function (scope, lambda) {
-        return Ast.Closure(lambda.argNames, lambda.body, scope);
-    };
-
-    internal.handleIf = function (scope, ifNode) {
-        var predicate = internal.evaluateExpression(scope, ifNode.predicate);
-        var value;
-        if (predicate === true || predicate !== 0) {
-            value = internal.evaluateBlock(scope, ifNode.expression);
-        } else {
-            value = false;
-        }
-        return value;
-    };
-
-    internal.handleIfElse = function (scope, ifElse) {
-        var predicate = internal.evaluateExpression(scope, ifElse.predicate);
-        var value;
-        if (predicate === true || predicate !== 0) {
-            value = internal.evaluateBlock(scope, ifElse.trueExpression);
-        } else {
-            value = internal.evaluateBlock(scope, ifElse.falseExpression);
-        }
-        return value;
-    };
-
-    internal.handleApplicationExpression = function (scope, application) {
-        var target = internal.evaluateExpression(scope, application.target);
-        var applicationArgs = application.args;
-
-        var evaluatedArgs = [];
-        var i;
-        for (i = 0; i < applicationArgs.length; i += 1) {
-            evaluatedArgs.push(internal.evaluateExpression(scope, applicationArgs[i]));
-        }
-
-        return internal.handleApplication(scope, target, evaluatedArgs);
-    };
-
-    internal.handleApplication = function (scope, applicationData, evaluatedArgs) {
-        var result;
-        switch (applicationData.type) {
-            case "FUNCTION":
-                result = internal.handleFunction(scope, applicationData, evaluatedArgs);
-                break;
-            case "BUILTIN":
-                result = internal.handleBuiltIn(scope, applicationData, evaluatedArgs);
-                break;
-            case "CLOSURE":
-                result = internal.handleFunction(applicationData.scope, applicationData, evaluatedArgs);
-                break;
-            default:
-                throw Error.create("Application type not valid: " + applicationData.type);
-        }
-        return result;
-    };
-
-    internal.handleFunction = function (scope, func, functionArgs) {
-        var functionArgNames = func.argNames;
-        var functionBody = func.body;
-
-        if (functionArgs.length !== functionArgNames.length) {
-            throw Error.create("Incorrect argument number");
-        }
-
-        var childScope = ScopeHandler.createChildScope(scope);
-        var i;
-        for (i = 0; i < functionArgNames.length; i += 1) {
-            ScopeHandler.set(childScope, functionArgNames[i], functionArgs[i]);
-        }
-
-        return internal.evaluateExpression(childScope, functionBody);
-    };
-
-    internal.handleBuiltIn = function (scope, builtIn, functionArgs) {
-        var func = builtIn.func;
-
-        if (functionArgs.length !== func.length) {
-            throw Error.create("Incorrect argument number");
-        }
-
-        var childScope = ScopeHandler.createChildScope(scope);
-        // function args have already been evaluated
-        return func.apply(childScope, functionArgs);
-    };
-
-    internal.handleList = function (scope, list) {
-        var i,
-            r,
-            listExpressions = list.values,
-            results = [];
-        for (i = 0; i < listExpressions.length; i += 1) {
-            r = internal.evaluateExpression(scope, listExpressions[i]);
-            results.push(r);
-        }
-        return results;
-    };
-
-    internal.handleMap = function (scope, map) {
-        var i,
-            e,
-            entries = map.entries,
-            result = {};
-        for (i = 0; i < entries.length; i += 1) {
-            e = internal.evaluateExpression(entries[i]);
-            result[e.key] = e.value;
-        }
-        return result;
-    };
-
-    internal.handleMapPair = function (scope, pair) {
-        var k, v;
-        k = internal.evaluateExpression(scope, pair.key);
-        v = internal.evaluateExpression(scope, pair.value);
-        return { key: k, value: v };
-    };
-
-    return Interpreter;
-};
-
-module.exports = {
-    create: createInterpreter
-};
-
-},{"./ast":14,"./error":18}],20:[function(require,module,exports){
-'use strict';
-
-var Demos = require('../generated/demos');
-var Tutorials = require('../generated/tutorials');
-var $ = require('../lib/jquery-2.1.3');
-
-var NavBar = {};
-
-NavBar.createBindingsMenu = function (dispatcher) {
+var createBindingsMenu = function createBindingsMenu(dispatcher) {
 
     var keylist = $('#keybindings');
     keylist.append('<li><a data-binding="default">Default</a></li>');
     keylist.append('<li><a data-binding="vim">Vim</a></li>');
 
-    keylist.find('a').click(function (e) {
+    keylist.find('a').click(function () {
         var bindingName = $(this).data('binding');
         dispatcher.dispatch('set-key-binding', bindingName);
+        dispatcher.dispatch('term-message', 'Setting keybindings: ' + bindingName);
     });
 };
 
-NavBar.createTutorialMenu = function (dispatcher) {
+var createTutorialMenu = function createTutorialMenu(dispatcher) {
 
     var tutlist = $('#tutoriallist');
-    var name;
-    var listel;
-    var t;
-    for (t = 0; t < Tutorials.names.length; t += 1) {
-        name = Tutorials.names[t];
-        listel = $('<li><a data-prog="' + name + '">' + name + '</a></li>');
+
+    Tutorials.names.forEach(function (name) {
+        var listel = $('<li><a data-prog="' + name + '">' + name + '</a></li>');
         tutlist.append(listel);
-    }
-    tutlist.find('a').click(function (e) {
+    });
+
+    tutlist.find('a').click(function () {
         var programName = $(this).data('prog');
         var programData = Tutorials.data[programName];
         dispatcher.dispatch('load-program', programName, programData);
@@ -2109,18 +2525,15 @@ NavBar.createTutorialMenu = function (dispatcher) {
     });
 };
 
-NavBar.createDemoMenu = function (dispatcher) {
+var createDemoMenu = function createDemoMenu(dispatcher) {
 
     var demolist = $('#demolist');
-    var name;
-    var listel;
-    var d;
-    for (d = 0; d < Demos.names.length; d += 1) {
-        name = Demos.names[d];
-        listel = $('<li><a data-prog="' + name + '">' + name + '</a></li>');
+
+    Demos.names.forEach(function (name) {
+        var listel = $('<li><a data-prog="' + name + '">' + name + '</a></li>');
         demolist.append(listel);
-    }
-    demolist.find('a').click(function (e) {
+    });
+    demolist.find('a').click(function () {
         var programName = $(this).data('prog');
         var programData = Demos.data[programName];
         dispatcher.dispatch('load-program', programName, programData);
@@ -2128,315 +2541,20 @@ NavBar.createDemoMenu = function (dispatcher) {
     });
 };
 
-NavBar.create = function (dispatcher) {
-    NavBar.createTutorialMenu(dispatcher);
-    NavBar.createDemoMenu(dispatcher);
-    NavBar.createBindingsMenu(dispatcher);
+var create = function create(dispatcher) {
+    createTutorialMenu(dispatcher);
+    createDemoMenu(dispatcher);
+    createBindingsMenu(dispatcher);
 };
+exports.create = create;
 
-module.exports = NavBar;
-
-},{"../generated/demos":38,"../generated/tutorials":40,"../lib/jquery-2.1.3":41}],21:[function(require,module,exports){
+},{"../../generated/demos":38,"../../generated/tutorials":40,"../../lib/jquery-2.1.3":41}],29:[function(require,module,exports){
 'use strict';
 
-var JisonParser = require('../generated/jison-parser').parser;
-var Error = require('./error');
-
-var createParser = function createParser() {
-
-    var Parser = {};
-
-    JisonParser.yy.parseError = function (message, details) {
-        throw Error.create(message.split("\n"));
-    };
-
-    // Can raise an exception
-    Parser.parse = function (code) {
-        return JisonParser.parse(code);
-    };
-
-    return Parser;
-};
-
-module.exports = {
-    create: createParser
-};
-
-},{"../generated/jison-parser":39,"./error":18}],22:[function(require,module,exports){
-'use strict';
-
-var Error = require('./error');
-var Ast = require('./ast');
-
-var createScopeHandler = function createScopeHandler() {
-
-    var ScopeHandler = {};
-
-    ScopeHandler.createScope = function () {
-        return {};
-    };
-
-    ScopeHandler.createChildScope = function (parentScope) {
-        return Object.create(parentScope);
-    };
-
-    ScopeHandler.set = function (scope, name, value) {
-        scope[name] = value;
-    };
-
-    ScopeHandler.get = function (scope, name) {
-        var v = scope[name];
-        if (v === undefined) {
-            throw Error.create("No variable with that name: " + name);
-        } else {
-            return v;
-        }
-    };
-
-    ScopeHandler.addFF = function (scope, name, func) {
-        scope[name] = Ast.BuiltIn(func);
-    };
-
-    return ScopeHandler;
-};
-
-module.exports = {
-    create: createScopeHandler
-};
-
-},{"./ast":14,"./error":18}],23:[function(require,module,exports){
-'use strict';
-
-var Audio = require('../audio');
-
-module.exports = {
-
-    add: function add(audio, dispatcher, ScopeHandler, scope) {
-
-        ScopeHandler.addFF(scope, 'input', function (name) {
-            return Audio.AST.Input(name);
-        });
-
-        ScopeHandler.addFF(scope, 'param', function (name, defaultValue) {
-            return Audio.AST.Param(name, defaultValue);
-        });
-
-        ScopeHandler.addFF(scope, 'mix', function () {
-            var _Audio$AST;
-
-            return (_Audio$AST = Audio.AST).Mix.apply(_Audio$AST, arguments);
-        });
-
-        ScopeHandler.addFF(scope, 'multiply', function (source, factor) {
-            return Audio.AST.Multiply(source, factor);
-        });
-
-        ScopeHandler.addFF(scope, 'arEnv', function (attack, decay) {
-            return Audio.AST.AREnvelope(attack, decay);
-        });
-
-        ScopeHandler.addFF(scope, 'osc', function (frequency, wave) {
-            return Audio.AST.Oscillator(frequency, wave);
-        });
-
-        ScopeHandler.addFF(scope, 'noise', function (noiseType) {
-            return Audio.AST.Noise(noiseType);
-        });
-
-        ScopeHandler.addFF(scope, 'filter', function (source, filterType, frequency, resonance) {
-            return Audio.AST.Filter(source, filterType, frequency, resonance);
-        });
-
-        ScopeHandler.addFF(scope, 'delay', function (source, delayTime, delayMax, feedback) {
-            return Audio.AST.Delay(source, delayTime, delayMax, feedback);
-        });
-
-        ScopeHandler.addFF(scope, 'compressor', function (source, threshold, ratio, knee, reduction, attack, release) {
-            return Audio.AST.Compressor(source, threshold, ratio, knee, reduction, attack, release);
-        });
-
-        ScopeHandler.addFF(scope, 'amp', function (source, volume) {
-            return Audio.AST.Amp(source, volume);
-        });
-
-        /**
-         * Functions for playing built synths
-         */
-        ScopeHandler.addFF(scope, 'createSynth', function (dspGraph) {
-            var s = audio.Synth.create(dspGraph);
-            return s;
-        });
-
-        ScopeHandler.addFF(scope, 'setParam', function (synth, paramName, paramValue) {
-            audio.Synth.setParam(synth, paramName, paramValue);
-        });
-
-        ScopeHandler.addFF(scope, 'getParam', function (synth, paramName) {
-            return audio.Synth.getParam(synth, paramName);
-        });
-
-        ScopeHandler.addFF(scope, 'start', function (synth, parameterList) {
-            audio.Synth.start(synth, parameterList);
-        });
-
-        ScopeHandler.addFF(scope, 'stop', function (synth) {
-            audio.Synth.stop(synth);
-        });
-
-        ScopeHandler.addFF(scope, 'play', function (synth, playLength) {
-            audio.Synth.play(synth, playLength, []);
-        });
-
-        ScopeHandler.addFF(scope, 'getInputs', function (synth, inputName) {
-            audio.Synth.getInputs(synth, inputName);
-        });
-
-        ScopeHandler.addFF(scope, 'getOutput', function (synth, outputName) {
-            audio.Synth.getOutput(synth, outputName);
-        });
-
-        ScopeHandler.addFF(scope, 'routeToMaster', function (sourceSynth) {
-            audio.Synth.connectSynthToInputs(audio.masterOut, 'master', sourceSynth, 'default');
-        });
-
-        // TODO Thicket should really be handling the name of the input
-        ScopeHandler.addFF(scope, 'connectSynthToInputs', function (synth, inputName, sourceSynth) {
-            audio.Synth.connectSynthToInputs(synth, inputName, sourceSynth, 'default');
-        });
-
-        ScopeHandler.addFF(scope, 'connectToInput', function (synth, inputName, sourceSynth) {
-            audio.Synth.connectToInput(synth, inputName, sourceSynth, 'default');
-        });
-
-        ScopeHandler.addFF(scope, 'setMultiple', function (synth, parameterList) {
-            var i;
-            for (i = 0; i < parameterList.length; i += 2) {
-                audio.Synth.setParam(synth, parameterList[i], parameterList[i + 1]);
-            }
-        });
-    }
-};
-
-},{"../audio":15}],24:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-    add: function add(audio, dispatcher, ScopeHandler, scope) {
-        ScopeHandler.addFF(scope, '==', function (a, b) {
-            return a === b;
-        });
-        ScopeHandler.addFF(scope, '!=', function (a, b) {
-            return a !== b;
-        });
-        ScopeHandler.addFF(scope, '>', function (a, b) {
-            return a > b;
-        });
-        ScopeHandler.addFF(scope, '<', function (a, b) {
-            return a < b;
-        });
-        ScopeHandler.addFF(scope, '>=', function (a, b) {
-            return a >= b;
-        });
-        ScopeHandler.addFF(scope, '<=', function (a, b) {
-            return a <= b;
-        });
-    }
-
-};
-
-},{}],25:[function(require,module,exports){
-'use strict';
-
-var MathFuncs = require('./math');
-var Comparison = require('./comparison');
-var Logic = require('./logic');
-var Timing = require('./timing');
-var Audio = require('./audio');
-
-module.exports = {
-
-    add: function add(audio, dispatcher, ScopeHandler, scope) {
-        MathFuncs.add(audio, dispatcher, ScopeHandler, scope);
-        Comparison.add(audio, dispatcher, ScopeHandler, scope);
-        Logic.add(audio, dispatcher, ScopeHandler, scope);
-        Timing.add(audio, dispatcher, ScopeHandler, scope);
-        Audio.add(audio, dispatcher, ScopeHandler, scope);
-
-        ScopeHandler.addFF(scope, 'display', function (data) {
-            dispatcher.dispatch('term-message', data);
-        });
-    }
-
-};
-
-},{"./audio":23,"./comparison":24,"./logic":26,"./math":27,"./timing":28}],26:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-    add: function add(audio, dispatcher, ScopeHandler, scope) {
-        ScopeHandler.addFF(scope, '&&', function (a, b) {
-            return a && b;
-        });
-        ScopeHandler.addFF(scope, '||', function (a, b) {
-            return a || b;
-        });
-        ScopeHandler.addFF(scope, '!', function (a) {
-            return !a;
-        });
-    }
-
-};
-
-},{}],27:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-    add: function add(audio, dispatcher, ScopeHandler, scope) {
-        ScopeHandler.addFF(scope, '+', function (a, b) {
-            return a + b;
-        });
-        ScopeHandler.addFF(scope, '-', function (a, b) {
-            return a - b;
-        });
-        ScopeHandler.addFF(scope, '*', function (a, b) {
-            return a * b;
-        });
-        ScopeHandler.addFF(scope, '/', function (a, b) {
-            return a / b;
-        });
-        ScopeHandler.addFF(scope, '^', function (a, b) {
-            return a ^ b;
-        });
-        ScopeHandler.addFF(scope, '%', function (a, b) {
-            return a % b;
-        });
-    }
-
-};
-
-},{}],28:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-
-    add: function add(audio, dispatcher, ScopeHandler, scope) {
-        // time in ms
-        ScopeHandler.addFF(scope, 'schedule', function (time, closure) {
-            dispatcher.dispatch('schedule-callback', time, closure);
-        });
-    }
-
-};
-
-},{}],29:[function(require,module,exports){
-'use strict';
-
-var createTerminal = function createTerminal(terminalBodyEl, dispatcher) {
-
-    var Terminal = {};
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+var create = function create(terminalBodyEl, dispatcher) {
 
     var tagsToReplace = {
         '&': '&amp;',
@@ -2462,30 +2580,35 @@ var createTerminal = function createTerminal(terminalBodyEl, dispatcher) {
         }
     };
 
-    var msgPrompt = "<msg>" + symbolReplace(">> ") + "</msg>";
-    var errPrompt = "<err>" + symbolReplace(">> ") + "</err>";
+    var msgPrompt = '<msg>' + symbolReplace('>> ') + '</msg>';
+    var errPrompt = '<err>' + symbolReplace('>> ') + '</err>';
 
-    var header = ["#####################", "#                   #", "#     WEB SOUND     #", "#                   #", "#####################"];
-    Terminal.displayHeader = function () {
-        var el = terminalBodyEl.children("p:first");
-        var i;
-        for (i = 0; i < header.length; i += 1) {
-            el.append("<heading>" + symbolReplace(header[i]) + "</heading><br>\n");
+    var header = ['#####################', '#                   #', '#     WEB SOUND     #', '#                   #', '#####################'];
+
+    var Terminal = {
+
+        displayHeader: function displayHeader() {
+            var el = terminalBodyEl.children('p:first');
+            var i = undefined;
+            for (i = 0; i < header.length; i += 1) {
+                el.append('<heading>' + symbolReplace(header[i]) + '</heading><br>\n');
+            }
+        },
+
+        message: function message(msg) {
+            terminalBodyEl.children('p:first').append('' + msgPrompt + symbolReplace(safeToString(msg)) + '<br>\n');
+            Terminal.scrollToBottom();
+        },
+
+        error: function error(err) {
+            terminalBodyEl.children('p:first').append('' + errPrompt + symbolReplace(safeToString(err)) + '<br>\n');
+            Terminal.scrollToBottom();
+        },
+
+        scrollToBottom: function scrollToBottom() {
+            terminalBodyEl.scrollTop(terminalBodyEl.prop('scrollHeight'));
         }
-    };
 
-    Terminal.message = function (msg) {
-        terminalBodyEl.children("p:first").append(msgPrompt + symbolReplace(safeToString(msg)) + "<br>\n");
-        Terminal.scrollToBottom();
-    };
-
-    Terminal.error = function (err) {
-        terminalBodyEl.children("p:first").append(errPrompt + symbolReplace(safeToString(err)) + "<br>\n");
-        Terminal.scrollToBottom();
-    };
-
-    Terminal.scrollToBottom = function () {
-        terminalBodyEl.scrollTop(terminalBodyEl.prop('scrollHeight'));
     };
 
     dispatcher.register('term-message', function (message) {
@@ -2498,64 +2621,84 @@ var createTerminal = function createTerminal(terminalBodyEl, dispatcher) {
 
     return Terminal;
 };
-
-module.exports = {
-    create: createTerminal
-};
+exports.create = create;
 
 },{}],30:[function(require,module,exports){
 "use strict";
 
-var createDispatcher = function createDispatcher() {
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var create = function create() {
 
-    var DispatcherObj = {};
     var callbacks = {};
 
-    DispatcherObj.register = function (eventName, callback) {
-        callbacks[eventName] = callbacks[eventName] || [];
-        callbacks[eventName].push(callback);
-    };
+    return {
+        register: function register(eventName, callback) {
+            callbacks[eventName] = callbacks[eventName] || [];
+            callbacks[eventName].push(callback);
+        },
 
-    DispatcherObj.dispatch = function (eventName /* , args... */) {
-        var i;
-        var cbList = callbacks[eventName] || [];
-        for (i = 0; i < cbList.length; i += 1) {
-            cbList[i].apply(this, Array.prototype.slice.call(arguments, 1));
+        dispatch: function dispatch(eventName) {
+            for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+            }
+
+            var cbList = callbacks[eventName] || [];
+            cbList.forEach(function (cb) {
+                return cb.apply({}, args);
+            });
+        },
+
+        unregister: function unregister(eventName, callback) {
+            var cbList = callbacks[eventName] || [];
+            var cbId = cbList.indexOf(callback);
+            if (cbId > -1) {
+                cbList.splice(cbId, 1);
+            }
         }
     };
-    DispatcherObj.unregister = function (eventName, callback) {
-        var cbList = callbacks[eventName];
-        var fIds = cbList.indexOf(callback);
-        if (fIds > -1) {
-            cbList.splice(fIds, 1);
-        }
-    };
-
-    return DispatcherObj;
 };
-
-module.exports = {
-    create: createDispatcher
-};
+exports.create = create;
 
 },{}],31:[function(require,module,exports){
 /*jslint browser: true */
 
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _utilDispatcher = require('./util/dispatcher');
+
+var Dispatch = _interopRequireWildcard(_utilDispatcher);
+
+var _uiNavbar = require('./ui/navbar');
+
+var NavBar = _interopRequireWildcard(_uiNavbar);
+
+var _uiEditor = require('./ui/editor');
+
+var Editor = _interopRequireWildcard(_uiEditor);
+
+var _uiTerminal = require('./ui/terminal');
+
+var Terminal = _interopRequireWildcard(_uiTerminal);
+
+var _core = require('./core');
+
+var Core = _interopRequireWildcard(_core);
+
+var _audio = require('./audio');
+
+var AudioSystem = _interopRequireWildcard(_audio);
+
 var $ = require('../lib/jquery-2.1.3');
 
-var Dispatch = require('./util/dispatcher');
-
-var NavBar = require('./navbar');
-var Editor = require('./editor');
-var Terminal = require('./terminal');
-var Core = require('./core');
-var AudioSystem = require('./audio');
-
-var Whorl = {};
-
-Whorl.create = function () {
+var create = function create() {
 
     var dispatcher = Dispatch.create();
 
@@ -2576,10 +2719,9 @@ Whorl.create = function () {
         terminal.error(e);
     }
 };
+exports.create = create;
 
-module.exports = Whorl;
-
-},{"../lib/jquery-2.1.3":41,"./audio":15,"./core":16,"./editor":17,"./navbar":20,"./terminal":29,"./util/dispatcher":30}],32:[function(require,module,exports){
+},{"../lib/jquery-2.1.3":41,"./audio":14,"./core":15,"./ui/editor":27,"./ui/navbar":28,"./ui/terminal":29,"./util/dispatcher":30}],32:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -17068,33 +17210,33 @@ var jisonParser = (function () {
     var o = function o(k, v, _o, l) {
         for (_o = _o || {}, l = k.length; l--; _o[k[l]] = v);return _o;
     },
-        $V0 = [5, 11, 27, 35, 36, 37, 38, 39, 40, 41, 44],
-        $V1 = [1, 11],
-        $V2 = [1, 20],
-        $V3 = [1, 21],
-        $V4 = [1, 22],
-        $V5 = [1, 23],
-        $V6 = [1, 24],
-        $V7 = [1, 25],
-        $V8 = [1, 27],
-        $V9 = [1, 28],
-        $Va = [1, 26],
-        $Vb = [5, 11, 14, 27, 35, 36, 37, 38, 39, 40, 41, 44],
-        $Vc = [1, 35],
-        $Vd = [1, 29],
-        $Ve = [1, 30],
-        $Vf = [1, 34],
-        $Vg = [46, 51],
-        $Vh = [11, 14, 27, 35, 36, 37, 38, 39, 40, 41, 44],
-        $Vi = [14, 51],
-        $Vj = [11, 27, 35, 36, 37, 38, 39, 40, 41, 44],
-        $Vk = [2, 41],
-        $Vl = [14, 27];
+        $V0 = [5, 11, 30, 40, 41, 42, 43, 44, 45, 46, 47],
+        $V1 = [1, 14],
+        $V2 = [1, 25],
+        $V3 = [1, 26],
+        $V4 = [1, 27],
+        $V5 = [1, 28],
+        $V6 = [1, 29],
+        $V7 = [1, 30],
+        $V8 = [1, 31],
+        $V9 = [1, 32],
+        $Va = [1, 33],
+        $Vb = [5, 11, 14, 30, 40, 41, 42, 43, 44, 45, 46, 47],
+        $Vc = [1, 41],
+        $Vd = [1, 36],
+        $Ve = [1, 37],
+        $Vf = [1, 39],
+        $Vg = [1, 40],
+        $Vh = [11, 14, 30, 40, 41, 42, 43, 44, 45, 46, 47],
+        $Vi = [11, 14],
+        $Vj = [11, 30, 40, 41, 42, 43, 44, 45, 46, 47],
+        $Vk = [2, 46],
+        $Vl = [14, 30];
     var parser = { trace: function trace() {},
         yy: {},
-        symbols_: { "error": 2, "Program": 3, "Program_repetition0": 4, "t_eof": 5, "Form": 6, "Definition": 7, "Expression": 8, "LetDefinition": 9, "FunctionDefinition": 10, "t_oparen": 11, "t_let": 12, "Variable": 13, "t_cparen": 14, "t_def": 15, "FunctionDefinition_repetition0": 16, "Body": 17, "Body_repetition0": 18, "Body_repetition_plus1": 19, "Literal": 20, "t_lambda": 21, "LambdaArgNames": 22, "t_if": 23, "Application": 24, "LambdaArgNames_repetition0": 25, "Application_repetition0": 26, "t_id": 27, "Boolean": 28, "Number": 29, "String": 30, "Symbol": 31, "List": 32, "Note": 33, "Beat": 34, "t_true": 35, "t_false": 36, "t_number": 37, "t_string": 38, "t_symbol": 39, "t_note": 40, "t_beat": 41, "t_list": 42, "List_repetition0": 43, "t_obracket": 44, "List_repetition1": 45, "t_cbracket": 46, "Map": 47, "t_map": 48, "Map_repetition0": 49, "MapPair": 50, "Datum": 51, "$accept": 0, "$end": 1 },
-        terminals_: { 2: "error", 5: "t_eof", 11: "t_oparen", 12: "t_let", 14: "t_cparen", 15: "t_def", 21: "t_lambda", 23: "t_if", 27: "t_id", 35: "t_true", 36: "t_false", 37: "t_number", 38: "t_string", 39: "t_symbol", 40: "t_note", 41: "t_beat", 42: "t_list", 44: "t_obracket", 46: "t_cbracket", 48: "t_map", 51: "Datum" },
-        productions_: [0, [3, 2], [6, 1], [6, 1], [7, 1], [7, 1], [9, 5], [10, 8], [17, 2], [8, 1], [8, 1], [8, 5], [8, 5], [8, 6], [8, 1], [22, 1], [22, 3], [24, 4], [13, 1], [20, 1], [20, 1], [20, 1], [20, 1], [20, 1], [20, 1], [20, 1], [28, 1], [28, 1], [29, 1], [30, 1], [31, 1], [33, 1], [34, 1], [32, 4], [32, 3], [47, 4], [50, 4], [4, 0], [4, 2], [16, 0], [16, 2], [18, 0], [18, 2], [19, 1], [19, 2], [25, 0], [25, 2], [26, 0], [26, 2], [43, 0], [43, 2], [45, 0], [45, 2], [49, 0], [49, 2]],
+        symbols_: { "error": 2, "Program": 3, "Program_repetition0": 4, "t_eof": 5, "Form": 6, "Definition": 7, "Expression": 8, "LetDefinition": 9, "FunctionDefinition": 10, "t_oparen": 11, "t_let": 12, "Identifier": 13, "t_cparen": 14, "t_def": 15, "FunctionDefinition_repetition0": 16, "Body": 17, "Body_repetition0": 18, "Body_repetition_plus1": 19, "Lambda": 20, "If": 21, "Application": 22, "Variable": 23, "Literal": 24, "t_lambda": 25, "LambdaArgNames": 26, "LambdaArgNames_repetition0": 27, "t_if": 28, "Application_repetition0": 29, "t_id": 30, "Boolean": 31, "Undefined": 32, "Number": 33, "String": 34, "Symbol": 35, "Note": 36, "Beat": 37, "List": 38, "Map": 39, "t_true": 40, "t_false": 41, "t_undefined": 42, "t_number": 43, "t_string": 44, "t_symbol": 45, "t_note": 46, "t_beat": 47, "t_list": 48, "List_repetition0": 49, "t_map": 50, "Map_repetition0": 51, "MapPair": 52, "$accept": 0, "$end": 1 },
+        terminals_: { 2: "error", 5: "t_eof", 11: "t_oparen", 12: "t_let", 14: "t_cparen", 15: "t_def", 25: "t_lambda", 28: "t_if", 30: "t_id", 40: "t_true", 41: "t_false", 42: "t_undefined", 43: "t_number", 44: "t_string", 45: "t_symbol", 46: "t_note", 47: "t_beat", 48: "t_list", 50: "t_map" },
+        productions_: [0, [3, 2], [6, 1], [6, 1], [7, 1], [7, 1], [9, 5], [10, 8], [17, 2], [8, 1], [8, 1], [8, 1], [8, 1], [8, 1], [20, 5], [26, 1], [26, 3], [21, 5], [21, 6], [22, 4], [23, 1], [13, 1], [24, 1], [24, 1], [24, 1], [24, 1], [24, 1], [24, 1], [24, 1], [24, 1], [24, 1], [31, 1], [31, 1], [32, 1], [33, 1], [34, 1], [35, 1], [36, 1], [37, 1], [38, 4], [39, 4], [52, 4], [4, 0], [4, 2], [16, 0], [16, 2], [18, 0], [18, 2], [19, 1], [19, 2], [27, 0], [27, 2], [29, 0], [29, 2], [49, 0], [49, 2], [51, 0], [51, 2]],
         performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate, /* action[1] */$$, /* vstack */_$ /* lstack */) {
             /* this == yyval */
 
@@ -17112,17 +17254,8 @@ var jisonParser = (function () {
                 case 8:
                     this.$ = Ast.Body($$[$0 - 1], $$[$0]);
                     break;
-                case 10:
-                    this.$ = Ast.Variable($$[$0]);
-                    break;
-                case 11:
+                case 14:
                     this.$ = Ast.Lambda($$[$0 - 2], $$[$0 - 1]);
-                    break;
-                case 12:
-                    this.$ = Ast.If($$[$0 - 2], $$[$0 - 1]);
-                    break;
-                case 13:
-                    this.$ = Ast.IfElse($$[$0 - 3], $$[$0 - 2], $$[$0 - 1]);
                     break;
                 case 15:
                     this.$ = [$$[$01]];
@@ -17131,62 +17264,71 @@ var jisonParser = (function () {
                     this.$ = $$[$0 - 1];
                     break;
                 case 17:
-                    this.$ = Ast.Application($$[$0 - 2], $$[$0 - 1]);
+                    this.$ = Ast.If($$[$0 - 2], $$[$0 - 1]);
                     break;
                 case 18:
+                    this.$ = Ast.IfElse($$[$0 - 3], $$[$0 - 2], $$[$0 - 1]);
+                    break;
+                case 19:
+                    this.$ = Ast.Application($$[$0 - 2], $$[$0 - 1]);
+                    break;
+                case 20:
+                    this.$ = Ast.Variable($$[$0]);
+                    break;
+                case 21:
                     this.$ = yytext;
                     break;
-                case 26:
+                case 31:
                     this.$ = Ast.Bool(true);
                     break;
-                case 27:
+                case 32:
                     this.$ = Ast.Bool(false);
                     break;
-                case 28:
+                case 33:
+                    this.$ = Ast.Undefined();
+                    break;
+                case 34:
                     this.$ = Ast.Num(Number(yytext));
                     break;
-                case 29:
+                case 35:
                     this.$ = Ast.Str(yytext);
                     break;
-                case 30:
+                case 36:
                     this.$ = Ast.Symbol(yytext.slice(1));
                     break;
-                case 31:
+                case 37:
 
                     var data = /([a-gA-G][#b]?)([0-9]+)/.exec(yytext);
                     this.$ = Ast.Note(data[1], data[2]);
 
                     break;
-                case 32:
+                case 38:
 
                     var data = /[0-9]+("."[0-9]+)/.exec(yytext);
                     this.$ = Ast.Beat(data[1]);
 
                     break;
-                case 33:
+                case 39:
                     this.$ = Ast.List($$[$0 - 1]);
                     break;
-                case 34:
-                    this.$ = Ast.List($$[$0]);
-                    break;
-                case 35:
+                case 40:
                     this.$ = Ast.Map($$[$0 - 1]);
                     break;
-                case 36:
+                case 41:
                     this.$ = Ast.MapPair($$[$0 - 2], $$[$0 - 1]);
                     break;
-                case 37:case 39:case 41:case 45:case 47:case 49:case 51:case 53:
+                case 42:case 44:case 46:case 50:case 52:case 54:case 56:
                     this.$ = [];
                     break;
-                case 38:case 40:case 42:case 44:case 46:case 48:case 50:case 52:case 54:
+                case 43:case 45:case 47:case 49:case 51:case 53:case 55:case 57:
                     $$[$0 - 1].push($$[$0]);
                     break;
-                case 43:
+                case 48:
                     this.$ = [$$[$0]];
                     break;
             }
         },
-        table: [o($V0, [2, 37], { 3: 1, 4: 2 }), { 1: [3] }, { 5: [1, 3], 6: 4, 7: 5, 8: 6, 9: 7, 10: 8, 11: $V1, 13: 10, 20: 9, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 44: $Va }, { 1: [2, 1] }, o($V0, [2, 38]), o($V0, [2, 2]), o($V0, [2, 3]), o($V0, [2, 4]), o($V0, [2, 5]), o($Vb, [2, 9]), o($Vb, [2, 10]), { 8: 33, 11: $Vc, 12: [1, 31], 13: 10, 15: [1, 32], 20: 9, 21: $Vd, 23: $Ve, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 42: $Vf, 44: $Va }, o($Vb, [2, 14]), o($Vb, [2, 19]), o($Vb, [2, 20]), o($Vb, [2, 21]), o($Vb, [2, 22]), o($Vb, [2, 23]), o($Vb, [2, 24]), o($Vb, [2, 25]), o($Vb, [2, 18]), o($Vb, [2, 26]), o($Vb, [2, 27]), o($Vb, [2, 28]), o($Vb, [2, 29]), o($Vb, [2, 30]), o($Vg, [2, 51], { 45: 36 }), o($Vb, [2, 31]), o($Vb, [2, 32]), { 11: [1, 39], 13: 38, 22: 37, 27: $V2 }, { 8: 40, 11: $Vc, 13: 10, 20: 9, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 44: $Va }, { 13: 41, 27: $V2 }, { 11: [1, 42] }, o($Vh, [2, 47], { 26: 43 }), o($Vi, [2, 49], { 43: 44 }), { 8: 33, 11: $Vc, 13: 10, 20: 9, 21: $Vd, 23: $Ve, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 42: $Vf, 44: $Va }, { 46: [1, 45], 51: [1, 46] }, o($Vj, $Vk, { 17: 47, 18: 48 }), o($Vj, [2, 15]), o($Vl, [2, 45], { 25: 49 }), { 8: 50, 11: $Vc, 13: 10, 20: 9, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 44: $Va }, { 8: 51, 11: $Vc, 13: 10, 20: 9, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 44: $Va }, { 13: 52, 27: $V2 }, { 8: 54, 11: $Vc, 13: 10, 14: [1, 53], 20: 9, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 44: $Va }, { 14: [1, 55], 51: [1, 56] }, o($Vb, [2, 34]), o($Vg, [2, 52]), { 14: [1, 57] }, { 7: 59, 8: 60, 9: 7, 10: 8, 11: $V1, 13: 10, 19: 58, 20: 9, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 44: $Va }, { 13: 62, 14: [1, 61], 27: $V2 }, { 8: 64, 11: $Vc, 13: 10, 14: [1, 63], 20: 9, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 44: $Va }, { 14: [1, 65] }, o($Vl, [2, 39], { 16: 66 }), o($Vb, [2, 17]), o($Vh, [2, 48]), o($Vb, [2, 33]), o($Vi, [2, 50]), o($Vb, [2, 11]), { 8: 67, 11: $Vc, 13: 10, 14: [2, 8], 20: 9, 24: 12, 27: $V2, 28: 13, 29: 14, 30: 15, 31: 16, 32: 17, 33: 18, 34: 19, 35: $V3, 36: $V4, 37: $V5, 38: $V6, 39: $V7, 40: $V8, 41: $V9, 44: $Va }, o($Vj, [2, 42]), o($Vh, [2, 43]), o($Vj, [2, 16]), o($Vl, [2, 46]), o($Vb, [2, 12]), { 14: [1, 68] }, o($V0, [2, 6]), { 13: 70, 14: [1, 69], 27: $V2 }, o($Vh, [2, 44]), o($Vb, [2, 13]), o($Vj, $Vk, { 18: 48, 17: 71 }), o($Vl, [2, 40]), { 14: [1, 72] }, o($V0, [2, 7])],
+        table: [o($V0, [2, 42], { 3: 1, 4: 2 }), { 1: [3] }, { 5: [1, 3], 6: 4, 7: 5, 8: 6, 9: 7, 10: 8, 11: $V1, 13: 15, 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, { 1: [2, 1] }, o($V0, [2, 43]), o($V0, [2, 2]), o($V0, [2, 3]), o($V0, [2, 4]), o($V0, [2, 5]), o($Vb, [2, 9]), o($Vb, [2, 10]), o($Vb, [2, 11]), o($Vb, [2, 12]), o($Vb, [2, 13]), { 8: 38, 11: $Vc, 12: [1, 34], 13: 15, 15: [1, 35], 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 25: $Vd, 28: $Ve, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va, 48: $Vf, 50: $Vg }, o($Vb, [2, 20]), o($Vb, [2, 22]), o($Vb, [2, 23]), o($Vb, [2, 24]), o($Vb, [2, 25]), o($Vb, [2, 26]), o($Vb, [2, 27]), o($Vb, [2, 28]), o($Vb, [2, 29]), o($Vb, [2, 30]), o($Vb, [2, 21]), o($Vb, [2, 31]), o($Vb, [2, 32]), o($Vb, [2, 33]), o($Vb, [2, 34]), o($Vb, [2, 35]), o($Vb, [2, 36]), o($Vb, [2, 37]), o($Vb, [2, 38]), { 13: 42, 30: $V2 }, { 11: [1, 43] }, { 11: [1, 46], 13: 45, 26: 44, 30: $V2 }, { 8: 47, 11: $Vc, 13: 15, 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, o($Vh, [2, 52], { 29: 48 }), o($Vh, [2, 54], { 49: 49 }), o($Vi, [2, 56], { 51: 50 }), { 8: 38, 11: $Vc, 13: 15, 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 25: $Vd, 28: $Ve, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va, 48: $Vf, 50: $Vg }, { 8: 51, 11: $Vc, 13: 15, 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, { 13: 52, 30: $V2 }, o($Vj, $Vk, { 17: 53, 18: 54 }), o($Vj, [2, 15]), o($Vl, [2, 50], { 27: 55 }), { 8: 56, 11: $Vc, 13: 15, 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, { 8: 58, 11: $Vc, 13: 15, 14: [1, 57], 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, { 8: 60, 11: $Vc, 13: 15, 14: [1, 59], 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, { 11: [1, 63], 14: [1, 61], 52: 62 }, { 14: [1, 64] }, o($Vl, [2, 44], { 16: 65 }), { 14: [1, 66] }, { 7: 68, 8: 69, 9: 7, 10: 8, 11: $V1, 13: 15, 19: 67, 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, { 13: 71, 14: [1, 70], 30: $V2 }, { 8: 73, 11: $Vc, 13: 15, 14: [1, 72], 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, o($Vb, [2, 19]), o($Vh, [2, 53]), o($Vb, [2, 39]), o($Vh, [2, 55]), o($Vb, [2, 40]), o($Vi, [2, 57]), { 35: 74, 45: $V8 }, o($V0, [2, 6]), { 13: 76, 14: [1, 75], 30: $V2 }, o($Vb, [2, 14]), { 8: 77, 11: $Vc, 13: 15, 14: [2, 8], 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, o($Vj, [2, 47]), o($Vh, [2, 48]), o($Vj, [2, 16]), o($Vl, [2, 51]), o($Vb, [2, 17]), { 14: [1, 78] }, { 8: 79, 11: $Vc, 13: 15, 20: 9, 21: 10, 22: 11, 23: 12, 24: 13, 30: $V2, 31: 16, 32: 17, 33: 18, 34: 19, 35: 20, 36: 21, 37: 22, 38: 23, 39: 24, 40: $V3, 41: $V4, 42: $V5, 43: $V6, 44: $V7, 45: $V8, 46: $V9, 47: $Va }, o($Vj, $Vk, { 18: 54, 17: 80 }), o($Vl, [2, 45]), o($Vh, [2, 49]), o($Vb, [2, 18]), { 14: [1, 81] }, { 14: [1, 82] }, o($Vi, [2, 41]), o($V0, [2, 7])],
         defaultActions: { 3: [2, 1] },
         parseError: function parseError(str, hash) {
             if (hash.recoverable) {
@@ -17349,7 +17491,7 @@ var jisonParser = (function () {
             return true;
         } };
 
-    var Ast = require('../app/ast');
+    var Ast = require('../app/language/ast');
 
     /* generated by jison-lex 0.3.4 */
     var lexer = (function () {
@@ -17772,7 +17914,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 }
 
 }).call(this,require('_process'))
-},{"../app/ast":14,"_process":3,"fs":1,"path":2}],40:[function(require,module,exports){
+},{"../app/language/ast":17,"_process":3,"fs":1,"path":2}],40:[function(require,module,exports){
 "use strict";
 
 var tutorials = {};
@@ -27140,12 +27282,16 @@ if (jQuery) (function ($) {
 
 'use strict';
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+var _appWhorl = require('./app/whorl');
+
+var Whorl = _interopRequireWildcard(_appWhorl);
+
 var $ = require('./lib/jquery-2.1.3');
 // necessary so that jquery plugins work
 window.jQuery = $;
 require('./lib/jquery.dropdown');
-
-var Whorl = require('./app/whorl');
 
 $(Whorl.create);
 
