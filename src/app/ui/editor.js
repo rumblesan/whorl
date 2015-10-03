@@ -1,10 +1,10 @@
 
 // Use require so that plugins load correctly
-var CodeMirror = require('../codemirror/lib/codemirror');
-import '../codemirror/keymap/vim';
-import '../codemirror/mode/scheme/scheme';
+var CodeMirror = require('../../codemirror/lib/codemirror');
+import '../../codemirror/keymap/vim';
+import '../../codemirror/mode/scheme/scheme';
 
-export const create = function (editorEl, dispatcher) {
+export const create = (editorEl, dispatcher) => {
 
     CodeMirror.Vim.defineAction('execute', (cm, args, vim) => {
         const code = cm.doc.getSelection();
@@ -17,7 +17,7 @@ export const create = function (editorEl, dispatcher) {
     });
 
     editor.setOption('extraKeys', {
-        'Ctrl-G': function(cm) {
+        'Ctrl-G': function (cm) {
             const code = cm.doc.getSelection();
             dispatcher.dispatch('execute-code', code);
         }

@@ -4,9 +4,10 @@ const $ = require('../lib/jquery-2.1.3');
 
 const Dispatch = require('./util/dispatcher');
 
-const NavBar = require('./navbar');
-import * as Editor from './editor';
-const Terminal = require('./terminal');
+import * as NavBar   from './ui/navbar';
+import * as Editor   from './ui/editor';
+import * as Terminal from './ui/terminal';
+
 const Core = require('./core');
 const AudioSystem = require('./audio');
 
