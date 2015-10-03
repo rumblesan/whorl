@@ -64,7 +64,7 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 %{
 
 var Ast = require('../app/ast');
- 
+
 %}
 
 %start Program
@@ -90,12 +90,12 @@ Definition
     ;
 
 LetDefinition
-    : t_oparen t_let Variable Expression t_cparen
+    : t_oparen t_let Identifier Expression t_cparen
         { $$ = Ast.LetDefinition($3, $4); }
     ;
 
 FunctionDefinition
-    : t_oparen t_def t_oparen Variable Variable* t_cparen Body t_cparen
+    : t_oparen t_def t_oparen Identifier Identifier* t_cparen Body t_cparen
         { $$ = Ast.FunctionDefinition($4, $5, $7); }
     ;
 
@@ -106,23 +106,30 @@ Body
 
 /* Expressions */
 Expression
-    : Literal
-    | Variable
-        { $$ = Ast.Variable($1); }
-    | t_oparen t_lambda LambdaArgNames Body t_cparen
-        { $$ = Ast.Lambda($3, $4); }
-    | t_oparen t_if Expression Expression t_cparen
-        { $$ = Ast.If($3, $4); }
-    | t_oparen t_if Expression Expression Expression t_cparen
-        { $$ = Ast.IfElse($3, $4, $5); }
+    : Lambda
+    | If
     | Application
+    | Variable
+    | Literal
+    ;
+
+Lambda
+    : t_oparen t_lambda LambdaArgNames Body t_cparen
+        { $$ = Ast.Lambda($3, $4); }
     ;
 
 LambdaArgNames
-    : Variable
+    : Identifier
         { $$ = [$2]; }
-    | t_oparen Variable* t_cparen
+    | t_oparen Identifier* t_cparen
         { $$ = $2; }
+    ;
+
+If
+    : t_oparen t_if Expression Expression t_cparen
+        { $$ = Ast.If($3, $4); }
+    | t_oparen t_if Expression Expression Expression t_cparen
+        { $$ = Ast.IfElse($3, $4, $5); }
     ;
 
 Application
@@ -130,8 +137,12 @@ Application
         { $$ = Ast.Application($2, $3); }
     ;
 
-/* Variables */
 Variable
+    : Identifier
+        { $$ = Ast.Variable($1); }
+    ;
+
+Identifier
     : t_id
         { $$ = yytext; }
     ;
@@ -142,9 +153,10 @@ Literal
     | Number
     | String
     | Symbol
-    | List
     | Note
     | Beat
+    | List
+    | Map
     ;
 
 Boolean
@@ -170,7 +182,7 @@ Symbol
     ;
 
 Note
-    : t_note 
+    : t_note
         {
             var data = /([a-gA-G][#b]?)([0-9]+)/.exec(yytext);
             $$ = Ast.Note(data[1], data[2]);
@@ -178,7 +190,7 @@ Note
     ;
 
 Beat
-    : t_beat 
+    : t_beat
         {
             var data = /[0-9]+("."[0-9]+)/.exec(yytext);
             $$ = Ast.Beat(data[1]);
@@ -186,12 +198,14 @@ Beat
     ;
 
 List
-    : t_oparen t_list Datum* t_cparen
+    : t_oparen t_list Expression* t_cparen
         { $$ = Ast.List($3); }
-    | t_obracket Datum* t_cbracket
+    | t_obracket Expression* t_cbracket
         { $$ = Ast.List($3); }
     ;
 
+// TODO
+// Define this correctly
 Map
     : t_oparen t_map MapPair* t_cparen
         { $$ = Ast.Map($3); }
