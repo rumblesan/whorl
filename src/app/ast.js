@@ -3,7 +3,7 @@ module.exports = {
 
     LetDefinition: function (name, expression) {
         return {
-            type: "LETDEFINITION",
+            type: 'LETDEFINITION',
             name: name,
             expression: expression
         };
@@ -11,7 +11,7 @@ module.exports = {
 
     FunctionDefinition: function (name, args, body) {
         return {
-            type: "FUNCTIONDEFINITION",
+            type: 'FUNCTIONDEFINITION',
             name: name,
             args: args,
             body: body
@@ -20,7 +20,7 @@ module.exports = {
 
     Body: function (definitions, expressions) {
         return {
-            type: "BODY",
+            type: 'BODY',
             definitions: definitions,
             expressions: expressions
         };
@@ -28,14 +28,14 @@ module.exports = {
 
     Variable: function (name) {
         return {
-            type: "VARIABLE",
+            type: 'VARIABLE',
             name: name
         };
     },
 
     Lambda: function (argNames, body) {
         return {
-            type: "LAMBDA",
+            type: 'LAMBDA',
             argNames: argNames,
             body: body
         };
@@ -43,7 +43,7 @@ module.exports = {
 
     If: function (predicate, expression) {
         return {
-            type: "IF",
+            type: 'IF',
             predicate: predicate,
             expression: expression
         };
@@ -51,7 +51,7 @@ module.exports = {
 
     IfElse: function (predicate, trueExpression, falseExpression) {
         return {
-            type: "IFELSE",
+            type: 'IFELSE',
             predicate: predicate,
             trueExpression: trueExpression,
             falseExpression: falseExpression
@@ -60,51 +60,51 @@ module.exports = {
 
     Application: function (target, args) {
         return {
-            type: "APPLICATION",
+            type: 'APPLICATION',
             target: target,
             args: args
         };
     },
 
-    Undefined: function (value) {
+    Undefined: function () {
         return {
-            type: "UNDEFINED",
-            value: "undefined"
+            type: 'UNDEFINED',
+            value: 'undefined'
         };
     },
 
     Bool: function (value) {
         return {
-            type: "BOOLEAN",
+            type: 'BOOLEAN',
             value: value
         };
     },
 
     Num: function (value) {
         return {
-            type: "NUMBER",
+            type: 'NUMBER',
             value: value
         };
     },
 
     Str: function (value) {
         return {
-            type: "STRING",
+            type: 'STRING',
             value: value
         };
     },
 
     Symbol: function (value) {
         return {
-            type: "SYMBOL",
+            type: 'SYMBOL',
             value: value
         };
     },
 
     Note: function (note, octave) {
         return {
-            type: "NOTE",
-            value: (note + " in octave " + octave),
+            type: 'NOTE',
+            value: `${note} in octave ${octave}`,
             note: note,
             octave: octave
         };
@@ -112,28 +112,28 @@ module.exports = {
 
     Beat: function (value) {
         return {
-            type: "BEAT",
+            type: 'BEAT',
             value: value
         };
     },
 
     List: function (values) {
         return {
-            type: "LIST",
+            type: 'LIST',
             values: values
         };
     },
 
     Map: function (entries) {
         return {
-            type: "MAP",
+            type: 'MAP',
             entries: entries
         };
     },
 
     MapPair: function (key, value) {
         return {
-            type: "MAPPAIR",
+            type: 'MAPPAIR',
             key: key,
             value: value
         };
@@ -144,7 +144,7 @@ module.exports = {
      **/
     Func: function (argNames, body) {
         return {
-            type: "FUNCTION",
+            type: 'FUNCTION',
             argNames: argNames,
             body: body
         };
@@ -152,14 +152,14 @@ module.exports = {
 
     BuiltIn: function (func) {
         return {
-            type: "BUILTIN",
+            type: 'BUILTIN',
             func: func
         };
     },
 
     Closure: function (argNames, body, scope) {
         return {
-            type: "CLOSURE",
+            type: 'CLOSURE',
             argNames: argNames,
             body: body,
             scope: scope
