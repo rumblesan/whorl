@@ -1,42 +1,27 @@
 
-var StdLib = require('./stdlib');
-var ScopeHandler = require('./language/scopeHandler');
-var Interpreter = require('./language/interpreter');
-var Error = require('./error');
+import * as StdLib       from './stdlib';
+import * as ScopeHandler from './language/scopeHandler';
+import * as Interpreter  from './language/interpreter';
 
-var AudioSystem = require('./audio');
+import * as AudioSystem  from './audio';
 
-var Parser = require('./language/parser').create();
+import * as Parser       from './language/parser';
 
-var createCore = function (audioContext, dispatcher) {
+export const create = function (audioContext, dispatcher) {
 
-    var Core = {};
-
-    var audio = AudioSystem.createSystem(audioContext);
-    var scopeHandler = ScopeHandler.create();
-    var interpreter = Interpreter.create(scopeHandler);
-    var globalScope = scopeHandler.createScope();
+    const audio        = AudioSystem.createSystem(audioContext);
+    const scopeHandler = ScopeHandler.create();
+    const interpreter  = Interpreter.create(scopeHandler);
+    const globalScope  = scopeHandler.createScope();
 
     StdLib.add(audio, dispatcher, scopeHandler, globalScope);
 
-    Core.handleCode = function (code) {
-        var ast;
-        try {
-            ast = Parser.parse(code);
-            interpreter.evaluate(globalScope, ast);
-        } catch (err) {
-            if (err.internal === true) {
-                Core.displayError(err);
-            } else {
-                throw err;
-            }
-        }
-    };
+    const Core = {
 
-    Core.scheduleCallback = function (time, closure) {
-        setTimeout(function () {
+        handleCode: function (code) {
             try {
-                interpreter.apply(globalScope, closure, []);
+                let ast = Parser.parse(code);
+                interpreter.evaluate(globalScope, ast);
             } catch (err) {
                 if (err.internal === true) {
                     Core.displayError(err);
@@ -44,32 +29,41 @@ var createCore = function (audioContext, dispatcher) {
                     throw err;
                 }
             }
-        }, time);
-    };
+        },
 
-    Core.displayError = function (err) {
-        console.log(err);
-        var errLines;
-        if (typeof err.message === 'string') {
-            errLines = [err.message];
-        } else {
-            errLines = err.message;
+        scheduleCallback: function (time, closure) {
+            setTimeout(() => {
+                try {
+                    interpreter.apply(globalScope, closure, []);
+                } catch (err) {
+                    if (err.internal === true) {
+                        Core.displayError(err);
+                    } else {
+                        throw err;
+                    }
+                }
+            }, time);
+        },
+
+        displayError: function (err) {
+            let errLines;
+            if (typeof err.message === 'string') {
+                errLines = [err.message];
+            } else {
+                errLines = err.message;
+            }
+            dispatcher.dispatch('term-error', errLines.join('\n'));
         }
-        dispatcher.dispatch('term-error', errLines.join("\n"));
     };
 
-    dispatcher.register('execute-code', function (code) {
+    dispatcher.register('execute-code', (code) => {
         Core.handleCode(code);
     });
 
-    dispatcher.register('schedule-callback', function (time, closure) {
+    dispatcher.register('schedule-callback', (time, closure) => {
         Core.scheduleCallback(time, closure);
     });
 
     return Core;
-};
-
-module.exports = {
-    create: createCore
 };
 
