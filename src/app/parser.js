@@ -1,13 +1,15 @@
 
 var JisonParser = require('../generated/jison-parser').parser;
-var Error = require('./error');
+import * as Error from './error';
 
 var createParser = function () {
 
     var Parser = {};
 
     JisonParser.yy.parseError = function (message, details) {
-        throw Error.create(message.split("\n"));
+        throw Error.create(
+            Error.types.parse, message.split('\n'), details
+        );
     };
 
     // Can raise an exception
