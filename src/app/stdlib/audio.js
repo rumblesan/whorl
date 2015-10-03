@@ -1,7 +1,8 @@
 
-const Audio = require('../audio');
+import * as Audio        from '../audio';
+import * as ScopeHandler from '../language/scopeHandler';
 
-export const add = (audio, dispatcher, ScopeHandler, scope) => {
+export const add = (audio, dispatcher, scope) => {
 
     ScopeHandler.addFF(scope, 'input',
         function(name) {

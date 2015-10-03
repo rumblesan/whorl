@@ -12,7 +12,7 @@ export const create = (audioContext, dispatcher) => {
     const audio        = AudioSystem.createSystem(audioContext);
     const globalScope  = ScopeHandler.createScope();
 
-    StdLib.add(audio, dispatcher, ScopeHandler, globalScope);
+    StdLib.add(audio, dispatcher, globalScope);
 
     const Core = {
 
