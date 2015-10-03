@@ -1,5 +1,5 @@
 
-const Thicket = require('thicket');
+import * as Thicket from 'thicket';
 
 module.exports = {
 
