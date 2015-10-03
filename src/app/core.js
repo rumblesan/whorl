@@ -10,7 +10,6 @@ import * as Parser       from './language/parser';
 export const create = (audioContext, dispatcher) => {
 
     const audio        = AudioSystem.createSystem(audioContext);
-    const interpreter  = Interpreter.create(ScopeHandler);
     const globalScope  = ScopeHandler.createScope();
 
     StdLib.add(audio, dispatcher, ScopeHandler, globalScope);
@@ -20,7 +19,7 @@ export const create = (audioContext, dispatcher) => {
         handleCode: function (code) {
             try {
                 let ast = Parser.parse(code);
-                interpreter.evaluate(globalScope, ast);
+                Interpreter.evaluate(globalScope, ast);
             } catch (err) {
                 if (err.internal === true) {
                     Core.displayError(err);
@@ -33,7 +32,7 @@ export const create = (audioContext, dispatcher) => {
         scheduleCallback: function (time, closure) {
             setTimeout(() => {
                 try {
-                    interpreter.apply(globalScope, closure, []);
+                    Interpreter.apply(globalScope, closure, []);
                 } catch (err) {
                     if (err.internal === true) {
                         Core.displayError(err);
