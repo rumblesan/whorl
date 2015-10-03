@@ -2,20 +2,20 @@
 import * as Error from '../error';
 import * as Ast   from './ast';
 
-export const createScope = function () {
+export const createScope = () => {
     return {};
 };
 
-export const createChildScope = function (parentScope) {
+export const createChildScope = (parentScope) => {
     return Object.create(parentScope);
 };
 
-export const set = function (scope, name, value) {
+export const set = (scope, name, value) => {
     scope[name] = value;
 };
 
-export const get = function(scope, name) {
-    var v = scope[name];
+export const get = (scope, name) => {
+    const v = scope[name];
     if (v === undefined) {
         throw Error.create(Error.types.undefVar, `No variable with that name: ${name}`);
     } else {
@@ -23,7 +23,7 @@ export const get = function(scope, name) {
     }
 };
 
-export const addFF = function (scope, name, func) {
+export const addFF = (scope, name, func) => {
     scope[name] = Ast.BuiltIn(func);
 };
 

@@ -5,7 +5,7 @@ var $ = require('./lib/jquery-2.1.3');
 window.jQuery = $;
 require('./lib/jquery.dropdown');
 
-var Whorl = require('./app/whorl');
+import * as Whorl from './app/whorl';
 
 $(Whorl.create);
 

@@ -5,67 +5,67 @@ import * as ScopeHandler from '../language/scopeHandler';
 export const add = (audio, dispatcher, scope) => {
 
     ScopeHandler.addFF(scope, 'input',
-        function(name) {
+        (name) => {
             return Audio.AST.Input(name);
         }
     );
 
     ScopeHandler.addFF(scope, 'param',
-        function(name, defaultValue) {
+        (name, defaultValue) => {
             return Audio.AST.Param(name, defaultValue);
         }
     );
 
     ScopeHandler.addFF(scope, 'mix',
-        function(...args) {
+        (...args) => {
             return Audio.AST.Mix(...args);
         }
     );
 
     ScopeHandler.addFF(scope, 'multiply',
-        function(source, factor) {
+        (source, factor) => {
             return Audio.AST.Multiply(source, factor);
         }
     );
 
     ScopeHandler.addFF(scope, 'arEnv',
-        function(attack, decay) {
+        (attack, decay) => {
             return Audio.AST.AREnvelope(attack, decay);
         }
     );
 
     ScopeHandler.addFF(scope, 'osc',
-        function(frequency, wave) {
+        (frequency, wave) => {
             return Audio.AST.Oscillator(frequency, wave);
         }
     );
 
     ScopeHandler.addFF(scope, 'noise',
-        function(noiseType) {
+        (noiseType) => {
             return Audio.AST.Noise(noiseType);
         }
     );
 
     ScopeHandler.addFF(scope, 'filter',
-        function(source, filterType, frequency, resonance) {
+        (source, filterType, frequency, resonance) => {
             return Audio.AST.Filter(source, filterType, frequency, resonance);
         }
     );
 
     ScopeHandler.addFF(scope, 'delay',
-        function(source, delayTime, delayMax, feedback) {
+        (source, delayTime, delayMax, feedback) => {
             return Audio.AST.Delay(source, delayTime, delayMax, feedback);
         }
     );
 
     ScopeHandler.addFF(scope, 'compressor',
-        function(source, threshold, ratio, knee, reduction, attack, release) {
+        (source, threshold, ratio, knee, reduction, attack, release) => {
             return Audio.AST.Compressor(source, threshold, ratio, knee, reduction, attack, release);
         }
     );
 
     ScopeHandler.addFF(scope, 'amp',
-        function(source, volume) {
+        (source, volume) => {
             return Audio.AST.Amp(source, volume);
         }
     );
@@ -75,56 +75,55 @@ export const add = (audio, dispatcher, scope) => {
      * Functions for playing built synths
      */
     ScopeHandler.addFF(scope, 'createSynth',
-        function(dspGraph) {
-            var s = audio.Synth.create(dspGraph);
-            return s;
+        (dspGraph) => {
+            return audio.Synth.create(dspGraph);
         }
     );
 
     ScopeHandler.addFF(scope, 'setParam',
-        function(synth, paramName, paramValue) {
+        (synth, paramName, paramValue) => {
             audio.Synth.setParam(synth, paramName, paramValue);
         }
     );
 
     ScopeHandler.addFF(scope, 'getParam',
-        function(synth, paramName) {
+        (synth, paramName) => {
             return audio.Synth.getParam(synth, paramName);
         }
     );
 
     ScopeHandler.addFF(scope, 'start',
-        function(synth, parameterList) {
+        (synth, parameterList) => {
             audio.Synth.start(synth, parameterList);
         }
     );
 
     ScopeHandler.addFF(scope, 'stop',
-        function(synth) {
+        (synth) => {
             audio.Synth.stop(synth);
         }
     );
 
     ScopeHandler.addFF(scope, 'play',
-        function(synth, playLength) {
+        (synth, playLength) => {
             audio.Synth.play(synth, playLength, []);
         }
     );
 
     ScopeHandler.addFF(scope, 'getInputs',
-        function(synth, inputName) {
+        (synth, inputName) => {
             audio.Synth.getInputs(synth, inputName);
         }
     );
 
     ScopeHandler.addFF(scope, 'getOutput',
-        function(synth, outputName) {
+        (synth, outputName) => {
             audio.Synth.getOutput(synth, outputName);
         }
     );
 
     ScopeHandler.addFF(scope, 'routeToMaster',
-        function(sourceSynth) {
+        (sourceSynth) => {
             audio.Synth.connectSynthToInputs(
                 audio.masterOut, 'master',
                 sourceSynth, 'default'
@@ -134,20 +133,20 @@ export const add = (audio, dispatcher, scope) => {
 
     // TODO Thicket should really be handling the name of the input
     ScopeHandler.addFF(scope, 'connectSynthToInputs',
-        function(synth, inputName, sourceSynth) {
+        (synth, inputName, sourceSynth) => {
             audio.Synth.connectSynthToInputs(synth, inputName, sourceSynth, 'default');
         }
     );
 
     ScopeHandler.addFF(scope, 'connectToInput',
-        function(synth, inputName, sourceSynth) {
+        (synth, inputName, sourceSynth) => {
             audio.Synth.connectToInput(synth, inputName, sourceSynth, 'default');
         }
     );
 
     ScopeHandler.addFF(scope, 'setMultiple',
-        function(synth, parameterList) {
-            var i;
+        (synth, parameterList) => {
+            let i;
             for (i = 0; i < parameterList.length; i += 2) {
                 audio.Synth.setParam(
                     synth,

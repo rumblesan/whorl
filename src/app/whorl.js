@@ -11,9 +11,7 @@ import * as Terminal    from './ui/terminal';
 import * as Core        from './core';
 import * as AudioSystem from './audio';
 
-const Whorl = {};
-
-Whorl.create = function () {
+export const create = () => {
 
     const dispatcher = Dispatch.create();
 
@@ -35,6 +33,4 @@ Whorl.create = function () {
     }
 
 };
-
-module.exports = Whorl;
 

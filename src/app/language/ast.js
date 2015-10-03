@@ -1,5 +1,5 @@
 
-export const LetDefinition = function (name, expression) {
+export const LetDefinition = (name, expression) => {
     return {
         type: 'LETDEFINITION',
         name: name,
@@ -7,7 +7,7 @@ export const LetDefinition = function (name, expression) {
     };
 };
 
-export const FunctionDefinition = function (name, args, body) {
+export const FunctionDefinition = (name, args, body) => {
     return {
         type: 'FUNCTIONDEFINITION',
         name: name,
@@ -16,7 +16,7 @@ export const FunctionDefinition = function (name, args, body) {
     };
 };
 
-export const Body = function (definitions, expressions) {
+export const Body = (definitions, expressions) => {
     return {
         type: 'BODY',
         definitions: definitions,
@@ -24,14 +24,14 @@ export const Body = function (definitions, expressions) {
     };
 };
 
-export const Variable = function (name) {
+export const Variable = (name) => {
     return {
         type: 'VARIABLE',
         name: name
     };
 };
 
-export const Lambda = function (argNames, body) {
+export const Lambda = (argNames, body) => {
     return {
         type: 'LAMBDA',
         argNames: argNames,
@@ -39,7 +39,7 @@ export const Lambda = function (argNames, body) {
     };
 };
 
-export const If = function (predicate, expression) {
+export const If = (predicate, expression) => {
     return {
         type: 'IF',
         predicate: predicate,
@@ -47,7 +47,7 @@ export const If = function (predicate, expression) {
     };
 };
 
-export const IfElse = function (predicate, trueExpression, falseExpression) {
+export const IfElse = (predicate, trueExpression, falseExpression) => {
     return {
         type: 'IFELSE',
         predicate: predicate,
@@ -56,7 +56,7 @@ export const IfElse = function (predicate, trueExpression, falseExpression) {
     };
 };
 
-export const Application = function (target, args) {
+export const Application = (target, args) => {
     return {
         type: 'APPLICATION',
         target: target,
@@ -64,42 +64,42 @@ export const Application = function (target, args) {
     };
 };
 
-export const Undefined = function () {
+export const Undefined = () => {
     return {
         type: 'UNDEFINED',
         value: 'undefined'
     };
 };
 
-export const Bool = function (value) {
+export const Bool = (value) => {
     return {
         type: 'BOOLEAN',
         value: value
     };
 };
 
-export const Num = function (value) {
+export const Num = (value) => {
     return {
         type: 'NUMBER',
         value: value
     };
 };
 
-export const Str = function (value) {
+export const Str = (value) => {
     return {
         type: 'STRING',
         value: value
     };
 };
 
-export const Symb = function (value) {
+export const Symb = (value) => {
     return {
         type: 'SYMBOL',
         value: value
     };
 };
 
-export const Note = function (note, octave) {
+export const Note = (note, octave) => {
     return {
         type: 'NOTE',
         value: `${note} in octave ${octave}`,
@@ -108,28 +108,28 @@ export const Note = function (note, octave) {
     };
 };
 
-export const Beat = function (value) {
+export const Beat = (value) => {
     return {
         type: 'BEAT',
         value: value
     };
 };
 
-export const List = function (values) {
+export const List = (values) => {
     return {
         type: 'LIST',
         values: values
     };
 };
 
-export const Map = function (entries) {
+export const Map = (entries) => {
     return {
         type: 'MAP',
         entries: entries
     };
 };
 
-export const MapPair = function (key, value) {
+export const MapPair = (key, value) => {
     return {
         type: 'MAPPAIR',
         key: key,
@@ -140,7 +140,7 @@ export const MapPair = function (key, value) {
 /* Applications
  * Not created by parser but by interpreter
  **/
-export const Func = function (argNames, body) {
+export const Func = (argNames, body) => {
     return {
         type: 'FUNCTION',
         argNames: argNames,
@@ -148,14 +148,14 @@ export const Func = function (argNames, body) {
     };
 };
 
-export const BuiltIn = function (func) {
+export const BuiltIn = (func) => {
     return {
         type: 'BUILTIN',
         func: func
     };
 };
 
-export const Closure = function (argNames, body, scope) {
+export const Closure = (argNames, body, scope) => {
     return {
         type: 'CLOSURE',
         argNames: argNames,
