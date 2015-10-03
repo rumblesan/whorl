@@ -10,11 +10,10 @@ import * as Parser       from './language/parser';
 export const create = function (audioContext, dispatcher) {
 
     const audio        = AudioSystem.createSystem(audioContext);
-    const scopeHandler = ScopeHandler.create();
-    const interpreter  = Interpreter.create(scopeHandler);
-    const globalScope  = scopeHandler.createScope();
+    const interpreter  = Interpreter.create(ScopeHandler);
+    const globalScope  = ScopeHandler.createScope();
 
-    StdLib.add(audio, dispatcher, scopeHandler, globalScope);
+    StdLib.add(audio, dispatcher, ScopeHandler, globalScope);
 
     const Core = {
 

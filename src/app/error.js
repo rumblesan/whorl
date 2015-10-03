@@ -18,6 +18,7 @@ export const create = function (type, message, details) {
 };
 
 export const types = {
-    parse: 'Parse'
+    parse: 'Parse',
+    undefVar: 'Undefined Variable'
 };
 
