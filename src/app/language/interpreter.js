@@ -13,7 +13,7 @@ const evaluateExpression = (scope, astExpr) => {
 
     let output;
 
-    switch(astExpr.type) {
+    switch(astExpr.node) {
     case 'LETDEFINITION':
         output = handleLetDefinition(scope, astExpr);
         break;
@@ -71,7 +71,7 @@ const evaluateExpression = (scope, astExpr) => {
     default:
         throw Error.create(
             Error.types.invalidAST,
-            `AST Expression not valid: ${astExpr.type}`
+            `AST Expression not valid: ${astExpr.node}`
         );
     }
     return output;
@@ -143,7 +143,7 @@ const handleApplicationExpression = (scope, application) => {
 
 const handleApplication = (scope, applicationData, evaluatedArgs) => {
     let result;
-    switch (applicationData.type) {
+    switch (applicationData.node) {
     case 'FUNCTION':
         result = handleFunction(
             scope, applicationData, evaluatedArgs
@@ -162,7 +162,7 @@ const handleApplication = (scope, applicationData, evaluatedArgs) => {
     default:
         throw Error.create(
             Error.types.application,
-            `Application type not valid: ${applicationData.type}`
+            `Application node not valid: ${applicationData.node}`
         );
     }
     return result;

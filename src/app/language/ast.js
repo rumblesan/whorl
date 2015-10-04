@@ -1,7 +1,7 @@
 
 export const LetDefinition = (name, expression) => {
     return {
-        type: 'LETDEFINITION',
+        node: 'LETDEFINITION',
         name: name,
         expression: expression
     };
@@ -9,7 +9,7 @@ export const LetDefinition = (name, expression) => {
 
 export const FunctionDefinition = (name, args, body) => {
     return {
-        type: 'FUNCTIONDEFINITION',
+        node: 'FUNCTIONDEFINITION',
         name: name,
         args: args,
         body: body
@@ -18,7 +18,7 @@ export const FunctionDefinition = (name, args, body) => {
 
 export const Body = (definitions, expressions) => {
     return {
-        type: 'BODY',
+        node: 'BODY',
         definitions: definitions,
         expressions: expressions
     };
@@ -26,14 +26,14 @@ export const Body = (definitions, expressions) => {
 
 export const Variable = (name) => {
     return {
-        type: 'VARIABLE',
+        node: 'VARIABLE',
         name: name
     };
 };
 
 export const Lambda = (argNames, body) => {
     return {
-        type: 'LAMBDA',
+        node: 'LAMBDA',
         argNames: argNames,
         body: body
     };
@@ -41,7 +41,7 @@ export const Lambda = (argNames, body) => {
 
 export const If = (predicate, expression) => {
     return {
-        type: 'IF',
+        node: 'IF',
         predicate: predicate,
         expression: expression
     };
@@ -49,7 +49,7 @@ export const If = (predicate, expression) => {
 
 export const IfElse = (predicate, trueExpression, falseExpression) => {
     return {
-        type: 'IFELSE',
+        node: 'IFELSE',
         predicate: predicate,
         trueExpression: trueExpression,
         falseExpression: falseExpression
@@ -58,7 +58,7 @@ export const IfElse = (predicate, trueExpression, falseExpression) => {
 
 export const Application = (target, args) => {
     return {
-        type: 'APPLICATION',
+        node: 'APPLICATION',
         target: target,
         args: args
     };
@@ -66,42 +66,42 @@ export const Application = (target, args) => {
 
 export const Undefined = () => {
     return {
-        type: 'UNDEFINED',
+        node: 'UNDEFINED',
         value: 'undefined'
     };
 };
 
 export const Bool = (value) => {
     return {
-        type: 'BOOLEAN',
+        node: 'BOOLEAN',
         value: value
     };
 };
 
 export const Num = (value) => {
     return {
-        type: 'NUMBER',
+        node: 'NUMBER',
         value: value
     };
 };
 
 export const Str = (value) => {
     return {
-        type: 'STRING',
+        node: 'STRING',
         value: value
     };
 };
 
 export const Symb = (value) => {
     return {
-        type: 'SYMBOL',
+        node: 'SYMBOL',
         value: value
     };
 };
 
 export const Note = (note, octave) => {
     return {
-        type: 'NOTE',
+        node: 'NOTE',
         value: `${note} in octave ${octave}`,
         note: note,
         octave: octave
@@ -110,28 +110,28 @@ export const Note = (note, octave) => {
 
 export const Beat = (value) => {
     return {
-        type: 'BEAT',
+        node: 'BEAT',
         value: value
     };
 };
 
 export const List = (values) => {
     return {
-        type: 'LIST',
+        node: 'LIST',
         values: values
     };
 };
 
 export const Map = (entries) => {
     return {
-        type: 'MAP',
+        node: 'MAP',
         entries: entries
     };
 };
 
 export const MapPair = (key, value) => {
     return {
-        type: 'MAPPAIR',
+        node: 'MAPPAIR',
         key: key,
         value: value
     };
@@ -142,7 +142,7 @@ export const MapPair = (key, value) => {
  **/
 export const Func = (argNames, body) => {
     return {
-        type: 'FUNCTION',
+        node: 'FUNCTION',
         argNames: argNames,
         body: body
     };
@@ -150,14 +150,14 @@ export const Func = (argNames, body) => {
 
 export const BuiltIn = (func) => {
     return {
-        type: 'BUILTIN',
+        node: 'BUILTIN',
         func: func
     };
 };
 
 export const Closure = (argNames, body, scope) => {
     return {
-        type: 'CLOSURE',
+        node: 'CLOSURE',
         argNames: argNames,
         body: body,
         scope: scope
