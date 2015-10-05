@@ -21,6 +21,7 @@ export const types = {
     parse: 'Parse',
     undefVar: 'Undefined Variable',
     invalidAST: 'Invalid AST',
-    application: 'Invalid Application'
+    application: 'Invalid Application',
+    type: 'Type Error'
 };
 
