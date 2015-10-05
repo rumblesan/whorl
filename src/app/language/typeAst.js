@@ -1,5 +1,5 @@
 
-export const GenericType = (alias) => {
+export const Generic = (alias) => {
     return {
         type: 'GENERIC',
         alias: alias
