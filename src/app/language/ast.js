@@ -7,11 +7,13 @@ export const LetDefinition = (name, expression) => {
     };
 };
 
-export const FunctionDefinition = (name, args, body) => {
+export const FunctionDefinition = (name, returnType, args, argTypes, body) => {
     return {
         node: 'FUNCTIONDEFINITION',
         name: name,
+        returnType: returnType,
         args: args,
+        argTypes: argTypes,
         body: body
     };
 };
@@ -31,10 +33,11 @@ export const Variable = (name) => {
     };
 };
 
-export const Lambda = (argNames, body) => {
+export const Lambda = (argNames, argTypes, body) => {
     return {
         node: 'LAMBDA',
         argNames: argNames,
+        argTypes: argTypes,
         body: body
     };
 };
@@ -136,6 +139,19 @@ export const MapPair = (key, value) => {
         value: value
     };
 };
+
+
+/* Types
+ **/
+export const TypedIdentifier = (name, type) => {
+    return {
+        node: 'TYPEDIDENTIFIER',
+        name: name,
+        type: type
+    };
+};
+
+
 
 /* Applications
  * Not created by parser but by interpreter

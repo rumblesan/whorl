@@ -7,6 +7,7 @@ letter                [a-zA-Z]
 digit                 [0-9]
 string_quote          '"'
 quote                 "'"
+type_def              "::"
 colon                 ":"
 symchar               [!$%&*/<=>?~_^]
 specchar              [\.\+\-:']
@@ -48,6 +49,7 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 "list"                return "t_list"
 "map"                 return "t_map"
 
+{type_def}            return "t_typedef"
 {colon}{identifier}   return "t_symbol"
 {number}              return "t_number"
 {identifier}          return "t_id"
@@ -63,7 +65,8 @@ strchars              ({letter}|{digit}|{symchar}|{specchar})*
 
 %{
 
-var Ast = require('../app/language/ast');
+var Ast     = require('../app/language/ast');
+var TypeAst = require('../app/language/typeAst');
 
 %}
 
@@ -95,8 +98,24 @@ LetDefinition
     ;
 
 FunctionDefinition
-    : t_oparen t_def t_oparen Identifier Identifier* t_cparen Body t_cparen
-        { $$ = Ast.FunctionDefinition($4, $5, $7); }
+    : t_oparen t_def TypedIdentifier t_oparen TypedIdentifier* t_cparen Body t_cparen
+        %{
+            var funcName = $3.name;
+            var returnType = $3.type;
+            var argNames = $5.map(function (arg) {
+                return arg.name;
+            });
+            var argTypes = $5.map(function (arg) {
+                return arg.type;
+            });
+            $$ = Ast.FunctionDefinition(
+                funcName,
+                returnType,
+                argNames,
+                argTypes,
+                $7
+            );
+        }%
     ;
 
 Body
@@ -115,13 +134,21 @@ Expression
 
 Lambda
     : t_oparen t_lambda LambdaArgNames Body t_cparen
-        { $$ = Ast.Lambda($3, $4); }
+        %{
+            var argNames = $3.map(function (arg) {
+                return arg.name;
+            });
+            var argTypes = $3.map(function (arg) {
+                return arg.type;
+            });
+            $$ = Ast.Lambda($3, $4);
+        }%
     ;
 
 LambdaArgNames
-    : Identifier
+    : TypedIdentifier
         { $$ = [$2]; }
-    | t_oparen Identifier* t_cparen
+    | t_oparen TypedIdentifier* t_cparen
         { $$ = $2; }
     ;
 
@@ -145,6 +172,35 @@ Variable
 Identifier
     : t_id
         { $$ = yytext; }
+    ;
+
+TypedIdentifier
+    : Identifier TypeDef?
+        %{
+            var t
+            if ($2 === undefined) {
+                t = TypeAst.UndefinedType();
+            } else {
+                t = $2;
+            }
+            $$ = Ast.TypedIdentifier($1, t);
+        }%
+    ;
+
+/* Types */
+
+TypeDef
+    : t_typedef TypeName
+        { $$ = $2; }
+    ;
+
+TypeName
+    : Identifier
+        { $$ = TypeAst.SimpleType($1); }
+    | "List" t_oparen TypeName t_cparen
+        { $$ = TypeAst.ListType($3); }
+    | "Map" t_oparen TypeName TypeName t_cparen
+        { $$ = TypeAst.MapType($3, $4); }
     ;
 
 /* Literals */
