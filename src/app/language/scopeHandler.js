@@ -1,6 +1,7 @@
 
-import * as Error from '../error';
-import * as Ast   from './ast';
+import * as Error   from '../error';
+import * as Ast     from './ast';
+import * as TypeAst from './typeAst';
 
 export const createScope = () => {
     return {};
@@ -23,7 +24,27 @@ export const get = (scope, name) => {
     }
 };
 
-export const addFF = (scope, name, func) => {
-    scope[name] = Ast.BuiltIn(func);
+/**
+ * Type class and instance definition functions
+ **/
+export const instance = (scope, func) => {
+    scope[func.name] = scope[func.name] || [];
+    scope[func.name].push(func);
+};
+
+export const typeClass = () => {
+};
+
+export const addFF = (scope, name, func, argTypes) => {
+    let types = [];
+    if (argTypes === undefined) {
+        let i;
+        for (i = 0; i < func.length; i += 1) {
+            types.push(TypeAst.Generic(String(i)));
+        }
+    } else {
+        types = argTypes;
+    }
+    scope[name] = Ast.BuiltIn(func, types);
 };
 

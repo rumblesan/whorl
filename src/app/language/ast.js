@@ -7,12 +7,12 @@ export const LetDefinition = (name, expression) => {
     };
 };
 
-export const FunctionDefinition = (name, returnType, args, argTypes, body) => {
+export const FunctionDefinition = (name, returnType, argNames, argTypes, body) => {
     return {
         node: 'FUNCTIONDEFINITION',
         name: name,
         returnType: returnType,
-        args: args,
+        argNames: argNames,
         argTypes: argTypes,
         body: body
     };
@@ -156,25 +156,28 @@ export const TypedIdentifier = (name, type) => {
 /* Applications
  * Not created by parser but by interpreter
  **/
-export const Func = (argNames, body) => {
+export const Func = (argNames, argTypes, body) => {
     return {
         node: 'FUNCTION',
         argNames: argNames,
+        argTypes: argTypes,
         body: body
     };
 };
 
-export const BuiltIn = (func) => {
+export const BuiltIn = (func, argTypes) => {
     return {
         node: 'BUILTIN',
+        argTypes: argTypes,
         func: func
     };
 };
 
-export const Closure = (argNames, body, scope) => {
+export const Closure = (argNames, argTypes, body, scope) => {
     return {
         node: 'CLOSURE',
         argNames: argNames,
+        argTypes: argTypes,
         body: body,
         scope: scope
     };

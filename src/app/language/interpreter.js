@@ -2,6 +2,7 @@
 import * as Error        from '../error';
 import * as Ast          from './ast';
 import * as ScopeHandler from './scopeHandler';
+import * as TypeSystem   from './typeSystem';
 
 const evaluateBlock = (scope, ast) => {
     return ast.map((expr) => {
@@ -39,25 +40,25 @@ const evaluateExpression = (scope, astExpr) => {
         output = handleApplicationExpression(scope, astExpr);
         break;
     case 'BOOLEAN':
-        output = astExpr.value;
+        output = astExpr;
         break;
     case 'UNDEFINED':
-        output = astExpr.value;
+        output = astExpr;
         break;
     case 'NUMBER':
-        output = astExpr.value;
+        output = astExpr;
         break;
     case 'STRING':
-        output = astExpr.value;
+        output = astExpr;
         break;
     case 'SYMBOL':
-        output = astExpr.value;
+        output = astExpr;
         break;
     case 'NOTE':
-        output = astExpr.value;
+        output = astExpr;
         break;
     case 'BEAT':
-        output = astExpr.value;
+        output = astExpr;
         break;
     case 'LIST':
         output = handleList(scope, astExpr);
@@ -85,14 +86,15 @@ const handleLetDefinition = (scope, define) => {
     return defValue;
 };
 
-const handleFunctionDefinition = (scope, defineFunction) => {
-    const functionName = defineFunction.name;
-    const functionArgNames = defineFunction.args;
-    const functionBody = defineFunction.body;
-    const functionValue = Ast.Func(functionArgNames, functionBody);
+const handleFunctionDefinition = (scope, funcDef) => {
+    const name      = funcDef.name;
+    const argNames  = funcDef.argNames;
+    const argTypes  = funcDef.argTypes;
+    const body      = funcDef.body;
+    const func      = Ast.Func(argNames, argTypes, body);
 
-    ScopeHandler.set(scope, functionName, functionValue);
-    return functionValue;
+    ScopeHandler.set(scope, name, func);
+    return func;
 };
 
 const handleBody = (scope, body) => {
@@ -105,7 +107,12 @@ const handleVariable = (scope, variable) => {
 };
 
 const handleLambda = (scope, lambda) => {
-    return Ast.Closure(lambda.argNames, lambda.body, scope);
+    return Ast.Closure(
+        lambda.argNames,
+        lambda.argTypes,
+        lambda.body,
+        scope
+    );
 };
 
 const handleIf = (scope, ifNode) => {
@@ -141,28 +148,34 @@ const handleApplicationExpression = (scope, application) => {
     return handleApplication(scope, target, evaluatedArgs);
 };
 
-const handleApplication = (scope, applicationData, evaluatedArgs) => {
+const handleApplication = (scope, application, evaluatedArgs) => {
+    if (!TypeSystem.checkFunctionTypes(scope, application, evaluatedArgs)) {
+        throw Error.create(
+            Error.types.type,
+            `Invalid types in application`
+        );
+    }
     let result;
-    switch (applicationData.node) {
+    switch (application.node) {
     case 'FUNCTION':
         result = handleFunction(
-            scope, applicationData, evaluatedArgs
+            scope, application, evaluatedArgs
         );
         break;
     case 'BUILTIN':
         result = handleBuiltIn(
-            scope, applicationData, evaluatedArgs
+            scope, application, evaluatedArgs
         );
         break;
     case 'CLOSURE':
         result = handleFunction(
-            applicationData.scope, applicationData, evaluatedArgs
+            application.scope, application, evaluatedArgs
         );
         break;
     default:
         throw Error.create(
             Error.types.application,
-            `Application node not valid: ${applicationData.node}`
+            `Application node not valid: ${application.node}`
         );
     }
     return result;
