@@ -216,15 +216,19 @@ const handleBuiltIn = (scope, builtIn, functionArgs) => {
 };
 
 const handleList = (scope, list) => {
-    return list.values.map((lExp) => {
-        return evaluateExpression(scope, lExp);
-    });
+    return Ast.List(
+        list.values.map((lExp) => {
+            return evaluateExpression(scope, lExp);
+        })
+    );
 };
 
 const handleMap = (scope, map) => {
-    return map.entries.map((mExp) => {
-        return evaluateExpression(scope, mExp);
-    });
+    return Ast.Map(
+        map.entries.map((mExp) => {
+            return evaluateExpression(scope, mExp);
+        })
+    );
 };
 
 const handleMapPair = (scope, pair) => {
