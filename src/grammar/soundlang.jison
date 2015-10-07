@@ -240,7 +240,7 @@ String
 
 Symbol
     : t_symbol
-        { $$ = Ast.Symbol(yytext.slice(1)); }
+        { $$ = Ast.Symb(yytext.slice(1)); }
     ;
 
 Note
