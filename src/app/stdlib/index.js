@@ -1,4 +1,5 @@
 
+import * as StringFuncs  from './string';
 import * as MathFuncs    from './math';
 import * as Comparison   from './comparison';
 import * as Logic        from './logic';
@@ -10,6 +11,7 @@ import * as TypeAst      from '../language/typeAst';
 
 export const add = (audio, dispatcher, scope) => {
 
+    StringFuncs.add(audio, dispatcher, scope);
     MathFuncs.add(audio, dispatcher, scope);
     Comparison.add(audio, dispatcher, scope);
     Logic.add(audio, dispatcher, scope);
@@ -18,7 +20,8 @@ export const add = (audio, dispatcher, scope) => {
 
     ScopeHandler.addFF(scope, 'display',
         (data) => {
-            dispatcher.dispatch('term-message', data);
+            const strVal = StringFuncs.toString(data);
+            dispatcher.dispatch('term-message', strVal);
             return Ast.Undefined();
         },
         [TypeAst.Generic('v')]
