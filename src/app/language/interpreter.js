@@ -149,7 +149,7 @@ const handleApplicationExpression = (scope, application) => {
 };
 
 const handleApplication = (scope, application, evaluatedArgs) => {
-    if (!TypeSystem.checkFunctionTypes(scope, application, evaluatedArgs)) {
+    if (!TypeSystem.checkFunctionTypes(application, evaluatedArgs)) {
         throw Error.create(
             Error.types.type,
             `Invalid types in application`

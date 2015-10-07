@@ -1,9 +1,7 @@
 
 import * as Error        from '../error';
-import * as ScopeHandler from './scopeHandler';
-import * as TypeAst      from './typeAst';
 
-export const checkFunctionTypes = (scope, func, inputArgs) => {
+export const checkFunctionTypes = (func, inputArgs) => {
     let i;
     for (i = 0; i < func.argTypes.length; i += 1) {
         if (!checkType(func.argTypes[i], inputArgs[i])) {
