@@ -2,13 +2,15 @@
 export const Generic = (alias) => {
     return {
         type: 'GENERIC',
+        name: 'GENERIC',
         alias: alias
     };
 };
 
 export const UndefinedType = () => {
     return {
-        type: 'UNDEFINED'
+        type: 'UNDEFINED',
+        name: 'UNDEFINED'
     };
 };
 
