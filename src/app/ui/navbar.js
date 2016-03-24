@@ -11,8 +11,14 @@ const createBindingsMenu = function (dispatcher) {
 
     keylist.find('a').click(function () {
         const bindingName = $(this).data('binding');
-        dispatcher.dispatch('set-key-binding', bindingName);
-        dispatcher.dispatch('term-message', `Setting keybindings: ${bindingName}`);
+        dispatcher.dispatch({
+            type: 'set-key-binding',
+            bindingName: bindingName
+        });
+        dispatcher.dispatch({
+            type: 'term-message',
+            text: `Setting keybindings: ${bindingName}`
+        });
     });
 
 };
@@ -31,8 +37,15 @@ const createTutorialMenu = function (dispatcher) {
     tutlist.find('a').click(function () {
         const programName = $(this).data('prog');
         const programData = Tutorials.data[programName];
-        dispatcher.dispatch('load-program', programName, programData);
-        dispatcher.dispatch('term-message', `Loading tutorial: ${programName}`);
+        dispatcher.dispatch({
+            type: 'load-program',
+            programName: programName,
+            programData: programData
+        });
+        dispatcher.dispatch({
+            type: 'term-message',
+            text: `Loading tutorial: ${programName}`
+        });
     });
 
 };
@@ -50,8 +63,15 @@ const createDemoMenu = function (dispatcher) {
     demolist.find('a').click(function () {
         const programName = $(this).data('prog');
         const programData = Demos.data[programName];
-        dispatcher.dispatch('load-program', programName, programData);
-        dispatcher.dispatch('term-message', `Loading demo: ${programName}`);
+        dispatcher.dispatch({
+            type: 'load-program',
+            programName: programName,
+            programData: programData
+        });
+        dispatcher.dispatch({
+            type: 'term-message',
+            text: `Loading demo: ${programName}`
+        });
     });
 
 };

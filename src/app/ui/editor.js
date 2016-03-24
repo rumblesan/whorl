@@ -8,7 +8,10 @@ export const create = (editorEl, dispatcher) => {
 
     CodeMirror.Vim.defineAction('execute', (cm, args, vim) => {
         const code = cm.doc.getSelection();
-        dispatcher.dispatch('execute-code', code);
+        dispatcher.dispatch({
+            type: 'execute-code',
+            code: code
+        });
     });
 
     // unwrap from jquery
@@ -19,20 +22,28 @@ export const create = (editorEl, dispatcher) => {
     editor.setOption('extraKeys', {
         'Ctrl-G': function (cm) {
             const code = cm.doc.getSelection();
-            dispatcher.dispatch('execute-code', code);
+            dispatcher.dispatch({
+                type: 'execute-code',
+                code: code
+            });
         }
     });
 
-    dispatcher.register('load-program', (programName, programData) => {
-        editor.doc.setValue(programData);
-    });
-
-    dispatcher.register('set-key-binding', (bindingName) => {
-        editor.setOption('keymap', bindingName);
-        if (bindingName === 'vim') {
-            editor.setOption('vimMode', true);
-        } else {
-            editor.setOption('vimMode', false);
+    dispatcher.register((action) => {
+        switch (action.type) {
+        case 'load-program':
+            editor.doc.setValue(action.programData);
+            break;
+        case 'set-key-binding':
+            editor.setOption('keymap', action.bindingName);
+            if (action.bindingName === 'vim') {
+                editor.setOption('vimMode', true);
+            } else {
+                editor.setOption('vimMode', false);
+            }
+            break;
+        default:
+            // do nothing
         }
     });
 

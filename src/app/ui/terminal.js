@@ -69,12 +69,17 @@ export const create = (terminalBodyEl, dispatcher) => {
 
     };
 
-    dispatcher.register('term-message', (message) => {
-        Terminal.message(message);
-    });
-
-    dispatcher.register('term-error', (error) => {
-        Terminal.error(error);
+    dispatcher.register((action) => {
+        switch (action.type) {
+        case 'term-message':
+            Terminal.message(action.text);
+            break;
+        case 'term-error':
+            Terminal.error(action.text);
+            break;
+        default:
+            // do nothing
+        }
     });
 
     return Terminal;

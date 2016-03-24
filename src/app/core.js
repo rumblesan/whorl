@@ -50,16 +50,24 @@ export const create = (audioContext, dispatcher) => {
             } else {
                 errLines = err.message;
             }
-            dispatcher.dispatch('term-error', errLines.join('\n'));
+            dispatcher.dispatch({
+                type: 'term-error',
+                text: errLines.join('\n')
+            });
         }
     };
 
-    dispatcher.register('execute-code', (code) => {
-        Core.handleCode(code);
-    });
-
-    dispatcher.register('schedule-callback', (time, closure) => {
-        Core.scheduleCallback(time, closure);
+    dispatcher.register((action) => {
+        switch (action.type) {
+        case 'execute-code':
+            Core.handleCode(action.code);
+            break;
+        case 'schedule-callback':
+            Core.scheduleCallback(action.time, action.closure);
+            break;
+        default:
+            // do nothing
+        }
     });
 
     return Core;

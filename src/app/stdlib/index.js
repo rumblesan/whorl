@@ -21,7 +21,10 @@ export const add = (audio, dispatcher, scope) => {
     ScopeHandler.addFF(scope, 'display',
         (data) => {
             const strVal = StringFuncs.toString(data);
-            dispatcher.dispatch('term-message', strVal);
+            dispatcher.dispatch({
+                type: 'term-message',
+                text: strVal
+            });
             return Ast.Undefined();
         },
         [TypeAst.Generic('v')]

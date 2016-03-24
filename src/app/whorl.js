@@ -2,7 +2,7 @@
 
 const $ = require('../lib/jquery-2.1.3');
 
-import * as Dispatch    from './util/dispatcher';
+import {Dispatcher} from 'flux';
 
 import * as NavBar      from './ui/navbar';
 import * as Editor      from './ui/editor';
@@ -13,7 +13,7 @@ import * as AudioSystem from './audio';
 
 export const create = () => {
 
-    const dispatcher = Dispatch.create();
+    const dispatcher = new Dispatcher();
 
     NavBar.create(dispatcher);
 
