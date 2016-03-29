@@ -1,7 +1,6 @@
 
 import * as Demos     from '../../generated/demos';
 import * as Tutorials from '../../generated/tutorials';
-const $ = require('../../lib/jquery-2.1.3');
 
 const createBindingsMenu = function (dispatcher) {
 

@@ -1,10 +1,7 @@
 /*jslint browser: true */
 
-const $ = require('../lib/jquery-2.1.3');
-
 import {Dispatcher} from 'flux';
 
-import * as NavBar      from './ui/navbar';
 import * as Editor      from './ui/editor';
 import * as Terminal    from './ui/terminal';
 
@@ -15,11 +12,9 @@ export const create = () => {
 
     const dispatcher = new Dispatcher();
 
-    NavBar.create(dispatcher);
+    const terminal = Terminal.create(document.getElementById('terminal-body'), dispatcher);
 
-    const terminal = Terminal.create($('#terminal-body'), dispatcher);
-
-    Editor.create($('#program'), dispatcher);
+    Editor.create(document.getElementById('program'), dispatcher);
 
     try {
         const audioContext = AudioSystem.createContext(window);
@@ -29,7 +24,7 @@ export const create = () => {
         terminal.displayHeader();
     } catch (e) {
         console.log(e);
-        terminal.error(e);
+        //terminal.error(e);
     }
 
 };

@@ -15,6 +15,5 @@ BSD License.
 ## Libraries
 
 [CodeMirror](http://codemirror.net/)
-[jquery-dropdown](http://labs.abeautifulsite.net/jquery-dropdown/)
 [jison](http://zaach.github.io/jison/)
 

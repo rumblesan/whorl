@@ -14,8 +14,7 @@ export const create = (editorEl, dispatcher) => {
         });
     });
 
-    // unwrap from jquery
-    const editor = CodeMirror(editorEl[0], {
+    const editor = CodeMirror(editorEl, {
         mode: 'scheme'
     });
 

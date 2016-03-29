@@ -14,7 +14,7 @@ function generate {
 
 function buildjs {
     echo ">> Building JavaScript"
-    browserify ./src/main.js -t [ babelify --ignore "codemirror" --ignore "jquery" ] -o ./dist/app.js
+    browserify ./src/main.jsx --extension=jsx -t [ babelify --presets [ react es2015 ] --ignore "codemirror" ] -o ./dist/app.js
 }
 
 function statics {
