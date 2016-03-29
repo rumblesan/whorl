@@ -4,35 +4,35 @@ import React from 'react';
 export default (props) => {
     return (
         <div id='header'>
-            <div id='menu'>
+            <ul className='navmenu'>
 
-                <span className='menu-item'>Whorl</span>
+                <li><span>Whorl</span></li>
 
-                <span className='menu-item' data-jq-dropdown="#jq-dropdown-1">
-                    Demos
-                </span>
-                <div id="jq-dropdown-1" className="jq-dropdown jq-dropdown-tip">
-                    <ul id="demolist" className="jq-dropdown-menu">
+                <li>
+                    <span>Demos</span>
+                    <ul className='dropdown'>
+                        <li>Demo 1</li>
+                        <li>Demo 2</li>
                     </ul>
-                </div>
+                </li>
 
-                <span  className='menu-item' data-jq-dropdown="#jq-dropdown-2">
-                    Tutorials
-                </span>
-                <div id="jq-dropdown-2" className="jq-dropdown jq-dropdown-tip">
-                    <ul id="tutoriallist" className="jq-dropdown-menu">
+                <li>
+                    <span>Tutorials</span>
+                    <ul className='dropdown'>
+                        <li>Tutorial 1</li>
+                        <li>Tutorial 2</li>
                     </ul>
-                </div>
+                </li>
 
-                <span  className='menu-item' data-jq-dropdown="#jq-dropdown-3">
-                    Key Bindings
-                </span>
-                <div id="jq-dropdown-3" className="jq-dropdown jq-dropdown-tip">
-                    <ul id="keybindings" className="jq-dropdown-menu">
+                <li>
+                    <span>Keybindings</span>
+                    <ul className='dropdown'>
+                        <li>Vim</li>
+                        <li>Normal</li>
                     </ul>
-                </div>
+                </li>
 
-            </div>
+            </ul>
         </div>
     );
 };
