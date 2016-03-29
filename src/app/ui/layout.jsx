@@ -8,7 +8,11 @@ import React from 'react';
 export default (props) => {
     return (
         <div>
-            <NavBar />
+            <NavBar
+                demos={props.demos}
+                tutorials={props.tutorials}
+                actions={props.actions}
+            />
             <Program />
             <Terminal />
         </div>
