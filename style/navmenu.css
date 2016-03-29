@@ -43,6 +43,7 @@
     visibility: hidden;
 }
 .navmenu li:hover .dropdown {
+    z-index: 100;
     display: block;
     opacity: 1;
     visibility: visible;
@@ -50,5 +51,6 @@
 
 .navmenu .dropdown li {
     display: block;
+    z-index: 100;
 }
 
