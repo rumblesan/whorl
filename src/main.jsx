@@ -2,6 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {Dispatcher} from 'flux';
+
 
 import Layout from './app/ui/layout';
 
@@ -12,7 +14,9 @@ import * as Tutorials from './generated/tutorials';
 
 import * as Actions from './app/ui/actions';
 
-const actions = Actions.create(null);
+const dispatcher = new Dispatcher();
+
+const actions = Actions.create(dispatcher);
 
 ReactDOM.render(
     <Layout
@@ -23,5 +27,5 @@ ReactDOM.render(
     document.getElementById('app')
 );
 
-Whorl.create();
+Whorl.create(dispatcher);
 

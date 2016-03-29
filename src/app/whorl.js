@@ -1,16 +1,12 @@
 /*jslint browser: true */
 
-import {Dispatcher} from 'flux';
-
 import * as Editor      from './ui/editor';
 import * as Terminal    from './ui/terminal';
 
 import * as Core        from './core';
 import * as AudioSystem from './audio';
 
-export const create = () => {
-
-    const dispatcher = new Dispatcher();
+export const create = (dispatcher) => {
 
     const terminal = Terminal.create(document.getElementById('terminal-body'), dispatcher);
 
