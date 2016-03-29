@@ -1,6 +1,7 @@
 
 import NavBar from './navbar';
 import Terminal from './terminal';
+import Codemirror from 'react-codemirror';
 
 import React from 'react';
 
@@ -14,7 +15,7 @@ export default React.createClass({
                     tutorials={this.props.tutorials}
                     actions={this.props.actions}
                 />
-                <div id='program'></div>
+                <Codemirror value={'Hello, World!'} />
                 <Terminal />
             </div>
         );
