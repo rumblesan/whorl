@@ -4,17 +4,20 @@ import Terminal from './terminal';
 
 import React from 'react';
 
-export default (props) => {
-    return (
-        <div>
-            <NavBar
-                demos={props.demos}
-                tutorials={props.tutorials}
-                actions={props.actions}
-            />
-            <div id='program'></div>
-            <Terminal />
-        </div>
-    );
-};
+export default React.createClass({
+    render: function () {
+        console.log(this.props);
+        return (
+            <div>
+                <NavBar
+                    demos={this.props.demos}
+                    tutorials={this.props.tutorials}
+                    actions={this.props.actions}
+                />
+                <div id='program'></div>
+                <Terminal />
+            </div>
+        );
+    }
+});
 
