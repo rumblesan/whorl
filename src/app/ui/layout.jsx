@@ -1,7 +1,6 @@
 
-import NavBar from './newnavbar';
-import Program from './program';
-import Terminal from './newterminal';
+import NavBar from './navbar';
+import Terminal from './terminal';
 
 import React from 'react';
 
@@ -13,7 +12,7 @@ export default (props) => {
                 tutorials={props.tutorials}
                 actions={props.actions}
             />
-            <Program />
+            <div id='program'></div>
             <Terminal />
         </div>
     );
