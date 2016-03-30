@@ -5,9 +5,9 @@ import ReactDOM from 'react-dom';
 import {Dispatcher} from 'flux';
 
 
-import Layout from './app/ui/layout';
+import Whorl from './app/whorl';
 
-import * as Whorl from './app/whorl';
+import * as AudioSystem from './app/audio';
 
 import * as Demos     from './generated/demos';
 import * as Tutorials from './generated/tutorials';
@@ -18,14 +18,25 @@ const dispatcher = new Dispatcher();
 
 const actions = Actions.create(dispatcher);
 
-ReactDOM.render(
-    <Layout
-        demos={Demos}
-        tutorials={Tutorials}
-        actions={actions}
-    />,
-    document.getElementById('app')
-);
+var audioContext = null;
 
-Whorl.create(dispatcher);
+try {
+    audioContext = AudioSystem.createContext(window);
+    console.log(audioContext);
+} catch (e) {
+    console.log(e);
+}
 
+if (audioContext !== null) {
+    console.log('Rendering');
+    ReactDOM.render(
+        <Whorl
+            demos={Demos}
+            tutorials={Tutorials}
+            actions={actions}
+            audioContext={audioContext}
+            dispatcher={dispatcher}
+        />,
+        document.getElementById('app')
+    );
+}
