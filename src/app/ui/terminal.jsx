@@ -1,6 +1,8 @@
 
 import React from 'react';
 
+import _ from 'lodash';
+
 export default (props) => {
     return (
         <div id='console'>
@@ -15,7 +17,22 @@ export default (props) => {
                 </div>
 
                 <div id="terminal-body">
-                    <p></p>
+                    <p>
+                    {
+                        _.map(
+                            props.terminal.lines,
+                            (line) => {
+                                if (line.type === 'info') {
+                                    return <div><msg>>> </msg>{l.text}<br /></div>
+                                } else if (line.type === 'error') {
+                                    return <div><err>>> </err>{l.text}<br /></div>
+                                } else {
+                                    return <div><msg>>> </msg>{l.text}<br /></div>
+                                }
+                            }
+                        )
+                    }
+                    </p>
                 </div>
 
             </div>
