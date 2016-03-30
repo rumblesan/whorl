@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import _ from 'underscore';
 
 const CHANGE_EVENT = 'change';
 
@@ -26,7 +25,7 @@ export const create = (dispatcher) => {
         },
 
         addInfo(text) {
-            this.state.lines.push({
+            state.lines.push({
                 type: 'info',
                 text: text
             });
@@ -35,7 +34,7 @@ export const create = (dispatcher) => {
         },
 
         addError(text) {
-            this.state.lines.push({
+            state.lines.push({
                 type: 'error',
                 text: text
             });
