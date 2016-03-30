@@ -6,7 +6,7 @@ export const create = (dispatcher) => {
     const state = {
         lines: []
     };
-    const AppState = Object.assign({}, EventEmitter.prototype, {
+    const TerminalText = Object.assign({}, EventEmitter.prototype, {
 
         emitChange: function(payload) {
             this.emit(CHANGE_EVENT, payload);
@@ -47,18 +47,18 @@ export const create = (dispatcher) => {
     dispatcher.register((action) => {
         switch (action.type) {
         case 'LOAD-DEMO':
-            AppState.addInfo(`Loading Demo: ${action.demoName}`);
+            TerminalText.addInfo(`Loading Demo: ${action.demoName}`);
             break;
         case 'LOAD-TUTORIAL':
-            AppState.addInfo(`Loading Tutorial: ${action.tutorialName}`);
+            TerminalText.addInfo(`Loading Tutorial: ${action.tutorialName}`);
             break;
         case 'SET-KEY-BINDINGS':
-            AppState.addInfo(`Setting key bindings: ${action.keyBindingName}`);
+            TerminalText.addInfo(`Setting key bindings: ${action.keyBindingName}`);
             break;
         default:
             // do nothing
         }
     });
 
-    return AppState;
+    return TerminalText;
 }
