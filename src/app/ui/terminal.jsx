@@ -17,22 +17,20 @@ export default (props) => {
                 </div>
 
                 <div id="terminal-body">
-                    <p>
                     {
                         _.map(
                             props.terminal.lines,
-                            (line) => {
+                            (line, idx) => {
                                 if (line.type === 'info') {
-                                    return <div><msg>>> </msg>{l.text}<br /></div>
+                                    return <p key={idx}><msg>>> </msg>{line.text}<br /></p>
                                 } else if (line.type === 'error') {
-                                    return <div><err>>> </err>{l.text}<br /></div>
+                                    return <p key={idx}><err>>> </err>{line.text}<br /></p>
                                 } else {
-                                    return <div><msg>>> </msg>{l.text}<br /></div>
+                                    return <p key={idx}><msg>>> </msg>{line.text}<br /></p>
                                 }
                             }
                         )
                     }
-                    </p>
                 </div>
 
             </div>
