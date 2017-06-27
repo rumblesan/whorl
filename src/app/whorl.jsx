@@ -10,21 +10,22 @@ import Codemirror from 'react-codemirror';
 
 // Stores
 import * as TerminalTextStore from './stores/terminal-text';
-
-import * as Core        from './core';
-import * as AudioSystem from './audio';
+import * as EditorCodeStore from './stores/editor-code';
 
 import * as Demos     from '../generated/demos';
 import * as Tutorials from '../generated/tutorials';
 
-import * as Actions from './ui/actions';
+import * as Core        from './core';
+import * as AudioSystem from './audio';
 
+import * as Actions from './ui/actions';
 
 const dispatcher = new Dispatcher();
 
 const actions = Actions.create(dispatcher);
 
 const terminalText = TerminalTextStore.create(dispatcher);
+const editorCode = EditorCodeStore.create(dispatcher, Demos, Tutorials);
 
 export default React.createClass({
     getInitialState: function () {
@@ -32,7 +33,8 @@ export default React.createClass({
             systems: {
                 audio: 'STOPPED'
             },
-            terminal: terminalText.getState()
+            terminal: terminalText.getState(),
+            code: editorCode.getState()
         };
     },
     componentWillMount: function () {
@@ -46,7 +48,13 @@ export default React.createClass({
         this.core = Core.create(this.audioContext, dispatcher);
     },
     componentDidMount: function () {
-        terminalText.addChangeListener(this._onChange);
+        var self = this;
+        terminalText.addChangeListener(() => {
+            self.setState({terminal: terminalText.getState()});
+        });
+        editorCode.addChangeListener(() => {
+            self.setState({code: editorCode.getCode()});
+        });
     },
     render: function () {
         return (
@@ -56,16 +64,10 @@ export default React.createClass({
                     tutorials={Tutorials}
                     actions={actions}
                 />
-                <Codemirror value={'Hello, World!'} />
+                <Codemirror value={this.state.code} />
                 <Terminal terminal={this.state.terminal}/>
             </div>
         );
-    },
-    _onChange: function () {
-        this.setState({
-            systems: this.state.systems,
-            terminal: terminalText.getState()
-        });
     }
 });
 
